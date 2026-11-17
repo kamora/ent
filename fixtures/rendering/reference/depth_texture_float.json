@@ -1,0 +1,566 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"geometries": [
+			{
+				"uuid": "5cd8dbad-1518-4dff-a9ec-4a22af256916",
+				"type": "PlaneGeometry",
+				"name": "",
+				"width": 2,
+				"height": 2,
+				"widthSegments": 1,
+				"heightSegments": 1
+			}
+		],
+		"materials": [
+			{
+				"uuid": "2dfdedae-3418-4fee-b4f3-f5c6268627bb",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true,
+				"userData": {
+					"depthTexture": true
+				}
+			}
+		],
+		"object": {
+			"uuid": "0554a43e-b4b4-4ed1-be6c-45a8eb5eee2c",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"children": [
+				{
+					"uuid": "6ca08108-b0dd-4329-920b-e7b903cb836a",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "5cd8dbad-1518-4dff-a9ec-4a22af256916",
+					"material": "2dfdedae-3418-4fee-b4f3-f5c6268627bb"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "57acf95a-a8f9-4c72-8531-6f5266016db5",
+			"type": "OrthographicCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				3,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"zoom": 1,
+			"left": -1,
+			"right": 1,
+			"top": 1,
+			"bottom": -1,
+			"near": 0.1,
+			"far": 10
+		}
+	},
+	"clear": [
+		0,
+		1
+	],
+	"size": 128,
+	"renderer": {},
+	"target": {
+		"scene": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"geometries": [
+				{
+					"uuid": "276ee9b9-ed72-4e59-8f45-76ab0d6317c9",
+					"type": "PlaneGeometry",
+					"name": "",
+					"width": 3.2,
+					"height": 3.2,
+					"widthSegments": 1,
+					"heightSegments": 1
+				},
+				{
+					"uuid": "32979a06-0ff4-4ba5-a68b-55b2a60cf873",
+					"type": "BoxGeometry",
+					"name": "",
+					"width": 0.8,
+					"height": 0.8,
+					"depth": 0.8,
+					"widthSegments": 1,
+					"heightSegments": 1,
+					"depthSegments": 1
+				},
+				{
+					"uuid": "0555d93d-69d7-4415-97f5-bf5e29090b00",
+					"type": "SphereGeometry",
+					"name": "",
+					"radius": 0.5,
+					"widthSegments": 24,
+					"heightSegments": 12,
+					"phiStart": 0,
+					"phiLength": 6.283185307179586,
+					"thetaStart": 0,
+					"thetaLength": 3.141592653589793
+				}
+			],
+			"materials": [
+				{
+					"uuid": "1626fcf6-d439-4ceb-9e10-abd0edf207da",
+					"type": "MeshBasicMaterial",
+					"blending": 1,
+					"side": 0,
+					"shadowSide": null,
+					"vertexColors": false,
+					"opacity": 1,
+					"transparent": false,
+					"blendSrc": 204,
+					"blendDst": 205,
+					"blendEquation": 100,
+					"blendSrcAlpha": null,
+					"blendDstAlpha": null,
+					"blendEquationAlpha": null,
+					"blendColor": 0,
+					"blendAlpha": 0,
+					"depthFunc": 3,
+					"depthTest": true,
+					"depthWrite": true,
+					"colorWrite": true,
+					"clipIntersection": false,
+					"clipShadows": false,
+					"stencilWriteMask": 255,
+					"stencilFunc": 519,
+					"stencilRef": 0,
+					"stencilFuncMask": 255,
+					"stencilFail": 7680,
+					"stencilZFail": 7680,
+					"stencilZPass": 7680,
+					"stencilWrite": false,
+					"polygonOffset": false,
+					"polygonOffsetFactor": 0,
+					"polygonOffsetUnits": 0,
+					"dithering": false,
+					"alphaTest": 0,
+					"alphaHash": false,
+					"alphaToCoverage": false,
+					"premultipliedAlpha": false,
+					"forceSinglePass": false,
+					"allowOverride": true,
+					"visible": true,
+					"toneMapped": true,
+					"name": "",
+					"color": 16777215,
+					"envMapRotation": [
+						0,
+						0,
+						0,
+						"XYZ"
+					],
+					"reflectivity": 1,
+					"refractionRatio": 0.98,
+					"wireframe": false,
+					"wireframeLinewidth": 1,
+					"wireframeLinecap": "round",
+					"wireframeLinejoin": "round",
+					"fog": true
+				}
+			],
+			"object": {
+				"uuid": "33128292-602d-4180-ad3a-98d3ed874e03",
+				"type": "Scene",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"children": [
+					{
+						"uuid": "a2dd3ea5-9e30-4855-b588-1b4186fa7a1b",
+						"type": "Mesh",
+						"name": "",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"frustumCulled": true,
+						"renderOrder": 0,
+						"static": false,
+						"matrixAutoUpdate": true,
+						"layers": 1,
+						"matrix": [
+							1,
+							0,
+							0,
+							0,
+							0,
+							0.45359612142557726,
+							-0.8912073600614354,
+							0,
+							0,
+							0.8912073600614354,
+							0.45359612142557726,
+							0,
+							0,
+							0,
+							-1,
+							1
+						],
+						"up": [
+							0,
+							1,
+							0
+						],
+						"geometry": "276ee9b9-ed72-4e59-8f45-76ab0d6317c9",
+						"material": "1626fcf6-d439-4ceb-9e10-abd0edf207da"
+					},
+					{
+						"uuid": "165942ee-374d-48c9-bd02-52c7b2988ee1",
+						"type": "Mesh",
+						"name": "",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"frustumCulled": true,
+						"renderOrder": 0,
+						"static": false,
+						"matrixAutoUpdate": true,
+						"layers": 1,
+						"matrix": [
+							0.7495962650805186,
+							0.47704662659680186,
+							-0.458837613355693,
+							0,
+							-0.15195068551164015,
+							0.7987294389230255,
+							0.5821874891907688,
+							0,
+							0.644217687237691,
+							-0.3666848775860826,
+							0.6712121661589576,
+							0,
+							-0.5,
+							0.35,
+							0.6,
+							1
+						],
+						"up": [
+							0,
+							1,
+							0
+						],
+						"geometry": "32979a06-0ff4-4ba5-a68b-55b2a60cf873",
+						"material": "1626fcf6-d439-4ceb-9e10-abd0edf207da"
+					},
+					{
+						"uuid": "45945915-2360-4c51-9fd7-bf917605984d",
+						"type": "Mesh",
+						"name": "",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"frustumCulled": true,
+						"renderOrder": 0,
+						"static": false,
+						"matrixAutoUpdate": true,
+						"layers": 1,
+						"matrix": [
+							1,
+							0,
+							0,
+							0,
+							0,
+							1,
+							0,
+							0,
+							0,
+							0,
+							1,
+							0,
+							0.6,
+							-0.1,
+							-0.2,
+							1
+						],
+						"up": [
+							0,
+							1,
+							0
+						],
+						"geometry": "0555d93d-69d7-4415-97f5-bf5e29090b00",
+						"material": "1626fcf6-d439-4ceb-9e10-abd0edf207da"
+					}
+				],
+				"backgroundBlurriness": 0,
+				"backgroundIntensity": 1,
+				"backgroundRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"environmentIntensity": 1,
+				"environmentRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				]
+			}
+		},
+		"camera": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"uuid": "813d762c-26aa-449c-9b4b-102f9022f39e",
+				"type": "PerspectiveCamera",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					3,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"fov": 50,
+				"zoom": 1,
+				"near": 1.5,
+				"far": 5,
+				"focus": 10,
+				"aspect": 1,
+				"filmGauge": 35,
+				"filmOffset": 0
+			}
+		},
+		"size": [
+			128,
+			128
+		],
+		"clear": [
+			3368601,
+			1
+		],
+		"options": {},
+		"depthTexture": {
+			"type": 1015,
+			"format": 1027
+		}
+	}
+}

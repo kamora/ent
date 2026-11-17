@@ -1,0 +1,999 @@
+{
+	"reference": "r187",
+	"scenarios": [
+		{
+			"make": "Object3D",
+			"track": ".renderOrder",
+			"kind": "int",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				1,
+				1,
+				5,
+				1,
+				5,
+				5
+			],
+			"warnings": []
+		},
+		{
+			"make": "Object3D",
+			"track": ".visible",
+			"kind": "bool",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				false,
+				false,
+				true,
+				false,
+				true,
+				true
+			],
+			"warnings": []
+		},
+		{
+			"make": "Object3D",
+			"track": ".castShadow",
+			"kind": "bool",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				false,
+				false,
+				true,
+				false,
+				true,
+				true
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".fov",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".zoom",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".near",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".far",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".focus",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".aspect",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".filmGauge",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PerspectiveCamera",
+			"track": ".filmOffset",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "OrthographicCamera",
+			"track": ".zoom",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "OrthographicCamera",
+			"track": ".left",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "OrthographicCamera",
+			"track": ".right",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "OrthographicCamera",
+			"track": ".top",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "OrthographicCamera",
+			"track": ".bottom",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "OrthographicCamera",
+			"track": ".near",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "OrthographicCamera",
+			"track": ".far",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "ArrayCamera",
+			"track": ".perCameraFrustumCulled",
+			"kind": "bool",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				false,
+				false,
+				true,
+				false,
+				true,
+				true
+			],
+			"warnings": []
+		},
+		{
+			"make": "ArrayCamera",
+			"track": ".fov",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "AmbientLight",
+			"track": ".intensity",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "SpotLight",
+			"track": ".intensity",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "SpotLight",
+			"track": ".distance",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "SpotLight",
+			"track": ".angle",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "SpotLight",
+			"track": ".penumbra",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "SpotLight",
+			"track": ".decay",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "SpotLight",
+			"track": ".power",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PointLight",
+			"track": ".distance",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PointLight",
+			"track": ".decay",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "PointLight",
+			"track": ".power",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "RectAreaLight",
+			"track": ".width",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "RectAreaLight",
+			"track": ".height",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "RectAreaLight",
+			"track": ".power",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.8749999999999998,
+				3.1,
+				0.5,
+				2.6499999999999995,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "DirectionalLight",
+			"track": ".intensity",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "Scene",
+			"track": ".backgroundBlurriness",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "Scene",
+			"track": ".backgroundIntensity",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "Scene",
+			"track": ".environmentIntensity",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.5,
+				1.875,
+				3.1,
+				0.5,
+				2.65,
+				2.3500000000000005
+			],
+			"warnings": []
+		},
+		{
+			"make": "Mesh",
+			"track": ".count",
+			"kind": "int",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				1,
+				1,
+				5,
+				1,
+				5,
+				5
+			],
+			"warnings": []
+		},
+		{
+			"make": "Sprite",
+			"track": ".count",
+			"kind": "int",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				1,
+				1,
+				5,
+				1,
+				5,
+				5
+			],
+			"warnings": []
+		},
+		{
+			"make": "LOD",
+			"track": ".autoUpdate",
+			"kind": "bool",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				false,
+				false,
+				true,
+				false,
+				true,
+				true
+			],
+			"warnings": []
+		},
+		{
+			"make": "ClippingGroup",
+			"track": ".enabled",
+			"kind": "bool",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				false,
+				false,
+				true,
+				false,
+				true,
+				true
+			],
+			"warnings": []
+		},
+		{
+			"make": "ClippingGroup",
+			"track": ".clipIntersection",
+			"kind": "bool",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				false,
+				false,
+				true,
+				false,
+				true,
+				true
+			],
+			"warnings": []
+		},
+		{
+			"make": "ClippingGroup",
+			"track": ".clipShadows",
+			"kind": "bool",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				false,
+				false,
+				true,
+				false,
+				true,
+				true
+			],
+			"warnings": []
+		},
+		{
+			"make": "DirectionalLight",
+			"track": "target.shadow.bias",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"warnings": [
+				"ENT.PropertyBinding: No target node found for track: target.shadow.bias."
+			]
+		},
+		{
+			"make": "SceneFogExp2",
+			"track": "target.fog.density",
+			"kind": "number",
+			"steps": [
+				0,
+				0.25,
+				0.3,
+				0.45,
+				0.7,
+				0.1
+			],
+			"samples": [
+				0.1,
+				0.1,
+				0.1,
+				0.1,
+				0.1,
+				0.1
+			],
+			"warnings": [
+				"ENT.PropertyBinding: No target node found for track: target.fog.density."
+			]
+		}
+	]
+}

@@ -1,0 +1,275 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"geometries": [
+			{
+				"uuid": "4e657c16-b6f4-49b4-b7a9-0f3139c95142",
+				"type": "PlaneGeometry",
+				"name": "",
+				"width": 2.4,
+				"height": 12,
+				"widthSegments": 1,
+				"heightSegments": 1
+			}
+		],
+		"materials": [
+			{
+				"uuid": "8a4b4a4d-dfcf-4be9-9f82-f782ae7702a9",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"map": "5a1eb4f3-cf3e-463a-b378-1195d75406a3",
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			}
+		],
+		"textures": [
+			{
+				"uuid": "5a1eb4f3-cf3e-463a-b378-1195d75406a3",
+				"name": "",
+				"image": "d3021048-d0bc-4b08-ae0a-4a293d6cc388",
+				"mapping": 300,
+				"channel": 0,
+				"repeat": [
+					2,
+					3
+				],
+				"offset": [
+					0,
+					0
+				],
+				"center": [
+					0,
+					0
+				],
+				"rotation": 0,
+				"wrap": [
+					1000,
+					1000
+				],
+				"format": 1023,
+				"internalFormat": null,
+				"type": 1009,
+				"normalized": false,
+				"colorSpace": "srgb",
+				"minFilter": 1008,
+				"magFilter": 1006,
+				"anisotropy": 1,
+				"flipY": true,
+				"generateMipmaps": true,
+				"mipmapsAutoUpdate": true,
+				"premultiplyAlpha": false,
+				"unpackAlignment": 4
+			}
+		],
+		"images": [
+			{
+				"uuid": "d3021048-d0bc-4b08-ae0a-4a293d6cc388",
+				"url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABM0lEQVR4AexasQ0CQQw73QSUjMkYlIxAyRiM8yUbPHJnuYuosI1kKblcgZPYOiH2+3E7Ga/n/WRwDTHXEOOMgTMG1xBzDTHOGDhjcA0x1xDjjIEzBtcQcw3xXuGfNiB8AdY+LtfFuH6OxTjM65VAvATiG8B6R+yueeVXD4iXQHwDVBPwAYZ7vR4QL4G0BijfzXpH7K555VcP0JVIy7sBqgn4AMO93g1I07zy7Qaw3hG7a175dQNUE2l5N0A1AR9guNe7AWmaV772G6CENe/vAdqRtLwSSJu48u3/A7QjaXk9IG3iyrfvAO1IWl4PSJu48u07QDuSltcD3CY+5dN3wLRjbvfrAW4TnfLpO2DaMbf79QC3iU759B0w7Zjb/XqA20SnfPoOmHbM7X494N8n+uv3/wIAAP//6czg4wAAAAZJREFUAwDE7VKbASck1gAAAABJRU5ErkJggg=="
+			}
+		],
+		"object": {
+			"uuid": "26e04838-2019-47d6-a59d-35aa9620e7a7",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"children": [
+				{
+					"uuid": "96e1db35-92d7-4925-9cf7-d7bc5a094844",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						2.220446049250313e-16,
+						-1,
+						0,
+						0,
+						1,
+						2.220446049250313e-16,
+						0,
+						0.013,
+						-0.5,
+						-5.17,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "4e657c16-b6f4-49b4-b7a9-0f3139c95142",
+					"material": "8a4b4a4d-dfcf-4be9-9f82-f782ae7702a9"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "29a0de08-bea6-4ea6-b4c7-08f5650d7dee",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				0.9615239476408232,
+				-0.2747211278973781,
+				0,
+				0,
+				0.2747211278973781,
+				0.9615239476408232,
+				0,
+				0,
+				0.4,
+				1.4,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 50,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		0,
+		1
+	],
+	"size": 128,
+	"renderer": {}
+}

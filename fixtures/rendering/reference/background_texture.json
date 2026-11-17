@@ -1,0 +1,393 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"geometries": [
+			{
+				"uuid": "2e324696-ffc9-4f43-80bf-6e8f81776d4c",
+				"type": "PlaneGeometry",
+				"name": "",
+				"width": 1.21,
+				"height": 1.11,
+				"widthSegments": 1,
+				"heightSegments": 1
+			}
+		],
+		"materials": [
+			{
+				"uuid": "8c2357d4-834c-4200-8ca7-a472ed5d1d30",
+				"type": "MeshLambertMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 15658734,
+				"emissive": 0,
+				"emissiveIntensity": 1,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"envMapIntensity": 1,
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"flatShading": false,
+				"fog": true
+			}
+		],
+		"textures": [
+			{
+				"uuid": "3c6f4fd7-4bf9-4cdb-858b-d61efcd512e1",
+				"name": "",
+				"image": "f416addd-d2cc-46fd-8677-0b9d5b10e52d",
+				"mapping": 300,
+				"channel": 0,
+				"repeat": [
+					0.8,
+					0.9
+				],
+				"offset": [
+					0.1,
+					-0.05
+				],
+				"center": [
+					0,
+					0
+				],
+				"rotation": 0,
+				"wrap": [
+					1001,
+					1001
+				],
+				"format": 1023,
+				"internalFormat": null,
+				"type": 1009,
+				"normalized": false,
+				"colorSpace": "srgb",
+				"minFilter": 1008,
+				"magFilter": 1006,
+				"anisotropy": 1,
+				"flipY": true,
+				"generateMipmaps": true,
+				"mipmapsAutoUpdate": true,
+				"premultiplyAlpha": false,
+				"unpackAlignment": 4
+			}
+		],
+		"images": [
+			{
+				"uuid": "f416addd-d2cc-46fd-8677-0b9d5b10e52d",
+				"url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEdUlEQVR4AbSXK5MVSRCFq6q7709dgcFgEBgMBoMhYofHLDALzEZgMBgEBoNB7BoEBoNBYDBd3VN7vszq1507REzAiC/yUVV982RWEUPq/7xWfhxdL9+PbpRvD26Wrw9ulS8Pb5fPD++UT4/uln8f3SsfH98vHx4flffHx+Xd8Ul5+9dpefPkVXn95HV59fRNOX36tpw8e1eOn70vRycfyv2Tj+Xe3/+Vu88/lTvPP5fbL76UWy++lpsvv5UbL7+X66c/yrXTvvzxTykpx10YjC7kCLtNPCh3mO2+89/p9J2fk5oxpBza4HSycEGsQnLQemxDrzOQ5Wf52dbakC1mjyBv4IPWFfd8Q8Q0Bkioy/oAdoI4p1p92unD0FVFO1lYx+7buflbu3PnvEtdMOWt1K870Ks6U6PqMpTWlcrmusYemGOtWSybOWP4uVzPYNkD+DENUr6QvCpXtFXQHVC63idf3aFrdIuz+BPbWHvVGVPenKkDMIZEF6jK0IaMAptjq/Z1IaNCMdVDlp9tT11jndjQmQNxX9dinXlshgBJsUHFmR8X+LwIukJuism5T1e2rPftnyPmnClHrWbeCIsn6xVKkebYS0Evm2XB4upbrDVyWTZLWS+y1vsKPqzjuDfzIOXRUCe0lqjwMLv5DqDS1ZDrgsfbThz6hitl3jDazJcOkBNUbGgEGUWa86xAfpY6+0GzzLkWQGwo5pz5rV6Ox65Sb31v5jENIQnuAaRBNxl1/Iir2M3Kl9jVsgem/P45YtZM+UUzX78C7sFlZp6rUjqUq2IsMeCjcMsY4mrmEfWG5xMVO4tyVJoadYe1X3rnqDQ0b9TTGbCc7kXWnKke8DMq7T60IZvKThYOxz37tS+aSqlqhmCzVZxETMNm5tFyY4jKQ/I3vtPcfc4oXpNVjMe7QFf2Y9YuNfOqvKEb0Kt6V9oG7oPFv/Gdo9JBNahDaQhBkE8oQBXqvBudlDqs/Yxkaups8TXbc+9cOd83hrVtprypV5vdtiEz0ym27qgYcua3l37nkZmruJgGm7vfCzoxekGTapR6J7p6H3aBrpBjjX3E+KakKlgU1w8yV2OK3TaWU7c4ByoqwXrmpl5KLSebK8RAPClZrKtZ4sGURpQbU3zYJhRd6TtHJaAa1IlGJHKQbb7MuQ3ZFOODx72tt1JVlV72netHpm74/Gsnal5/EXVXO3P90Hzj5c/K8ekIqnspB3zAB/yYasXVBpsr3djm414+1P1Rdu3HvX2JO3ARXq1u7jQzVbzc+ppXzveN/qxQJhbVZ6GZziufZs60X2Sb8f7Mu8vNXB+NadCZIficR/lj4MemfJyUz3do0J5B/zHRPzregV24kneu4ijE/gK2bkn1uiO5zv+imc+VV4VxtqMUgCtZ8vsxe+BwPk3qsVapVUeVo/0N5zn5Ux4VMCmbLDnQvkakKT9bvgl8y7H71NsduLp3zt8GkNKgjg0h6S4AOUizcqt+1I0dw7Z6qoZtvjGVnl9u/HYPc0/rfXSj/s6U/x8AAP//4a0rjAAAAAZJREFUAwBXHFJrp2mBZwAAAABJRU5ErkJggg=="
+			}
+		],
+		"object": {
+			"uuid": "df71f3b3-3d0d-410c-81db-13895be191db",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"background": "3c6f4fd7-4bf9-4cdb-858b-d61efcd512e1",
+			"children": [
+				{
+					"uuid": "fe75cf16-b167-4d8d-bc86-6a73a6c6a53c",
+					"type": "AmbientLight",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"color": 16777215,
+					"intensity": 0.5
+				},
+				{
+					"uuid": "4abfbbee-8374-477d-aed0-dee41ff3ffac",
+					"type": "DirectionalLight",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						-1,
+						1.5,
+						2,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"color": 16777215,
+					"intensity": 2,
+					"shadow": {
+						"intensity": 1,
+						"bias": 0,
+						"normalBias": 0,
+						"radius": 1,
+						"blurSamples": 8,
+						"mapSize": [
+							512,
+							512
+						],
+						"mapType": 1009,
+						"camera": {
+							"uuid": "b8a13e1a-2001-4ac4-98ed-8a46b33fabd1",
+							"type": "OrthographicCamera",
+							"name": "",
+							"castShadow": false,
+							"receiveShadow": false,
+							"visible": true,
+							"frustumCulled": true,
+							"renderOrder": 0,
+							"static": false,
+							"matrixAutoUpdate": true,
+							"layers": 1,
+							"up": [
+								0,
+								1,
+								0
+							],
+							"zoom": 1,
+							"left": -5,
+							"right": 5,
+							"top": 5,
+							"bottom": -5,
+							"near": 0.5,
+							"far": 500
+						}
+					},
+					"target": "e8215fb0-8137-4693-94b8-66e879ec4d94"
+				},
+				{
+					"uuid": "041c87e1-98c6-41cf-8074-28eb6ada1557",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0.013,
+						0.007,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "2e324696-ffc9-4f43-80bf-6e8f81776d4c",
+					"material": "8c2357d4-834c-4200-8ca7-a472ed5d1d30"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 0.7,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "abdccfac-d62c-4588-9c4d-3e3589ddd7c0",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				3,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 50,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		0,
+		1
+	],
+	"size": 128,
+	"renderer": {}
+}

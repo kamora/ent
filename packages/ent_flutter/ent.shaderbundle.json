@@ -1,0 +1,146 @@
+{
+	"MeshVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh.vert"
+	},
+	"MeshSkinVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_skin.vert"
+	},
+	"MeshMorphVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_morph.vert"
+	},
+	"MeshSkinMorphVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_skin_morph.vert"
+	},
+	"MeshInstanceVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_instance.vert"
+	},
+	"MeshInstanceMorphVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_instance_morph.vert"
+	},
+	"MeshInstanceMorphTextureVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_instance_morph_texture.vert"
+	},
+	"MeshBatchVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_batch.vert"
+	},
+	"MeshDashedVertex": {
+		"type": "vertex",
+		"file": "shaders/mesh_dashed.vert"
+	},
+	"ShadowFragment": {
+		"type": "fragment",
+		"file": "shaders/shadow.frag"
+	},
+	"ShadowOffsetFragment": {
+		"type": "fragment",
+		"file": "shaders/shadow_offset.frag"
+	},
+	"BackgroundVertex": {
+		"type": "vertex",
+		"file": "shaders/background.vert"
+	},
+	"BackgroundFragment": {
+		"type": "fragment",
+		"file": "shaders/background.frag"
+	},
+	"BackgroundCubeVertex": {
+		"type": "vertex",
+		"file": "shaders/background_cube.vert"
+	},
+	"BackgroundCubeFragment": {
+		"type": "fragment",
+		"file": "shaders/background_cube.frag"
+	},
+	"FaceVertex": {
+		"type": "vertex",
+		"file": "shaders/face.vert"
+	},
+	"CubeFromEquirectFragment": {
+		"type": "fragment",
+		"file": "shaders/cube_from_equirect.frag"
+	},
+	"PmremEquirectFragment": {
+		"type": "fragment",
+		"file": "shaders/pmrem_equirect.frag"
+	},
+	"PmremCubeFragment": {
+		"type": "fragment",
+		"file": "shaders/pmrem_cube.frag"
+	},
+	"PmremGgxFragment": {
+		"type": "fragment",
+		"file": "shaders/pmrem_ggx.frag"
+	},
+	"PmremIntegrationFragment": {
+		"type": "fragment",
+		"file": "shaders/pmrem_integration.frag"
+	},
+	"CubeMipFragment": {
+		"type": "fragment",
+		"file": "shaders/cube_mip.frag"
+	},
+	"VsmFragment": {
+		"type": "fragment",
+		"file": "shaders/vsm.frag"
+	},
+	"MipFragment": {
+		"type": "fragment",
+		"file": "shaders/mip.frag"
+	},
+	"ClearFragment": {
+		"type": "fragment",
+		"file": "shaders/clear.frag"
+	},
+	"FrameFragment": {
+		"type": "fragment",
+		"file": "shaders/frame.frag"
+	},
+	"PointsVertex": {
+		"type": "vertex",
+		"file": "shaders/points.vert"
+	},
+	"SpriteVertex": {
+		"type": "vertex",
+		"file": "shaders/sprite.vert"
+	},
+	"EffectVertex": {
+		"type": "vertex",
+		"file": "shaders/effect.vert"
+	},
+	"CopyFragment": {
+		"type": "fragment",
+		"file": "shaders/copy.frag"
+	},
+	"OutputPassFragment": {
+		"type": "fragment",
+		"file": "shaders/output_pass.frag"
+	},
+	"VignetteFragment": {
+		"type": "fragment",
+		"file": "shaders/vignette.frag"
+	},
+	"FXAAFragment": {
+		"type": "fragment",
+		"file": "shaders/fxaa.frag"
+	},
+	"LuminosityHighPassFragment": {
+		"type": "fragment",
+		"file": "shaders/luminosity_high_pass.frag"
+	},
+	"BloomBlurFragment": {
+		"type": "fragment",
+		"file": "shaders/bloom_blur.frag"
+	},
+	"BloomCompositeFragment": {
+		"type": "fragment",
+		"file": "shaders/bloom_composite.frag"
+	}
+}

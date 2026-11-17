@@ -1,0 +1,668 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"geometries": [
+			{
+				"uuid": "ac41bfed-74e3-4440-81b9-f27a48a4f789",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-1.2240575551986694,
+								1.1300674676895142,
+								0,
+								0,
+								1.1300674676895142,
+								0,
+								1.2240575551986694,
+								1.1300674676895142,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"lineDistance": {
+							"itemSize": 1,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1.2240575551986694,
+								2.448115110397339
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"boundingSphere": {
+						"radius": 1.2240575551986694,
+						"center": [
+							0,
+							1.1300674676895142,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "d9a133ca-b8b9-430e-9b2c-aa6e52f040bc",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.7366203665733337,
+								0.8743268847465515,
+								0,
+								-0.7366203665733337,
+								-1.2240575551986694,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"lineDistance": {
+							"itemSize": 1,
+							"type": "Float32Array",
+							"array": [
+								0,
+								2.098384380340576
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"boundingSphere": {
+						"radius": 1.0491922199726105,
+						"center": [
+							-0.7366203665733337,
+							-0.17486533522605896,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "ea00571b-68d0-4783-b3b7-eeda80fdb31a",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.524596095085144,
+								0.7366203665733337,
+								0,
+								1.0054758787155151,
+								0.7366203665733337,
+								0,
+								-0.524596095085144,
+								0.5092954039573669,
+								0,
+								1.0054758787155151,
+								0.5092954039573669,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"lineDistance": {
+							"itemSize": 1,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1.5300719738006592,
+								1.5300719738006592,
+								3.0601439476013184
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"boundingSphere": {
+						"radius": 0.7734333978499047,
+						"center": [
+							0.24043989181518555,
+							0.6229578852653503,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "771c0831-8c20-498c-9335-3b1718a0eef5",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.524596095085144,
+								0.08087523281574249,
+								0,
+								1.0054758787155151,
+								0.08087523281574249,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"boundingSphere": {
+						"radius": 0.7650359869003296,
+						"center": [
+							0.24043989181518555,
+							0.08087523281574249,
+							0
+						]
+					}
+				}
+			}
+		],
+		"materials": [
+			{
+				"uuid": "b5e3076e-b3b2-4b07-911d-acbe9483b5e0",
+				"type": "LineDashedMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16746564,
+				"linewidth": 1,
+				"linecap": "round",
+				"linejoin": "round",
+				"dashSize": 0.08743268590406224,
+				"gapSize": 0.04371634295203112,
+				"scale": 1,
+				"fog": true
+			},
+			{
+				"uuid": "6a23a7df-be06-4b39-ae3b-c730e468e595",
+				"type": "LineDashedMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 3394662,
+				"linewidth": 1,
+				"linecap": "round",
+				"linejoin": "round",
+				"dashSize": 0.13114902885609336,
+				"gapSize": 0.08743268590406224,
+				"scale": 1,
+				"fog": true
+			},
+			{
+				"uuid": "23ee22de-6d51-4903-8d8c-bc165292993a",
+				"type": "LineDashedMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 8956671,
+				"linewidth": 1,
+				"linecap": "round",
+				"linejoin": "round",
+				"dashSize": 0.06557451442804668,
+				"gapSize": 0.1092908573800778,
+				"scale": 1,
+				"fog": true
+			},
+			{
+				"uuid": "1babd3e8-ecfd-45f5-8403-e3764211bd90",
+				"type": "LineDashedMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777096,
+				"linewidth": 1,
+				"linecap": "round",
+				"linejoin": "round",
+				"dashSize": 0.04371634295203112,
+				"gapSize": 0.04371634295203112,
+				"scale": 1,
+				"fog": true
+			}
+		],
+		"object": {
+			"uuid": "1783b1c5-0296-4c3e-856e-2f04f0a889c4",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"children": [
+				{
+					"uuid": "b525059b-3fe2-466b-b2a1-fcedaa5d2362",
+					"type": "Line",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "ac41bfed-74e3-4440-81b9-f27a48a4f789",
+					"material": "b5e3076e-b3b2-4b07-911d-acbe9483b5e0"
+				},
+				{
+					"uuid": "8653d35d-b1e9-4751-93c0-4406874beacb",
+					"type": "Line",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "d9a133ca-b8b9-430e-9b2c-aa6e52f040bc",
+					"material": "6a23a7df-be06-4b39-ae3b-c730e468e595"
+				},
+				{
+					"uuid": "f0970c33-3252-4d10-b11d-8505e670a80f",
+					"type": "LineSegments",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "ea00571b-68d0-4783-b3b7-eeda80fdb31a",
+					"material": "23ee22de-6d51-4903-8d8c-bc165292993a"
+				},
+				{
+					"uuid": "8ca00978-b845-4885-80d0-facbb4f92d32",
+					"type": "Line",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "771c0831-8c20-498c-9335-3b1718a0eef5",
+					"material": "1babd3e8-ecfd-45f5-8403-e3764211bd90"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "46dda4a2-ac62-4575-8533-6cf362636057",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				3,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 50,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		2105376,
+		1
+	],
+	"size": 128,
+	"renderer": {},
+	"edges": 0
+}

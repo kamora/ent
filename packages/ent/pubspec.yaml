@@ -1,0 +1,18 @@
+name: ent
+description: >-
+  Ent Engine, a 3D engine in pure Dart with three.js's API: scene graph, materials, lights, animation, glTF
+  loading, camera controls and post-processing.
+version: 0.1.0-dev.1
+topics:
+  - graphics
+  - rendering
+  - gltf
+  - game-engine
+  - scene-graph
+
+environment:
+  sdk: ^3.13.5
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

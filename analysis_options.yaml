@@ -1,0 +1,9 @@
+# Shared by every package and the example; each includes it and adds its own settings.
+include: package:lints/recommended.yaml
+
+formatter:
+  page_width: 120
+
+linter:
+  rules:
+    curly_braces_in_flow_control_structures: true

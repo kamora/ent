@@ -1,0 +1,629 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"geometries": [
+			{
+				"uuid": "f5d1dd69-87b5-4212-8543-22b400235b65",
+				"type": "SphereGeometry",
+				"name": "",
+				"radius": 0.58,
+				"widthSegments": 32,
+				"heightSegments": 16,
+				"phiStart": 0,
+				"phiLength": 6.283185307179586,
+				"thetaStart": 0,
+				"thetaLength": 3.141592653589793
+			},
+			{
+				"uuid": "74415f19-3bd4-4b10-a5a9-c59e521ef2b3",
+				"type": "SphereGeometry",
+				"name": "",
+				"radius": 0.58,
+				"widthSegments": 32,
+				"heightSegments": 16,
+				"phiStart": 0,
+				"phiLength": 6.283185307179586,
+				"thetaStart": 0,
+				"thetaLength": 3.141592653589793
+			}
+		],
+		"materials": [
+			{
+				"uuid": "2678e940-b4b2-4ef5-bb23-45ae8271521a",
+				"type": "MeshToonMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16742229,
+				"emissive": 0,
+				"emissiveIntensity": 1,
+				"gradientMap": "3bf87a45-7c79-4c0c-a373-d0b0ff129f66",
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			},
+			{
+				"uuid": "8077ad8c-60a0-4bbf-8f99-f1f208f06804",
+				"type": "MeshToonMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 5614335,
+				"emissive": 0,
+				"emissiveIntensity": 1,
+				"gradientMap": "1e1cf00b-0607-4a6d-af4e-816f5f06ba7f",
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			}
+		],
+		"textures": [
+			{
+				"uuid": "3bf87a45-7c79-4c0c-a373-d0b0ff129f66",
+				"name": "",
+				"image": "16d6f207-1a13-4e21-92d6-a90c75b6ae86",
+				"mapping": 300,
+				"channel": 0,
+				"repeat": [
+					1,
+					1
+				],
+				"offset": [
+					0,
+					0
+				],
+				"center": [
+					0,
+					0
+				],
+				"rotation": 0,
+				"wrap": [
+					1001,
+					1001
+				],
+				"format": 1028,
+				"internalFormat": null,
+				"type": 1009,
+				"normalized": false,
+				"colorSpace": "",
+				"minFilter": 1003,
+				"magFilter": 1003,
+				"anisotropy": 1,
+				"flipY": false,
+				"generateMipmaps": false,
+				"mipmapsAutoUpdate": true,
+				"premultiplyAlpha": false,
+				"unpackAlignment": 1
+			},
+			{
+				"uuid": "1e1cf00b-0607-4a6d-af4e-816f5f06ba7f",
+				"name": "",
+				"image": "a4265298-8680-40e8-9e7a-589e990e8577",
+				"mapping": 300,
+				"channel": 0,
+				"repeat": [
+					1,
+					1
+				],
+				"offset": [
+					0,
+					0
+				],
+				"center": [
+					0,
+					0
+				],
+				"rotation": 0,
+				"wrap": [
+					1001,
+					1001
+				],
+				"format": 1028,
+				"internalFormat": null,
+				"type": 1009,
+				"normalized": false,
+				"colorSpace": "",
+				"minFilter": 1003,
+				"magFilter": 1003,
+				"anisotropy": 1,
+				"flipY": false,
+				"generateMipmaps": false,
+				"mipmapsAutoUpdate": true,
+				"premultiplyAlpha": false,
+				"unpackAlignment": 1
+			}
+		],
+		"images": [
+			{
+				"uuid": "16d6f207-1a13-4e21-92d6-a90c75b6ae86",
+				"url": {
+					"data": [
+						70,
+						160,
+						255
+					],
+					"width": 3,
+					"height": 1,
+					"type": "Uint8Array"
+				}
+			},
+			{
+				"uuid": "a4265298-8680-40e8-9e7a-589e990e8577",
+				"url": {
+					"data": [
+						40,
+						90,
+						140,
+						200,
+						255
+					],
+					"width": 5,
+					"height": 1,
+					"type": "Uint8Array"
+				}
+			}
+		],
+		"object": {
+			"uuid": "320a2ed7-7b28-42dd-a70f-98debde440c3",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"children": [
+				{
+					"uuid": "cdcd0039-730d-4894-b536-9b74c1280386",
+					"type": "AmbientLight",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"color": 16777215,
+					"intensity": 0.5
+				},
+				{
+					"uuid": "f8a265ca-6c3d-4766-8033-5e161b98ba64",
+					"type": "DirectionalLight",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						-1,
+						1.5,
+						2,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"color": 16777215,
+					"intensity": 2.5,
+					"shadow": {
+						"intensity": 1,
+						"bias": 0,
+						"normalBias": 0,
+						"radius": 1,
+						"blurSamples": 8,
+						"mapSize": [
+							512,
+							512
+						],
+						"mapType": 1009,
+						"camera": {
+							"uuid": "b8b5c4ea-9d9c-4db9-a8d7-64e4c46d3bfc",
+							"type": "OrthographicCamera",
+							"name": "",
+							"castShadow": false,
+							"receiveShadow": false,
+							"visible": true,
+							"frustumCulled": true,
+							"renderOrder": 0,
+							"static": false,
+							"matrixAutoUpdate": true,
+							"layers": 1,
+							"up": [
+								0,
+								1,
+								0
+							],
+							"zoom": 1,
+							"left": -5,
+							"right": 5,
+							"top": 5,
+							"bottom": -5,
+							"near": 0.5,
+							"far": 500
+						}
+					},
+					"target": "7fc56d2e-0e3e-48db-a2fc-1fedcf779f19"
+				},
+				{
+					"uuid": "fc41891b-8798-47f4-bde3-a8d7c179211f",
+					"type": "PointLight",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						1.1,
+						-0.4,
+						1.5,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"color": 16764074,
+					"intensity": 1.5,
+					"distance": 0,
+					"decay": 1,
+					"shadow": {
+						"intensity": 1,
+						"bias": 0,
+						"normalBias": 0,
+						"radius": 1,
+						"blurSamples": 8,
+						"mapSize": [
+							512,
+							512
+						],
+						"mapType": 1009,
+						"camera": {
+							"uuid": "414e6c8a-c65d-448a-83ab-2adff08dff30",
+							"type": "PerspectiveCamera",
+							"name": "",
+							"castShadow": false,
+							"receiveShadow": false,
+							"visible": true,
+							"frustumCulled": true,
+							"renderOrder": 0,
+							"static": false,
+							"matrixAutoUpdate": true,
+							"layers": 1,
+							"up": [
+								0,
+								1,
+								0
+							],
+							"fov": 90,
+							"zoom": 1,
+							"near": 0.5,
+							"far": 500,
+							"focus": 10,
+							"aspect": 1,
+							"filmGauge": 35,
+							"filmOffset": 0
+						}
+					}
+				},
+				{
+					"uuid": "57dccff6-a48a-4c11-ae04-780de00f29ce",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						-0.616,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "f5d1dd69-87b5-4212-8543-22b400235b65",
+					"material": "2678e940-b4b2-4ef5-bb23-45ae8271521a"
+				},
+				{
+					"uuid": "ef57f8b9-7da7-4e38-9dad-5c764794b57e",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0.616,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "74415f19-3bd4-4b10-a5a9-c59e521ef2b3",
+					"material": "8077ad8c-60a0-4bbf-8f99-f1f208f06804"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "359c8c57-8084-4af4-9a5c-707740868541",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				3,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 50,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		2105376,
+		1
+	],
+	"size": 128,
+	"renderer": {}
+}

@@ -1,0 +1,4 @@
+# Resolves ent from this repository: ent_flutter asks for it from pub.dev.
+dependency_overrides:
+  ent:
+    path: ../../packages/ent

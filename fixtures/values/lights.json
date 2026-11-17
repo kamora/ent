@@ -1,0 +1,685 @@
+{
+	"reference": "r187",
+	"dirShadowMatrix": [
+		0.09486832980505142,
+		-0.016903085094570332,
+		-0.0005350575413662149,
+		0,
+		-2.7755575615628923e-18,
+		0.08451542547285168,
+		-0.00107011508273243,
+		0,
+		-0.0316227766016838,
+		-0.05070925528371101,
+		-0.0016051726240986451,
+		0,
+		0.3735088935932648,
+		0.46619382981085933,
+		0.012910495074520634,
+		1
+	],
+	"dirCameraInverse": [
+		0.9486832980505141,
+		-0.1690308509457033,
+		0.26726124191242434,
+		0,
+		-2.775557561562892e-17,
+		0.8451542547285168,
+		0.5345224838248488,
+		0,
+		-0.31622776601683794,
+		-0.5070925528371101,
+		0.8017837257372733,
+		0,
+		-1.2649110640673524,
+		-0.3380617018914069,
+		-6.948792289723035,
+		1
+	],
+	"dirFrustum": [
+		[
+			-0.9486832980505138,
+			2.7755575615628914e-17,
+			0.3162277660168379,
+			6.26491106406735
+		],
+		[
+			0.9486832980505138,
+			-2.7755575615628914e-17,
+			-0.3162277660168379,
+			3.7350889359326467
+		],
+		[
+			-0.16903085094570328,
+			0.8451542547285165,
+			-0.5070925528371099,
+			4.661938298108591
+		],
+		[
+			0.16903085094570328,
+			-0.8451542547285165,
+			0.5070925528371099,
+			5.338061701891405
+		],
+		[
+			0.26726124191242434,
+			0.5345224838248488,
+			0.8017837257372733,
+			493.0512077102769
+		],
+		[
+			-0.26726124191242434,
+			-0.5345224838248488,
+			-0.8017837257372733,
+			6.448792289723056
+		]
+	],
+	"gpuShadowMatrix": [
+		0.04472135954999576,
+		0.0838116354923494,
+		0.0006253203679223464,
+		0,
+		3.053113317719179e-17,
+		0.034921514788478894,
+		-0.0018759611037670397,
+		0,
+		0.08944271909999157,
+		-0.04190581774617466,
+		-0.00031266018396117266,
+		0,
+		0.4999999999999997,
+		0.5000000000000001,
+		0.011818066541407102,
+		1
+	],
+	"spotCamera": [
+		45.836623610465864,
+		3,
+		50
+	],
+	"spotShadowMatrix": [
+		0.4013815445216941,
+		0.5649288500872298,
+		0.0985757649442963,
+		0.09759000729485334,
+		-0.4879500364742666,
+		-0.22988311325436533,
+		-0.985757649442963,
+		-0.9759000729485333,
+		0.0787032631422805,
+		-1.1298577001744592,
+		-0.19715152988859247,
+		-0.19518001458970655,
+		4.722093838458106,
+		4.5585465328925725,
+		9.74682904915631,
+		10.149360758664747
+	],
+	"spot0Camera": [
+		119.99999999999999,
+		1,
+		500
+	],
+	"viewportMatrix": [
+		0.10354020355641641,
+		-0.175888333692638,
+		-0.26752877068310743,
+		-0.26726124191242434,
+		-0.2672612419124244,
+		-0.05597267823029514,
+		-0.535057541366215,
+		-0.5345224838248488,
+		-0.47994880437284615,
+		-0.5276650010779143,
+		-0.8025863120493226,
+		-0.8017837257372733,
+		1.8708286933869709,
+		1.8708286933869709,
+		3.2449022890630044,
+		3.7416573867739418
+	],
+	"json": {
+		"Directional": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"type": "DirectionalLight",
+				"name": "sun",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					1,
+					0,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"color": 1193046,
+				"intensity": 0.5,
+				"shadow": {
+					"intensity": 1,
+					"bias": 0,
+					"normalBias": 0,
+					"radius": 1,
+					"blurSamples": 8,
+					"mapSize": [
+						512,
+						512
+					],
+					"mapType": 1009,
+					"camera": {
+						"type": "OrthographicCamera",
+						"name": "",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"frustumCulled": true,
+						"renderOrder": 0,
+						"static": false,
+						"matrixAutoUpdate": true,
+						"layers": 1,
+						"up": [
+							0,
+							1,
+							0
+						],
+						"zoom": 1,
+						"left": -5,
+						"right": 5,
+						"top": 5,
+						"bottom": -5,
+						"near": 0.5,
+						"far": 500
+					}
+				}
+			}
+		},
+		"Point": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"type": "PointLight",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					1,
+					2,
+					3,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"color": 11259375,
+				"intensity": 2,
+				"distance": 30,
+				"decay": 1,
+				"shadow": {
+					"intensity": 1,
+					"bias": 0,
+					"normalBias": 0,
+					"radius": 1,
+					"blurSamples": 8,
+					"mapSize": [
+						512,
+						512
+					],
+					"mapType": 1009,
+					"camera": {
+						"type": "PerspectiveCamera",
+						"name": "",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"frustumCulled": true,
+						"renderOrder": 0,
+						"static": false,
+						"matrixAutoUpdate": true,
+						"layers": 1,
+						"up": [
+							0,
+							1,
+							0
+						],
+						"fov": 90,
+						"zoom": 1,
+						"near": 0.5,
+						"far": 500,
+						"focus": 10,
+						"aspect": 1,
+						"filmGauge": 35,
+						"filmOffset": 0
+					}
+				}
+			}
+		},
+		"Spot": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"type": "SpotLight",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					1,
+					0,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"color": 65280,
+				"intensity": 4,
+				"distance": 20,
+				"angle": 0.7,
+				"decay": 2,
+				"penumbra": 0.3,
+				"shadow": {
+					"intensity": 1,
+					"bias": -0.001,
+					"normalBias": 0,
+					"radius": 1,
+					"blurSamples": 8,
+					"mapSize": [
+						256,
+						128
+					],
+					"mapType": 1009,
+					"camera": {
+						"type": "PerspectiveCamera",
+						"name": "",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"frustumCulled": true,
+						"renderOrder": 0,
+						"static": false,
+						"matrixAutoUpdate": true,
+						"layers": 1,
+						"up": [
+							0,
+							1,
+							0
+						],
+						"fov": 50,
+						"zoom": 1,
+						"near": 0.5,
+						"far": 500,
+						"focus": 10,
+						"aspect": 1,
+						"filmGauge": 35,
+						"filmOffset": 0
+					},
+					"focus": 0.5,
+					"aspect": 1
+				}
+			}
+		},
+		"Hemisphere": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"type": "HemisphereLight",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					1,
+					0,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"color": 16777147,
+				"intensity": 0.7,
+				"groundColor": 526368
+			}
+		},
+		"RectArea": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"type": "RectAreaLight",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"color": 16711680,
+				"intensity": 3,
+				"width": 4,
+				"height": 2
+			}
+		},
+		"Ambient": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"type": "AmbientLight",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"color": 4210752,
+				"intensity": 1
+			}
+		},
+		"Probe": {
+			"metadata": {
+				"version": 4.7,
+				"type": "Object",
+				"generator": "Object3D.toJSON"
+			},
+			"object": {
+				"type": "LightProbe",
+				"name": "",
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"frustumCulled": true,
+				"renderOrder": 0,
+				"static": false,
+				"matrixAutoUpdate": true,
+				"layers": 1,
+				"matrix": [
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1,
+					0,
+					0,
+					0,
+					0,
+					1
+				],
+				"up": [
+					0,
+					1,
+					0
+				],
+				"color": 16777215,
+				"intensity": 0.25,
+				"sh": [
+					0,
+					0,
+					0,
+					1,
+					0.5,
+					-1,
+					2,
+					1,
+					-2,
+					3,
+					1.5,
+					-3,
+					4,
+					2,
+					-4,
+					5,
+					2.5,
+					-5,
+					6,
+					3,
+					-6,
+					7,
+					3.5,
+					-7,
+					8,
+					4,
+					-8
+				]
+			}
+		}
+	},
+	"power": {
+		"point": 37.69911184307752,
+		"spot": 9.42477796076938,
+		"rect": 94.24777960769379
+	},
+	"sceneJson": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fog": {
+				"type": "Fog",
+				"name": "",
+				"color": 13421772,
+				"near": 10,
+				"far": 15
+			},
+			"backgroundBlurriness": 0.3,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0.1,
+				0.2,
+				0.3,
+				"XYZ"
+			],
+			"environmentIntensity": 0.5,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"fogJson": [
+		{
+			"type": "Fog",
+			"name": "",
+			"color": 1122867,
+			"near": 2,
+			"far": 9
+		},
+		{
+			"type": "FogExp2",
+			"name": "",
+			"color": 4478310,
+			"density": 0.01
+		}
+	]
+}

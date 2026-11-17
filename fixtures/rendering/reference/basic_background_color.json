@@ -1,0 +1,257 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"geometries": [
+			{
+				"uuid": "9d7d7361-97c1-4c3c-adac-868b10013b23",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-1.2000000476837158,
+								-0.800000011920929,
+								0,
+								1.2000000476837158,
+								-0.800000011920929,
+								0,
+								0,
+								1.2000000476837158,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"boundingSphere": {
+						"radius": 1.5620499908919578,
+						"center": [
+							0,
+							0.20000001788139343,
+							0
+						]
+					}
+				}
+			}
+		],
+		"materials": [
+			{
+				"uuid": "726f3e1d-6b51-4545-a0ee-0fea65c6793a",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": false,
+				"opacity": 0.5,
+				"transparent": true,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16744448,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			}
+		],
+		"object": {
+			"uuid": "32350996-a030-418c-8fb9-5654bf47b9b7",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"background": 3364215,
+			"children": [
+				{
+					"uuid": "a12c48e7-1589-473c-9219-f88b91b9ec9c",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "9d7d7361-97c1-4c3c-adac-868b10013b23",
+					"material": "726f3e1d-6b51-4545-a0ee-0fea65c6793a"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "bf3ba8b5-984c-42c3-8ccd-d4ac487ae631",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				0.9805806756909202,
+				-0.19611613513818402,
+				0,
+				0,
+				0.19611613513818402,
+				0.9805806756909202,
+				0,
+				0,
+				0.6,
+				3,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 50,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		16711680,
+		1
+	],
+	"size": 128,
+	"renderer": {}
+}

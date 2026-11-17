@@ -1,0 +1,741 @@
+{
+	"asset": {
+		"version": "2.0"
+	},
+	"extensionsUsed": [
+		"KHR_texture_transform",
+		"KHR_materials_unlit",
+		"KHR_materials_clearcoat",
+		"KHR_materials_sheen",
+		"KHR_materials_transmission",
+		"KHR_materials_volume",
+		"KHR_materials_ior",
+		"KHR_materials_specular",
+		"KHR_materials_iridescence",
+		"KHR_materials_anisotropy",
+		"KHR_materials_dispersion",
+		"KHR_materials_diffuse_roughness",
+		"EXT_materials_bump"
+	],
+	"scenes": [
+		{
+			"nodes": [
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10
+			]
+		}
+	],
+	"nodes": [
+		{
+			"name": "PBR",
+			"mesh": 0,
+			"translation": [
+				0,
+				0,
+				0
+			]
+		},
+		{
+			"name": "Clearcoat",
+			"mesh": 1,
+			"translation": [
+				1,
+				0,
+				0
+			]
+		},
+		{
+			"name": "Sheen",
+			"mesh": 2,
+			"translation": [
+				2,
+				0,
+				0
+			]
+		},
+		{
+			"name": "Glass",
+			"mesh": 3,
+			"translation": [
+				3,
+				0,
+				0
+			]
+		},
+		{
+			"name": "Specular",
+			"mesh": 4,
+			"translation": [
+				0,
+				1,
+				0
+			]
+		},
+		{
+			"name": "Iridescence",
+			"mesh": 5,
+			"translation": [
+				1,
+				1,
+				0
+			]
+		},
+		{
+			"name": "Anisotropy",
+			"mesh": 6,
+			"translation": [
+				2,
+				1,
+				0
+			]
+		},
+		{
+			"name": "Defaults",
+			"mesh": 7,
+			"translation": [
+				3,
+				1,
+				0
+			]
+		},
+		{
+			"name": "UnlitTextured",
+			"mesh": 8,
+			"translation": [
+				0,
+				2,
+				0
+			]
+		},
+		{
+			"name": "Wire",
+			"mesh": 9,
+			"translation": [
+				1,
+				2,
+				0
+			]
+		},
+		{
+			"name": "LinesAndPoints",
+			"mesh": 10,
+			"translation": [
+				2,
+				2,
+				0
+			]
+		}
+	],
+	"meshes": [
+		{
+			"name": "PBR",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 0
+				}
+			]
+		},
+		{
+			"name": "Clearcoat",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3,
+						"TANGENT": 4
+					},
+					"indices": 5,
+					"material": 1
+				}
+			]
+		},
+		{
+			"name": "Sheen",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 2
+				}
+			]
+		},
+		{
+			"name": "Glass",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 3
+				}
+			]
+		},
+		{
+			"name": "Specular",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 4
+				}
+			]
+		},
+		{
+			"name": "Iridescence",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 5
+				}
+			]
+		},
+		{
+			"name": "Anisotropy",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 6
+				}
+			]
+		},
+		{
+			"name": "Defaults",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 7
+				}
+			]
+		},
+		{
+			"name": "UnlitTextured",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 8
+				}
+			]
+		},
+		{
+			"name": "Wire",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3
+					},
+					"indices": 5,
+					"material": 9
+				}
+			]
+		},
+		{
+			"name": "LinesAndPoints",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 6
+					},
+					"mode": 1,
+					"material": 9
+				},
+				{
+					"attributes": {
+						"POSITION": 6,
+						"COLOR_0": 7
+					},
+					"mode": 3,
+					"material": 9
+				},
+				{
+					"attributes": {
+						"POSITION": 6
+					},
+					"mode": 2,
+					"material": 0
+				},
+				{
+					"attributes": {
+						"POSITION": 6,
+						"COLOR_0": 7
+					},
+					"mode": 0,
+					"material": 9
+				},
+				{
+					"attributes": {
+						"POSITION": 6
+					},
+					"mode": 0
+				}
+			]
+		}
+	],
+	"materials": [
+		{
+			"name": "PBR",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [
+					1,
+					0.9,
+					0.8,
+					1
+				],
+				"baseColorTexture": {
+					"index": 0,
+					"extensions": {
+						"KHR_texture_transform": {
+							"offset": [
+								0.25,
+								-0.5
+							],
+							"rotation": 0.4,
+							"scale": [
+								2,
+								3
+							]
+						}
+					}
+				},
+				"metallicRoughnessTexture": {
+					"index": 1
+				},
+				"metallicFactor": 0.6,
+				"roughnessFactor": 0.4
+			},
+			"normalTexture": {
+				"index": 2,
+				"scale": 0.8
+			},
+			"occlusionTexture": {
+				"index": 3,
+				"strength": 0.6,
+				"texCoord": 1
+			},
+			"emissiveTexture": {
+				"index": 4,
+				"extensions": {
+					"KHR_texture_transform": {
+						"texCoord": 1
+					}
+				}
+			},
+			"emissiveFactor": [
+				1,
+				0.5,
+				0.25
+			]
+		},
+		{
+			"name": "Clearcoat",
+			"extensions": {
+				"KHR_materials_clearcoat": {
+					"clearcoatFactor": 0.9,
+					"clearcoatTexture": {
+						"index": 1
+					},
+					"clearcoatRoughnessFactor": 0.2,
+					"clearcoatRoughnessTexture": {
+						"index": 3
+					},
+					"clearcoatNormalTexture": {
+						"index": 2,
+						"scale": 0.5
+					}
+				}
+			}
+		},
+		{
+			"name": "Sheen",
+			"extensions": {
+				"KHR_materials_sheen": {
+					"sheenColorFactor": [
+						0.9,
+						0.3,
+						0.6
+					],
+					"sheenRoughnessFactor": 0.45,
+					"sheenColorTexture": {
+						"index": 0
+					},
+					"sheenRoughnessTexture": {
+						"index": 1
+					}
+				}
+			}
+		},
+		{
+			"name": "Glass",
+			"extensions": {
+				"KHR_materials_transmission": {
+					"transmissionFactor": 0.8,
+					"transmissionTexture": {
+						"index": 1
+					}
+				},
+				"KHR_materials_volume": {
+					"thicknessFactor": 0.3,
+					"thicknessTexture": {
+						"index": 3
+					},
+					"attenuationDistance": 2.5,
+					"attenuationColor": [
+						0.9,
+						0.8,
+						0.7
+					]
+				},
+				"KHR_materials_ior": {
+					"ior": 1.33
+				}
+			}
+		},
+		{
+			"name": "Specular",
+			"extensions": {
+				"KHR_materials_specular": {
+					"specularFactor": 0.7,
+					"specularTexture": {
+						"index": 1
+					},
+					"specularColorFactor": [
+						0.8,
+						1,
+						0.9
+					],
+					"specularColorTexture": {
+						"index": 0
+					}
+				}
+			}
+		},
+		{
+			"name": "Iridescence",
+			"extensions": {
+				"KHR_materials_iridescence": {
+					"iridescenceFactor": 0.75,
+					"iridescenceTexture": {
+						"index": 1
+					},
+					"iridescenceIor": 1.6,
+					"iridescenceThicknessMinimum": 150,
+					"iridescenceThicknessMaximum": 500,
+					"iridescenceThicknessTexture": {
+						"index": 3
+					}
+				}
+			}
+		},
+		{
+			"name": "Anisotropy",
+			"extensions": {
+				"KHR_materials_anisotropy": {
+					"anisotropyStrength": 0.6,
+					"anisotropyRotation": 1.2,
+					"anisotropyTexture": {
+						"index": 2
+					}
+				}
+			}
+		},
+		{
+			"name": "Defaults",
+			"extensions": {
+				"KHR_materials_dispersion": {},
+				"KHR_materials_ior": {
+					"ior": 0
+				},
+				"KHR_materials_volume": {},
+				"KHR_materials_specular": {},
+				"KHR_materials_sheen": {},
+				"KHR_materials_diffuse_roughness": {
+					"diffuseRoughnessFactor": 0.3,
+					"diffuseRoughnessTexture": {
+						"index": 1
+					}
+				},
+				"EXT_materials_bump": {
+					"bumpFactor": 0.25,
+					"bumpTexture": {
+						"index": 1
+					}
+				}
+			}
+		},
+		{
+			"name": "UnlitTextured",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [
+					0.5,
+					1,
+					1,
+					0.8
+				],
+				"baseColorTexture": {
+					"index": 2,
+					"texCoord": 1
+				}
+			},
+			"extensions": {
+				"KHR_materials_unlit": {}
+			}
+		},
+		{
+			"name": "Wire",
+			"pbrMetallicRoughness": {
+				"baseColorFactor": [
+					0.2,
+					0.8,
+					0.4,
+					0.5
+				],
+				"baseColorTexture": {
+					"index": 0
+				}
+			},
+			"alphaMode": "BLEND",
+			"doubleSided": true
+		}
+	],
+	"images": [
+		{
+			"bufferView": 8,
+			"mimeType": "image/png",
+			"name": "CheckerImage",
+			"extras": {
+				"kind": "checker"
+			}
+		},
+		{
+			"uri": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAACCAYAAABllJ3tAAAANUlEQVR42h3HQREAIADDsElBClKQUilIQQpOyo7LK0lwBGdwBel3f/rbJ+IQp7jk2/3pb/cASX4m6Z2Bl9wAAAAASUVORK5CYII="
+		},
+		{
+			"uri": "checker.png"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9728,
+			"minFilter": 9728,
+			"wrapS": 33071,
+			"wrapT": 33648
+		},
+		{
+			"magFilter": 9729,
+			"minFilter": 9985,
+			"wrapS": 10497,
+			"wrapT": 33071
+		},
+		{},
+		{
+			"minFilter": 9729,
+			"wrapS": 33648
+		},
+		{
+			"minFilter": 9984
+		}
+	],
+	"textures": [
+		{
+			"source": 0,
+			"sampler": 0,
+			"name": "Checker"
+		},
+		{
+			"source": 1,
+			"sampler": 1
+		},
+		{
+			"source": 2
+		},
+		{
+			"source": 0,
+			"sampler": 3
+		},
+		{
+			"source": 1,
+			"sampler": 4
+		}
+	],
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 4,
+			"type": "VEC3",
+			"min": [
+				-0.5,
+				-0.5,
+				0
+			],
+			"max": [
+				0.5,
+				0.5,
+				0
+			]
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 4,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 4,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 4,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5126,
+			"count": 4,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 5,
+			"componentType": 5123,
+			"count": 6,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 6,
+			"componentType": 5126,
+			"count": 4,
+			"type": "VEC3",
+			"min": [
+				0,
+				0,
+				0
+			],
+			"max": [
+				1,
+				1,
+				0
+			]
+		},
+		{
+			"bufferView": 7,
+			"componentType": 5126,
+			"count": 4,
+			"type": "VEC3"
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteOffset": 0,
+			"byteLength": 48
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 48,
+			"byteLength": 48
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 96,
+			"byteLength": 32
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 128,
+			"byteLength": 32
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 160,
+			"byteLength": 64
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 224,
+			"byteLength": 12
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 236,
+			"byteLength": 48
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 284,
+			"byteLength": 48
+		},
+		{
+			"buffer": 0,
+			"byteOffset": 332,
+			"byteLength": 84
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 416,
+			"uri": "data:application/octet-stream;base64,AAAAvwAAAL8AAAAAAAAAPwAAAL8AAAAAAAAAPwAAAD8AAAAAAAAAvwAAAD8AAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAIA/AACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAQAAAAEAAAAAAAAAAQAAAgD8AAAAAAAAAAAAAgD8AAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAEAAgAAAAIAAwAAAAAAAAAAAAAAAAAAAIA/AAAAAAAAAAAAAIA/AACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAIA/AACAPwAAAACJUE5HDQoaCgAAAA1JSERSAAAABAAAAAQIBgAAAKnxnn4AAAAbSURBVHjaY3hmo/FfI+rOfxjNgMwB0QwEVQAA4+glMYRiWOIAAAAASUVORK5CYII="
+		}
+	]
+}

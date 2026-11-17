@@ -1,0 +1,48 @@
+name: ent_example
+description: Minimal ent scene rendered with Flutter GPU (the render proof).
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ent_flutter:
+    path: ../../packages/ent_flutter
+
+dev_dependencies:
+  flutter_driver:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  vm_service: any
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/worm.glb
+    - integration_test/composer/
+    - integration_test/fixtures/rendering/reference/
+    - integration_test/fixtures/gltf/
+    - integration_test/fixtures/gltf/khronos/AlphaBlendModeTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/AnimatedMorphCube/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/BoxTextured/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/CesiumMan/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/ClearCoatTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/NormalTangentMirrorTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/TextureCoordinateTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/TextureTransformTest/glTF/
+    - integration_test/fixtures/gltf/khronos/TransmissionTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/VertexColorTest/glTF-Binary/
+    - integration_test/fixtures/hdr/
+
+# The shader variants this app draws with (its scenes and the parity integration tests).
+hooks:
+  user_defines:
+    ent_flutter:
+      shaders: ent_shaders.json

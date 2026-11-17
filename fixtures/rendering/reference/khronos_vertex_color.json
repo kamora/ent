@@ -1,0 +1,199 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "efa2602c-5c19-4611-9a3b-e75acde5b113",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"children": [
+				{
+					"uuid": "1ca058c3-dd3e-4c96-9e30-83016860f4f9",
+					"type": "DirectionalLight",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						1,
+						2,
+						3,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"color": 16777215,
+					"intensity": 2,
+					"shadow": {
+						"intensity": 1,
+						"bias": 0,
+						"normalBias": 0,
+						"radius": 1,
+						"blurSamples": 8,
+						"mapSize": [
+							512,
+							512
+						],
+						"mapType": 1009,
+						"camera": {
+							"uuid": "e339c81e-7cde-4178-b06d-55882b9dc4e1",
+							"type": "OrthographicCamera",
+							"name": "",
+							"castShadow": false,
+							"receiveShadow": false,
+							"visible": true,
+							"frustumCulled": true,
+							"renderOrder": 0,
+							"static": false,
+							"matrixAutoUpdate": true,
+							"layers": 1,
+							"up": [
+								0,
+								1,
+								0
+							],
+							"zoom": 1,
+							"left": -5,
+							"right": 5,
+							"top": 5,
+							"bottom": -5,
+							"near": 0.5,
+							"far": 500
+						}
+					},
+					"target": "7bec1269-fdb7-44c8-8ba3-f9a097eed6d9"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "8e603cb4-6f66-4b6a-bb8f-39fe9b7c91cb",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				0.9956342260592881,
+				-0.09334070869305824,
+				0,
+				0,
+				0.09334070869305824,
+				0.9956342260592881,
+				0,
+				0,
+				0.3,
+				3.2,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 45,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		0,
+		1
+	],
+	"size": 128,
+	"renderer": {},
+	"gltf": "/fixtures/gltf/khronos/VertexColorTest/glTF-Binary/VertexColorTest.glb",
+	"hdr": {
+		"url": "/fixtures/hdr/sky.hdr"
+	}
+}

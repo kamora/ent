@@ -1,0 +1,1595 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"geometries": [
+			{
+				"uuid": "0f01da0d-c5a1-4ea7-b2e7-57216ac9d7d4",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.375,
+								0.42500001192092896,
+								0,
+								0.375,
+								0.42500001192092896,
+								0,
+								-0.375,
+								-0.42500001192092896,
+								0,
+								0.375,
+								-0.42500001192092896,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"normal": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"uv": {
+							"itemSize": 2,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1,
+								1,
+								1,
+								0,
+								0,
+								1,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"color": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								4,
+								2,
+								1,
+								4,
+								2,
+								1,
+								1,
+								0.5,
+								0.25,
+								1,
+								0.5,
+								0.25
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"index": {
+						"type": "Uint16Array",
+						"array": [
+							0,
+							2,
+							1,
+							2,
+							3,
+							1
+						]
+					},
+					"boundingSphere": {
+						"radius": 0.5667892113764955,
+						"center": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "14956666-808c-4dd2-9b2e-c1fd133805f0",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.375,
+								0.42500001192092896,
+								0,
+								0.375,
+								0.42500001192092896,
+								0,
+								-0.375,
+								-0.42500001192092896,
+								0,
+								0.375,
+								-0.42500001192092896,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"normal": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"uv": {
+							"itemSize": 2,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1,
+								1,
+								1,
+								0,
+								0,
+								1,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"color": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0.20000000298023224,
+								1.5,
+								0.6000000238418579,
+								0.20000000298023224,
+								1.5,
+								0.6000000238418579,
+								0.05000000074505806,
+								0.375,
+								0.15000000596046448,
+								0.05000000074505806,
+								0.375,
+								0.15000000596046448
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"index": {
+						"type": "Uint16Array",
+						"array": [
+							0,
+							2,
+							1,
+							2,
+							3,
+							1
+						]
+					},
+					"boundingSphere": {
+						"radius": 0.5667892113764955,
+						"center": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "124bd5a6-e56b-42f6-96df-b9d92583498e",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.375,
+								0.42500001192092896,
+								0,
+								0.375,
+								0.42500001192092896,
+								0,
+								-0.375,
+								-0.42500001192092896,
+								0,
+								0.375,
+								-0.42500001192092896,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"normal": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"uv": {
+							"itemSize": 2,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1,
+								1,
+								1,
+								0,
+								0,
+								1,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"color": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0.5,
+								0.5,
+								3,
+								0.5,
+								0.5,
+								3,
+								0.125,
+								0.125,
+								0.75,
+								0.125,
+								0.125,
+								0.75
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"index": {
+						"type": "Uint16Array",
+						"array": [
+							0,
+							2,
+							1,
+							2,
+							3,
+							1
+						]
+					},
+					"boundingSphere": {
+						"radius": 0.5667892113764955,
+						"center": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "2fc58877-7f4b-4af2-9c52-56d3ee8716a1",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.375,
+								0.42500001192092896,
+								0,
+								0.375,
+								0.42500001192092896,
+								0,
+								-0.375,
+								-0.42500001192092896,
+								0,
+								0.375,
+								-0.42500001192092896,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"normal": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"uv": {
+							"itemSize": 2,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1,
+								1,
+								1,
+								0,
+								0,
+								1,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"color": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								1,
+								1,
+								1,
+								1,
+								1,
+								1,
+								0.25,
+								0.25,
+								0.25,
+								0.25,
+								0.25,
+								0.25
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"index": {
+						"type": "Uint16Array",
+						"array": [
+							0,
+							2,
+							1,
+							2,
+							3,
+							1
+						]
+					},
+					"boundingSphere": {
+						"radius": 0.5667892113764955,
+						"center": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "32bcc5ef-25e1-4f75-8338-86a07abd9bd5",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.375,
+								0.42500001192092896,
+								0,
+								0.375,
+								0.42500001192092896,
+								0,
+								-0.375,
+								-0.42500001192092896,
+								0,
+								0.375,
+								-0.42500001192092896,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"normal": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"uv": {
+							"itemSize": 2,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1,
+								1,
+								1,
+								0,
+								0,
+								1,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"color": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0.05000000074505806,
+								0.10000000149011612,
+								0.20000000298023224,
+								0.05000000074505806,
+								0.10000000149011612,
+								0.20000000298023224,
+								0.012500000186264515,
+								0.02500000037252903,
+								0.05000000074505806,
+								0.012500000186264515,
+								0.02500000037252903,
+								0.05000000074505806
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"index": {
+						"type": "Uint16Array",
+						"array": [
+							0,
+							2,
+							1,
+							2,
+							3,
+							1
+						]
+					},
+					"boundingSphere": {
+						"radius": 0.5667892113764955,
+						"center": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "e5625b18-7f1e-4c78-b0eb-c2dcda68b0a4",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.375,
+								0.42500001192092896,
+								0,
+								0.375,
+								0.42500001192092896,
+								0,
+								-0.375,
+								-0.42500001192092896,
+								0,
+								0.375,
+								-0.42500001192092896,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"normal": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"uv": {
+							"itemSize": 2,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1,
+								1,
+								1,
+								0,
+								0,
+								1,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"color": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								8,
+								8,
+								8,
+								8,
+								8,
+								8,
+								2,
+								2,
+								2,
+								2,
+								2,
+								2
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"index": {
+						"type": "Uint16Array",
+						"array": [
+							0,
+							2,
+							1,
+							2,
+							3,
+							1
+						]
+					},
+					"boundingSphere": {
+						"radius": 0.5667892113764955,
+						"center": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			},
+			{
+				"uuid": "ad8b65fd-6884-49d2-8846-705c0a0e5a5e",
+				"type": "BufferGeometry",
+				"name": "",
+				"data": {
+					"attributes": {
+						"position": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								-0.15000000596046448,
+								0.15000000596046448,
+								0,
+								0.15000000596046448,
+								0.15000000596046448,
+								0,
+								-0.15000000596046448,
+								-0.15000000596046448,
+								0,
+								0.15000000596046448,
+								-0.15000000596046448,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"normal": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1,
+								0,
+								0,
+								1
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"uv": {
+							"itemSize": 2,
+							"type": "Float32Array",
+							"array": [
+								0,
+								1,
+								1,
+								1,
+								0,
+								0,
+								1,
+								0
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						},
+						"color": {
+							"itemSize": 3,
+							"type": "Float32Array",
+							"array": [
+								2,
+								0.5,
+								0.25,
+								2,
+								0.5,
+								0.25,
+								2,
+								0.5,
+								0.25,
+								2,
+								0.5,
+								0.25
+							],
+							"normalized": false,
+							"name": "",
+							"usage": 35044,
+							"gpuType": 1015
+						}
+					},
+					"index": {
+						"type": "Uint16Array",
+						"array": [
+							0,
+							2,
+							1,
+							2,
+							3,
+							1
+						]
+					},
+					"boundingSphere": {
+						"radius": 0.21213204278533396,
+						"center": [
+							0,
+							0,
+							0
+						]
+					}
+				}
+			}
+		],
+		"materials": [
+			{
+				"uuid": "faea095e-8116-421e-9b40-7a3dfbdec761",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": true,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			},
+			{
+				"uuid": "e38923a4-97d6-4abe-861f-2128efde9ccd",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": true,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			},
+			{
+				"uuid": "dabf2c49-bf08-424d-8e52-7b9791bb9aa9",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": true,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			},
+			{
+				"uuid": "8c124bfb-5b95-4e50-a0f4-299cbfdc67f5",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": true,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			},
+			{
+				"uuid": "26b8d459-b2d7-493a-b0f6-14519a2bba1f",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": true,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			},
+			{
+				"uuid": "bad7680f-785f-48dd-b0b2-9d2c8b2b2710",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": true,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": true,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			},
+			{
+				"uuid": "fbcd68be-48c7-4955-bbfb-4b95687645cb",
+				"type": "MeshBasicMaterial",
+				"blending": 1,
+				"side": 0,
+				"shadowSide": null,
+				"vertexColors": true,
+				"opacity": 1,
+				"transparent": false,
+				"blendSrc": 204,
+				"blendDst": 205,
+				"blendEquation": 100,
+				"blendSrcAlpha": null,
+				"blendDstAlpha": null,
+				"blendEquationAlpha": null,
+				"blendColor": 0,
+				"blendAlpha": 0,
+				"depthFunc": 3,
+				"depthTest": true,
+				"depthWrite": true,
+				"colorWrite": true,
+				"clipIntersection": false,
+				"clipShadows": false,
+				"stencilWriteMask": 255,
+				"stencilFunc": 519,
+				"stencilRef": 0,
+				"stencilFuncMask": 255,
+				"stencilFail": 7680,
+				"stencilZFail": 7680,
+				"stencilZPass": 7680,
+				"stencilWrite": false,
+				"polygonOffset": false,
+				"polygonOffsetFactor": 0,
+				"polygonOffsetUnits": 0,
+				"dithering": false,
+				"alphaTest": 0,
+				"alphaHash": false,
+				"alphaToCoverage": false,
+				"premultipliedAlpha": false,
+				"forceSinglePass": false,
+				"allowOverride": true,
+				"visible": true,
+				"toneMapped": false,
+				"name": "",
+				"color": 16777215,
+				"envMapRotation": [
+					0,
+					0,
+					0,
+					"XYZ"
+				],
+				"reflectivity": 1,
+				"refractionRatio": 0.98,
+				"wireframe": false,
+				"wireframeLinewidth": 1,
+				"wireframeLinecap": "round",
+				"wireframeLinejoin": "round",
+				"fog": true
+			}
+		],
+		"object": {
+			"uuid": "c30c4546-4f88-43ee-8410-7e056508d6fe",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"children": [
+				{
+					"uuid": "43c4251a-68d7-463e-b9f6-ae065eb94e1c",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						-0.8,
+						0.45,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "0f01da0d-c5a1-4ea7-b2e7-57216ac9d7d4",
+					"material": "faea095e-8116-421e-9b40-7a3dfbdec761"
+				},
+				{
+					"uuid": "97fea1c8-c00f-48b3-92fb-78b6728ebf63",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0.45,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "14956666-808c-4dd2-9b2e-c1fd133805f0",
+					"material": "e38923a4-97d6-4abe-861f-2128efde9ccd"
+				},
+				{
+					"uuid": "d94491f9-b924-4e76-b63d-a311e3add9f5",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0.8,
+						0.45,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "124bd5a6-e56b-42f6-96df-b9d92583498e",
+					"material": "dabf2c49-bf08-424d-8e52-7b9791bb9aa9"
+				},
+				{
+					"uuid": "a2168626-2df9-4591-b148-a9fc557a30cc",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						-0.8,
+						-0.45,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "2fc58877-7f4b-4af2-9c52-56d3ee8716a1",
+					"material": "8c124bfb-5b95-4e50-a0f4-299cbfdc67f5"
+				},
+				{
+					"uuid": "b920f956-4b6c-452b-916b-90b088b91ca2",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						-0.45,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "32bcc5ef-25e1-4f75-8338-86a07abd9bd5",
+					"material": "26b8d459-b2d7-493a-b0f6-14519a2bba1f"
+				},
+				{
+					"uuid": "f18a0b8a-72a0-4ca0-aa99-fe9c21d20747",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0.8,
+						-0.45,
+						0,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "e5625b18-7f1e-4c78-b0eb-c2dcda68b0a4",
+					"material": "bad7680f-785f-48dd-b0b2-9d2c8b2b2710"
+				},
+				{
+					"uuid": "9e99c40e-086a-4bf0-a43e-0df26ec138fd",
+					"type": "Mesh",
+					"name": "",
+					"castShadow": false,
+					"receiveShadow": false,
+					"visible": true,
+					"frustumCulled": true,
+					"renderOrder": 0,
+					"static": false,
+					"matrixAutoUpdate": true,
+					"layers": 1,
+					"matrix": [
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0,
+						1,
+						0,
+						0,
+						0,
+						0.1,
+						1
+					],
+					"up": [
+						0,
+						1,
+						0
+					],
+					"geometry": "ad8b65fd-6884-49d2-8846-705c0a0e5a5e",
+					"material": "fbcd68be-48c7-4955-bbfb-4b95687645cb"
+				}
+			],
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 1,
+			"backgroundRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "16ca179e-49ec-4768-8805-6f6f4781a1a3",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				3,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 50,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		0,
+		1
+	],
+	"size": 128,
+	"renderer": {
+		"toneMapping": 7
+	},
+	"composer": {
+		"vignette": {
+			"offset": 1.3,
+			"darkness": 0.8
+		},
+		"copy": 1
+	}
+}

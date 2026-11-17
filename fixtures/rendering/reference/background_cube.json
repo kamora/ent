@@ -1,0 +1,170 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"textures": [
+			{
+				"uuid": "f1dd7a46-2833-4988-9843-b93997401026",
+				"name": "",
+				"image": "c2cbc2ef-be67-499d-990d-0b90bf15c012",
+				"mapping": 301,
+				"channel": 0,
+				"repeat": [
+					1,
+					1
+				],
+				"offset": [
+					0,
+					0
+				],
+				"center": [
+					0,
+					0
+				],
+				"rotation": 0,
+				"wrap": [
+					1001,
+					1001
+				],
+				"format": 1023,
+				"internalFormat": null,
+				"type": 1009,
+				"normalized": false,
+				"colorSpace": "srgb",
+				"minFilter": 1008,
+				"magFilter": 1006,
+				"anisotropy": 1,
+				"flipY": false,
+				"generateMipmaps": true,
+				"mipmapsAutoUpdate": true,
+				"premultiplyAlpha": false,
+				"unpackAlignment": 4
+			}
+		],
+		"images": [
+			{
+				"uuid": "c2cbc2ef-be67-499d-990d-0b90bf15c012",
+				"url": [
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABqklEQVR4AZSR3W5TMRCEx3vyUwne/5ILpD4IEvAolAsCSducnxx7zbd2IwVR8SN1Ojs+3tnxxr58eFevePj4vj58uq9fP9/XqK/nf2Lz4lIaZLs3Gu7eatjDwPa9rhpU3RX3XmOrSkqbO6XtXmkDdjtFbWiFhr0aBkUlFzi/cNdmXLLNTrYFu60GDAwODNRDfAO1FJIAErf6RZPAJAOD8RKwSSQA6DivPE+JBAIk6CmYjoGjLaXEDpJSAkOSbatsI/U+DC0hkpJEfG8pnOZI4aRhicRiSbGgWqv4U/yL2jmPSw1M85IVUx2DzlnmuR9W3Gp2+Voboq40VZpqu5PV7mB6y7ZOozomreMMLrqMF3jROnEGLtNZ6zyy/fwbLI9nZS7k86g8TsrP8JnGpqnjO7id2p4biUljeRm1nI5aHo+a4Rnu+tTOlscfyvMkv3m387SrNsepLBPNB4y+aTl+BwfNR+rTQXmZeXtpBtWD/Rdt4VbCHazx3ucnLecnxdT2mzPt+v01beFaae7AnSm9Lkz6u7bmikHnzJZLi/uvmgROgys26+zjf/knAAAA//+r8LTkAAAABklEQVQDAHc9bU9aCcxjAAAAAElFTkSuQmCC",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABaklEQVR4AZyT3VLCMBCFT7a2iPL+d1zo+ADM6PgUqOOD8Ff6C03i2S2MBdEZufjmJLvZ3ZNAZTqbx+nsjczj48tHfHpVPuPD8ztjffyYv6QSQkAiDvfjlGSYjJUUk7uM+9RyeuY3RBBxmyW4TQl1lN1AOe5V2R++8/CenKno4RGLMxaeMEqRpdosgebNgQ84V3EOEHFEDCcClxCNJRpXAAego4OODoYq4hwLe/riBKoiAnFs5JhjubBDuOQgsOsxEWPEKb1lH7xNtzfg+aGKWaItr92ZjAYLqb4L0Mfr9myw7xDsjOa+kbJuUTUtmgMtVWmaHWquNdef2ZmLjo2HSFmyASnLBhW1MtV1T8mYcmm6xkSnrDYl1kpemG5y3Rfo44U5Gd57uBbt0rQ7LFcFFsuCusVipXC9Lni1/Y/ffvhfELsPH1G14nvkRY18W0PX3SH+l5qDYUd19J+92H046Vq1r9Em8qu8Rr8AAAD//w4ZLvgAAAAGSURBVAMAEQtlR6Kg/6QAAAAASUVORK5CYII=",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABf0lEQVR4AZRSW1LDMAxcK07C/S8FDCfgcQH6SSHP2mIlJ42H6QzQma1elnalVu6f33XH0+tJHW8nfXw56UNVsze3YskZCCGgiw26tkHfRtwZugYt44CArHAks3xfxwJ+YhPQSkBH28diPWbOanyCxO7MzrRjiyU2wuYGXRRHzwE9/b4VtLQt61HkUFCp4AyQQ+0LfMdBoAqDuk9BXuOGsI+pSNw5VSokhACRwAEBkR19BHqqILnnrBZCAE/hKti7WXUrSelwaqZVB+AWxdremfXCrijsebNUnzJw2bAmYN5g/p43a41GcigAFShkWhJ2DEvG11xg/ljV5pWsvJorqaxMpJpWxbAYchmw+ZYbvZ7JZowGrXxAZk4+TyvO44qP8VJhZe6CT+bsTbI7UH+6IvsdhDEWLnmequZh9UGWWyj31u7WZxDfiZ5Nnil34BUH7n5l5QCrFZD1R8yf0fYiMsF/Getlxz/Gko2dXYVB8d/4UEB23gmcBc4soIrf4m8AAAD//321FKYAAAAGSURBVAMAuGkjS3YFEs0AAAAASUVORK5CYII=",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABm0lEQVR4AZSSzW6bQBSFD8MMZgDXTvKW3XWRRVeVWqmbVsqLGsfGsRkwzOTcSSIhJPKz+HQv9/dcQP39+T288f/Xj/Dw+z48/LkP/+i/xd+zKgTAZCtstnfY3Nzh280tNttbbOlvGDNmBalZQmljUFVr2LJEURSw1r5QWBRViXK9hmGND56DPOZWFUWF3JaweY4sM8iMZoPGKsuQr3JYW3B4BVCpqJjbqEDrFEopJMwGfwWI+CpVSLWG1ibiPRXMUGmq2ZySBKDM8eogiK+SBKlKkbJGBomCOUpueiHIfg6hjXLFhniz5EfZzAXiT1HDMML7wIXsSrgts9AE9BnGOHqMrJE6boAomFrVthc459D1VwwDi32CMSS4srHve3Sdg5Ma4kXFDHV5OqM9c0jLwq5H3w9sEnq0jF2YO7NmunWqQjl3weOhxvF4QNM0aE4nQtscY+xw2KNlzfTuqR//xM512Nc77HekrvFI9rs6PktONi6hpnfJ+3g6NTgR8ae5JT8qWLrvM3EO8JCbwus3/qrlAMRvu3TjR/FnAAAA//+HUHbmAAAABklEQVQDAMXwBY9CRWx+AAAAAElFTkSuQmCC",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABm0lEQVR4AZRSWU7dQBAs93glKPeXEilKcgSkBK7AehLeIjxj+zEL1cMzmIfYPsrV1d3uzZaT8x/p5OJnUv5/9TudXv9JZzd/07/LX2n2v8cSU4QUBm19jK45xhHR0T5qvqOrv0HEIMaImBIemfZCC5JBbVo05YwObbab7K9MhwKCEEKGDzFz2GupSiZWBLkht0RTN1C7rlrU9GtOYNfAaXUK5VmLwEBXKMWgpKqMQFEa1QamMDle4HmKubuyFHyJD+4qKPXlUnIBIyxNaBwQoJB8g2V3nUa0ihp6JN4JiY8Z2c/RY9T9PfzB/qpZgAEm+OBxz8PsfMSOiZ623/uz7T3i/gaRTXJxanGTg5sGDNMIN86Y4FQTA2OOOcNu4AThFcTtLNxoYZlkR4ee3JPtOMDS7ybGiWXXx+4JyqKdt3aDbb/Bhrzut9ioTWQf9cgpAldSeK4X9rayaJXxfsS6X2HV32J9t3q27QoTY4eXX2oeMTz9WdrJDnfoCbW1w0eQZTWd5qv6xQT+YL/P6HyDty4c+Z11qrj47of6AQAA//93aO1SAAAABklEQVQDAPczZN+cA39fAAAAAElFTkSuQmCC",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABtUlEQVR4AZRSCY7UMBAst3Ox+/9HgMTxBpAGCa32KywzOZyZpE2VTaQRoBVEKlV39eFuO/b57bf85R1BPn14yqePz/nrp+d8ev9U9Pu48n73LbsjWED30KJ/GPDmscNA9I89/R7GmDPHs8M9Q/l+5xsMaPsGXd+iGyLagSybWttHNEODEAJ8Z4N9x67iYlff2q5lg4qu69CX4uor1jHesJnzdCH/YtmCBQM0psWA2BhijGgIcYyGEME4gABOwQk4hRM7ITZ+TDBEq2hZ3MSGTQwWCeohiLkGTz8mONhKJ+2VeUEZIIEWnEZN4q6Mb1vlks872Amnbs6AxJ28caxt37BtG4pG/4g7NRWUpnyRzGL5lpYrhDWtEJZlxZKqlg5mzppubOp/wNKcsM4suoO0ZUlI1JLiU+JKjsw70KlZp5cpMuy63jD+mDAR4vE84UJ7epkxvlA/z5zsxhfQ6TvUYNf+hNY0Z9fbuuHCgsv3CcJIPrNYDa6MZeYo729sekt1Eq/af1wwE1fah/4alwnUXThOkC38i18mqP85d9Tl6Om4n7T633PvV/w6AW/UWZwJ177/4f8EAAD//7kNRQQAAAAGSURBVAMAvu9ku7RTAf0AAAAASUVORK5CYII="
+				]
+			}
+		],
+		"object": {
+			"uuid": "7aeb349e-08c9-4f16-a1fb-42351db2dbaa",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"background": "f1dd7a46-2833-4988-9843-b93997401026",
+			"backgroundBlurriness": 0,
+			"backgroundIntensity": 0.85,
+			"backgroundRotation": [
+				0.2,
+				0.7,
+				0,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "0d0b1ad0-9864-47dd-b935-e7c365e7bf91",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				0.8944271909999159,
+				-6.938893903907228e-18,
+				-0.447213595499958,
+				0,
+				-0.11590011139293838,
+				0.9658342616078197,
+				-0.23180022278587678,
+				0,
+				0.4319342127906801,
+				0.25916052767440806,
+				0.8638684255813601,
+				0,
+				0.5,
+				0.3,
+				1,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 70,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		0,
+		1
+	],
+	"size": 128,
+	"renderer": {}
+}

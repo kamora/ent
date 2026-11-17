@@ -1,0 +1,170 @@
+{
+	"scene": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"textures": [
+			{
+				"uuid": "203a4ac3-716e-494d-8311-327a419111e3",
+				"name": "",
+				"image": "d259d94e-5ab7-4b88-b0a5-eb1a494d0c23",
+				"mapping": 301,
+				"channel": 0,
+				"repeat": [
+					1,
+					1
+				],
+				"offset": [
+					0,
+					0
+				],
+				"center": [
+					0,
+					0
+				],
+				"rotation": 0,
+				"wrap": [
+					1001,
+					1001
+				],
+				"format": 1023,
+				"internalFormat": null,
+				"type": 1009,
+				"normalized": false,
+				"colorSpace": "srgb",
+				"minFilter": 1008,
+				"magFilter": 1006,
+				"anisotropy": 1,
+				"flipY": false,
+				"generateMipmaps": true,
+				"mipmapsAutoUpdate": true,
+				"premultiplyAlpha": false,
+				"unpackAlignment": 4
+			}
+		],
+		"images": [
+			{
+				"uuid": "d259d94e-5ab7-4b88-b0a5-eb1a494d0c23",
+				"url": [
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABsUlEQVR4AZxS264TMQyceLdZOP//zAOIb0HAn1CddrvdC93EMeNkHyo4EoKH0TixPR5HkfHLB7sdmL59stv3zzYRt68f6/1z3ut+P4vlDLMA9O+B0wskviAc8DOYK6xpUHh9izNKVkhhAfqBzQPk1DjEAeH0DoH31g11gFaRhMb54AQJEmuhN4chUiuiGwY6iQinCKEI+sjJiqL6B0sJgS4F6ITFHULsIFHYTHQCE+ZNUAzQ5A6IJxZAEFgURCC9oB8CHbQ4UIBJIIS6htGB7/3MUupuBVYII8BR1mDK89HkdZr84dyBc6ajzEfMO4rDbe0ZeVMkQhnXBr9PO4sfMGWjC1bO9SxpXZCXFWnZkOYN+31DcjCu9+uKzBrdVorkiuJOCB8guk5IjmXCPs9snilyb1juFJ8oMKHUqVqntjjzjv8gccJ+u+Bxdbxiu7zi57VhH8lE3pY2OaeD88H8B8adMu3t4xmPyw/s1zP53JhxeWwo/HFe9xaL+iNV5YS0uf2Rq4xI68zf5hOJI69vsBQ6ME74X5biqvUvcK/KPpEPxFiJ8pc8BZQ7tgarDf92/gUAAP//RQZCsgAAAAZJREFUAwBgAXRDKABaggAAAABJRU5ErkJggg==",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABfklEQVR4AZyTW27cMAxFryjLdpL9A/0J2jUU6GMlRbKDPpImGFn2zOiVy7ETCMl8zcfBlcgLkqZt+fT1V33l9vtd/fzjvn75eV9vv929xV/z51RSKjAGuB463IwON1cbY4drYgCkXKC+cyoGBaMTjP3K1UktxoHo2RmoJ6XEIh+R3tFIhr7D0Dv0gzvpwPvoNEY6C+2eOe17FWsqRABrDWwn6Gi2G6Ix5oQenSJuU7TKtGEBYoRFLGznYF3HM++sbIyBMQaoQN520arkzOdiopSCUgt9FbVWlFKRGcs5c3x62L3tnLa7xEgDiWnVdIw4QUPa4vFYcOQ5cwfavVXx8x4TCWSeF4SwYCYh7KGxMB/W/HJAZNH3iPcH7KYDvN9jR7xfeF/W+7TGdtS2azuFTKz8+OTxQD7qxPiEQI92TtsErXKJhYaIv/8Dfj9M+KP8oz6uzPsI/Qq16zmVtnLgHp79DEX30nZqfW1cMjeb+BovVf5MiSNejmh3fbZL9QUAAP//NQkkBQAAAAZJREFUAwAfsGc/55wC6gAAAABJRU5ErkJggg==",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABbUlEQVR4AZyRW05DMQxEJ76Plv2vCyHWAPy3ve19NYmZSRUopUIqH0d+xBnbiT2/TV55eZ/89eOC/Jr/y1rKABzoLGDTGPorlNOZakRmrWxFsbk7WgO6hrTAphAoBOYCqMcGjpQdkchWFFvDzm1jLLYywbYzbLtAIeVCyRtratdbyyOHBU3hvARs21DoW4Ba5SxwD/fMKTKn+CZxBwoEFgWOqm4BT70V+ibADOUsIABE3XkHFcV8RKeyg+uBz1H2ZcPiK048SHS07z3snIGYHGeyRMdpFRnylRMxqQZQZ3W9tjadIyaqjGvCcUk4zAkDkT+umWepMFMl8uYtNq+ACk+LY1gyhjlTJEP+kfHEiQTvctXfU9gcc7mwZ9f9lLAbI3a08g/MCdVEvsU9+IjAyt2HKWM/Zl7OtIlQmLklXrpqAlHfQL6gQP76W+058i1ORH5kRSKylduYAii7Sfk/WORu6YpHY+OEPyZ4NP4EAAD//4kA+HUAAAAGSURBVAMAyAYsL5P2h8IAAAAASUVORK5CYII=",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABr0lEQVR4AZyRS3ObQBCEW7s8jEC2/PhvOeaQU2455JJTDvmxVhwZbAQLhmU2PShUSXm4yqniY3qWmekBzJeP78LC10/vw7fPH2ZUL+evRSMiiJMEV9e3uL65w5Zxe3OLI3eI4wRacyScaKEOMBELis0WxeYSeVFgXeTIc0KdFxsUl1cnQyY2aePCBLPON8jWObIsQ5qmSJMYCTe6oNazbF0gY42Iuv+JidkQxxGsNbCGK4FT4amBKLJ0j/iKMaI4prtucI6xJoKxFsYYrMDVfA8hqs1qxXMLayNY8rct+BEnBH7IEAQhBPBGeFFrHsJEZznhPDfj6OG9xzSxKBisoguSQsIKnmfeTxjHEcMwQGgkEn5F1jM3zrXoug59P2DgsMEHMFBP6F9e4FwH17KGdcKG3zH18xMOdY2madC2LO7Y1PWzbpsWzaHGgTXHxnN34Tam4+TH/Q9U5R5VVeKprBhJWaJ83EOf6ZYyu09n64vwjwmndM7hYbcj93j4rlGh3t1Dn2nNv5j/gk5SXNugfq5mnGvopo6vwwH6Xv8PB6iD0G3hbTkHqPvSrPFt+U8AAAD//7QadkgAAAAGSURBVAMAulZXP+8AcTwAAAAASUVORK5CYII=",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABsklEQVR4AZRTW27bMBAcLklLQtP7A/1o0TsU6OMYRXoK2wlsSqQikVRnZSdRARdIPkbD3aW4M0tJvv3+tDzjx/2X5eefr8sv4vv955f8c/0WS64FBhaN/4Bud3fFR3T+Di0BCEqtyNxXbrBgEexsS3RoXIdW4bkmNO9tBywGuRQiE/+yeNvAuwatV7Todi3a3WXd+JaHNnDcU6ggU0FZuVBVoaoKMRBY4+AIbx0a79E6T0UeTizEELBAFeRMBSv4clZk1o3wIbDWUolld4dm59a1Fb7MujGGLsxL160KUW86HMWyLFDwgbpU1FVyRS4Kdr8xB5nLjIlQfsoz0jQjEtOcmc/Q/ArWMv0XHpo3LHEcoBhSRB8jzkNEIAfGA2vDGKGcniJeZ0A16yw4gzAGhLHHmXxOPU4p4BQZkwNjrfesbbuWjQpJU8Jjf8RD/4Aj+RjI4QhlzT0ynyZ2v+E/FyrQiaY58YADDkGxxz7seZjigJG1vHrmtbGz7t/GcvHFIu9VZxHiiTM4cy5x4/lSv+xV/68x/4V6vd9y5ffFoj7yf/y9JS+FvvLqsfLbVhXv478AAAD//3AXHOEAAAAGSURBVAMAj2pmT5PcE9UAAAAASUVORK5CYII=",
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABpklEQVR4AZxSW04cMRAstx8zWe5/CT4Qp0gi8peEnCKAxLwftlPtmVlt0EogPkrldtvV1W3L19uf+dvtr6z8cPeYH+4f84/7P/n73e/z/pG/xpJihhEgfPGobjzqU4X6JqA+BYSThzEGKSXouWssMBmusvCVKwg1+QD3NQdkxBgRV+INiwu8HDwCBao6QFHXFaoqcM8XURccHSQ6yRvTdYpbLHQIsQbWCZxzCMHBe4WFtQIRAyOAOi0ODhe7EzGyHbLWUsAi+IDKe67dJkARYww4jK16+t+FaG9lOBxUzpntZhRinPbDMbH3o/IbFrW1LgnrErEsK6Z5LtD1ysOKyHxkPmnvKnzBMnYTxn4kJgzdiK4b0Ct0j/GRm4Z5ewWKatEDFJh5cULfjsSAriFaijSMKT60M7TIteqJbkSV25cODfH60qLgeeOGseamntX3qevMSvU95k9MmIcVzXOH1yfiLy8rnlru9ZjHhdPPRLr+D85qVNRKvVpnO9Nlz8ydK+sMLmJJ+1OVHvfflZR10srv5MszntVV+ajwQaYD9qbVONH0Cf4HAAD//0yW0p0AAAAGSURBVAMA8ZBoH1WHTgYAAAAASUVORK5CYII="
+				]
+			}
+		],
+		"object": {
+			"uuid": "1c76f2ef-fcc6-4698-88f9-9d37adf79a1f",
+			"type": "Scene",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1,
+				0,
+				0,
+				0,
+				0,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"background": "203a4ac3-716e-494d-8311-327a419111e3",
+			"backgroundBlurriness": 0.35,
+			"backgroundIntensity": 1.2,
+			"backgroundRotation": [
+				0,
+				-0.5,
+				0.1,
+				"XYZ"
+			],
+			"environmentIntensity": 1,
+			"environmentRotation": [
+				0,
+				0,
+				0,
+				"XYZ"
+			]
+		}
+	},
+	"camera": {
+		"metadata": {
+			"version": 4.7,
+			"type": "Object",
+			"generator": "Object3D.toJSON"
+		},
+		"object": {
+			"uuid": "b688f49f-250d-4c18-a7bf-34ac3b717428",
+			"type": "PerspectiveCamera",
+			"name": "",
+			"castShadow": false,
+			"receiveShadow": false,
+			"visible": true,
+			"frustumCulled": true,
+			"renderOrder": 0,
+			"static": false,
+			"matrixAutoUpdate": true,
+			"layers": 1,
+			"matrix": [
+				0.8944271909999159,
+				-6.938893903907228e-18,
+				-0.447213595499958,
+				0,
+				-0.11590011139293838,
+				0.9658342616078197,
+				-0.23180022278587678,
+				0,
+				0.4319342127906801,
+				0.25916052767440806,
+				0.8638684255813601,
+				0,
+				0.5,
+				0.3,
+				1,
+				1
+			],
+			"up": [
+				0,
+				1,
+				0
+			],
+			"fov": 70,
+			"zoom": 1,
+			"near": 0.1,
+			"far": 100,
+			"focus": 10,
+			"aspect": 1,
+			"filmGauge": 35,
+			"filmOffset": 0
+		}
+	},
+	"clear": [
+		0,
+		1
+	],
+	"size": 128,
+	"renderer": {}
+}

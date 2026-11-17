@@ -1,0 +1,467 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script type="importmap">
+		{
+			"imports": {
+				"three": "/third_party/three.js/src/Three.js",
+				"three/addons/": "/third_party/three.js/examples/jsm/"
+			}
+		}
+	</script>
+</head>
+<body>
+	<script type="module">
+		import * as THREE from 'three';
+		import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+		import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+		import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
+		import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+		import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+		import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+		import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+		import { FXAAPass } from 'three/addons/postprocessing/FXAAPass.js';
+		import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+		import { VignetteShader } from 'three/addons/shaders/VignetteShader.js';
+		import { CopyShader } from 'three/addons/shaders/CopyShader.js';
+		import scenes, { size } from './scenes.mjs';
+
+		// As r187 apps that use RectAreaLight with WebGLRenderer do: puts the LTC tables in UniformsLib.
+		RectAreaLightUniformsLib.init();
+
+		// Renders one scene with r187's WebGLRenderer (plus the scene's renderer properties); returns the drawing
+		// buffer's raw RGBA bytes (readPixels, top row first, base64) and the scene as JSON. The bytes are read
+		// directly because toDataURL un-premultiplies them (premultipliedAlpha context), which loses colors where
+		// alpha is below 1. A scene's `distance` light is what WebGLShadowMap would set as the light of its
+		// MeshDistanceMaterials (renderer.properties); the JSON names it by uuid. A scene's `target` is drawn first
+		// into a WebGLRenderTarget, whose texture becomes the map of the materials with `userData.renderTarget`
+		// (the map is removed again before toJSON; the JSON keeps the target's scene, camera, size, clear and
+		// options). A target's `depthTexture` ({ type, format }, both optional) attaches a DepthTexture of the
+		// target's size, which becomes the map of the materials with `userData.depthTexture`. A scene's `cube` is a CubeCamera pass: a WebGLCubeRenderTarget of `size` with `options`, a
+		// CubeCamera of `near` and `far` at `position` updated once with the meshes whose material has
+		// `userData.cubeTarget` hidden; their envMap becomes its texture (removed again before toJSON). A scene's
+		// `animate` plays the clips of its objects (`object.animations`) with an AnimationMixer and draws one frame
+		// per time in `times` (`mixer.setTime`); `actions` sets an action per clip name (weight, loop, timeScale,
+		// fadeIn, fadeOut). Its JSON is taken before the clips play.
+		// A scene's `gltf` is the URL of a glTF asset: r187's GLTFLoader loads it and its scene, carrying the asset's
+		// animations, is added last; the JSON is taken without it (the Dart test loads the same file with its own
+		// GLTFLoader).
+		// A scene's `hdr` ({ url, type }) is an RGBE image that r187's HDRLoader loads (with `type`, HalfFloatType when
+		// left out) as an equirectangular map; it becomes scene.environment and scene.background, which are cleared
+		// again before toJSON (the Dart test loads the same file with its own HDRLoader).
+		// A scene's `composer` draws the frame through an EffectComposer in place of renderer.render: a RenderPass,
+		// an FXAAPass when `fxaa` is set, a ShaderPass of VignetteShader with the uniform values of `vignette` when it is given, a ShaderPass of
+		// CopyShader with `copy` as its opacity when it is given, an UnrealBloomPass of the frame's resolution with
+		// `bloom`'s strength, radius, threshold and per-mip `tints` when it is given, and an OutputPass; with
+		// `samples` the composer's targets are HalfFloatType WebGLRenderTargets of the frame's size with that many
+		// samples.
+		// A scene's `overlay` ({ scene, camera, clearDepth }) is drawn into the same frame after it, as an r187 HUD: with
+		// autoClear off, renderer.clear(), the scene, renderer.clearDepth() when `clearDepth` is set, the overlay.
+		// A scene's `views` ({ autoClear, list }) draws the frame in several renders with renderer.autoClear set to
+		// `autoClear`: per view setViewport( viewport ), setScissor( scissor, default the viewport ), setScissorTest(
+		// scissorTest ), setClearColor( color ) when it is given, renderer.clear() when `clear` is 'all' or
+		// renderer.clearDepth() when it is 'depth', and the scene, or the overlay's scene and camera with `overlay`.
+		// A scene's `antialias` is WebGLRenderer's constructor parameter (default false).
+		window.renderScene = async ( name ) => {
+
+			const { scene, camera, clear, renderer: options = {}, distance, edges, target, cube, animate, gltf, hdr, composer, overlay, views, antialias = false } = scenes[ name ]();
+
+			let model;
+
+			if ( gltf ) {
+
+				// Its clips go on its scene, so `animate` plays them with the scene's own.
+				const result = await new GLTFLoader().loadAsync( gltf );
+				model = result.scene;
+				model.animations = result.animations;
+				scene.add( model );
+
+			}
+
+			if ( hdr ) {
+
+				const texture = await new HDRLoader().setDataType( hdr.type ?? THREE.HalfFloatType ).loadAsync( hdr.url );
+				texture.mapping = THREE.EquirectangularReflectionMapping;
+				scene.environment = scene.background = texture;
+
+			}
+
+			const { shadowMap, ...properties } = options;
+			const renderer = new THREE.WebGLRenderer( { antialias, preserveDrawingBuffer: true } );
+			renderer.setPixelRatio( 1 );
+			renderer.setSize( size, size );
+			renderer.setClearColor( clear[ 0 ], clear[ 1 ] );
+			Object.assign( renderer, properties );
+
+			// shadowMap is an object of the renderer's: its properties are set on it (enabled, type).
+			if ( shadowMap ) {
+
+				Object.assign( renderer.shadowMap, shadowMap );
+
+			}
+
+			if ( distance ) {
+
+				scene.traverse( ( object ) => {
+
+					if ( object.material && object.material.isMeshDistanceMaterial ) {
+
+						renderer.properties.get( object.material ).light = distance;
+
+					}
+
+				} );
+
+			}
+
+			const targeted = [];
+			let renderTarget;
+
+			if ( target ) {
+
+				renderTarget = new THREE.WebGLRenderTarget( target.size[ 0 ], target.size[ 1 ], target.options );
+
+				if ( target.depthTexture ) {
+
+					const { type = THREE.UnsignedIntType, format = THREE.DepthFormat } = target.depthTexture;
+					renderTarget.depthTexture = new THREE.DepthTexture( target.size[ 0 ], target.size[ 1 ], type );
+					renderTarget.depthTexture.format = format;
+
+				}
+
+				renderer.setClearColor( target.clear[ 0 ], target.clear[ 1 ] );
+				renderer.setRenderTarget( renderTarget );
+				renderer.render( target.scene, target.camera );
+				renderer.setRenderTarget( null );
+				renderer.setClearColor( clear[ 0 ], clear[ 1 ] );
+
+				scene.traverse( ( object ) => {
+
+					if ( object.material && object.material.userData.renderTarget ) {
+
+						object.material.map = renderTarget.texture;
+						targeted.push( object.material );
+
+					}
+
+					if ( object.material && object.material.userData.depthTexture ) {
+
+						object.material.map = renderTarget.depthTexture;
+						targeted.push( object.material );
+
+					}
+
+				} );
+
+			}
+
+			const reflective = [];
+			let cubeTarget;
+
+			if ( cube ) {
+
+				cubeTarget = new THREE.WebGLCubeRenderTarget( cube.size, cube.options );
+				const cubeCamera = new THREE.CubeCamera( cube.near, cube.far, cubeTarget );
+				cubeCamera.position.fromArray( cube.position );
+
+				scene.traverse( ( object ) => {
+
+					if ( object.material && object.material.userData.cubeTarget ) {
+
+						reflective.push( object );
+
+					}
+
+				} );
+
+				for ( const object of reflective ) {
+
+					object.visible = false;
+
+				}
+
+				cubeCamera.update( renderer, scene );
+
+				for ( const object of reflective ) {
+
+					object.visible = true;
+					object.material.envMap = cubeTarget.texture;
+
+				}
+
+			}
+
+			const gl = renderer.getContext();
+			const debug = gl.getExtension( 'WEBGL_debug_renderer_info' );
+
+			// The drawing buffer's bytes, top row first, base64.
+			const read = () => {
+
+				const pixels = new Uint8Array( size * size * 4 );
+				gl.readPixels( 0, 0, size, size, gl.RGBA, gl.UNSIGNED_BYTE, pixels );
+
+				let binary = '';
+
+				for ( let y = size - 1; y >= 0; y -- ) {
+
+					binary += String.fromCharCode( ...pixels.subarray( y * size * 4, ( y + 1 ) * size * 4 ) );
+
+				}
+
+				return btoa( binary );
+
+			};
+
+			let json, frames;
+
+			if ( animate ) {
+
+				scene.updateMatrixWorld();
+
+				if ( model ) {
+
+					scene.remove( model );
+
+				}
+
+				json = scene.toJSON();
+
+				if ( model ) {
+
+					scene.add( model );
+
+				}
+
+				frames = [];
+
+				const mixer = new THREE.AnimationMixer( scene );
+
+				scene.traverse( ( object ) => {
+
+					for ( const clip of object.animations ) {
+
+						const { weight = 1, loop = THREE.LoopRepeat, timeScale = 1, fadeIn, fadeOut } = animate.actions?.[ clip.name ] ?? {};
+						const action = mixer.clipAction( clip, object ).setLoop( loop, Infinity ).setEffectiveWeight( weight ).setEffectiveTimeScale( timeScale );
+
+						if ( fadeIn !== undefined ) {
+
+							action.fadeIn( fadeIn );
+
+						}
+
+						if ( fadeOut !== undefined ) {
+
+							action.fadeOut( fadeOut );
+
+						}
+
+						action.play();
+
+					}
+
+				} );
+
+				for ( const time of animate.times ) {
+
+					mixer.setTime( time );
+					renderer.render( scene, camera );
+					frames.push( read() );
+
+				}
+
+			} else if ( composer ) {
+
+				const effects = composer.samples ? new EffectComposer( renderer, new THREE.WebGLRenderTarget( size, size, { type: THREE.HalfFloatType, samples: composer.samples } ) ) : new EffectComposer( renderer );
+				effects.addPass( new RenderPass( scene, camera ) );
+
+				if ( composer.fxaa ) {
+
+					effects.addPass( new FXAAPass() );
+
+				}
+
+				if ( composer.vignette ) {
+
+					const vignette = new ShaderPass( VignetteShader );
+					vignette.uniforms[ 'offset' ].value = composer.vignette.offset;
+					vignette.uniforms[ 'darkness' ].value = composer.vignette.darkness;
+					effects.addPass( vignette );
+
+				}
+
+				if ( composer.copy !== undefined ) {
+
+					const copy = new ShaderPass( CopyShader );
+					copy.uniforms[ 'opacity' ].value = composer.copy;
+					effects.addPass( copy );
+
+				}
+
+				if ( composer.bloom ) {
+
+					const bloom = new UnrealBloomPass( new THREE.Vector2( size, size ), composer.bloom.strength, composer.bloom.radius, composer.bloom.threshold );
+					( composer.bloom.tints ?? [] ).forEach( ( tint, i ) => bloom.bloomTintColors[ i ].set( ...tint ) );
+					effects.addPass( bloom );
+
+				}
+
+				effects.addPass( new OutputPass() );
+				effects.render( 0 );
+				effects.dispose();
+
+			} else if ( views ) {
+
+				renderer.autoClear = views.autoClear;
+
+				for ( const view of views.list ) {
+
+					renderer.setViewport( ...view.viewport );
+					renderer.setScissor( ...( view.scissor ?? view.viewport ) );
+					renderer.setScissorTest( view.scissorTest ?? false );
+
+					if ( view.color ) {
+
+						renderer.setClearColor( ...view.color );
+
+					}
+
+					if ( view.clear === 'all' ) {
+
+						renderer.clear();
+
+					} else if ( view.clear === 'depth' ) {
+
+						renderer.clearDepth();
+
+					}
+
+					renderer.render( view.overlay ? overlay.scene : scene, view.overlay ? overlay.camera : camera );
+
+				}
+
+			} else if ( overlay ) {
+
+				renderer.autoClear = false;
+				renderer.clear();
+				renderer.render( scene, camera );
+
+				if ( overlay.clearDepth ) {
+
+					renderer.clearDepth();
+
+				}
+
+				renderer.render( overlay.scene, overlay.camera );
+
+			} else {
+
+				renderer.render( scene, camera );
+
+			}
+
+			for ( const material of targeted ) {
+
+				material.map = null;
+
+			}
+
+			for ( const object of reflective ) {
+
+				object.material.envMap = null;
+
+			}
+
+			if ( model ) {
+
+				scene.remove( model );
+
+			}
+
+			if ( hdr ) {
+
+				scene.environment = scene.background = null;
+
+			}
+
+			// r187's toJSON drops a sprite's center, which ObjectLoader reads: it is added to the sprites' JSON.
+			json ??= scene.toJSON();
+			const centers = {};
+
+			scene.traverse( ( object ) => {
+
+				if ( object.isSprite ) {
+
+					centers[ object.uuid ] = object.center.toArray();
+
+				}
+
+			} );
+
+			( function add( data ) {
+
+				if ( centers[ data.uuid ] ) {
+
+					data.center = centers[ data.uuid ];
+
+				}
+
+				( data.children || [] ).forEach( add );
+
+			} )( json.object );
+
+			const result = {
+				pixels: frames ? undefined : read(),
+				frames,
+				animate,
+				scene: json,
+				camera: camera.toJSON(),
+				clear,
+				size,
+				renderer: options,
+				distance: distance ? distance.uuid : undefined,
+				edges,
+				target: target ? {
+					scene: target.scene.toJSON(),
+					camera: target.camera.toJSON(),
+					size: target.size,
+					clear: target.clear,
+					options: target.options,
+					depthTexture: target.depthTexture,
+				} : undefined,
+				cube,
+				gltf,
+				hdr,
+				composer,
+				overlay: overlay ? {
+					scene: overlay.scene.toJSON(),
+					camera: overlay.camera.toJSON(),
+					clearDepth: overlay.clearDepth,
+				} : undefined,
+				views,
+				antialias,
+				gpu: debug ? gl.getParameter( debug.UNMASKED_RENDERER_WEBGL ) : gl.getParameter( gl.RENDERER ),
+			};
+			renderer.dispose();
+
+			if ( renderTarget ) {
+
+				renderTarget.dispose();
+
+			}
+
+			if ( cubeTarget ) {
+
+				cubeTarget.dispose();
+
+			}
+
+			return result;
+
+		};
+
+		window.sceneNames = Object.keys( scenes );
+		window.ready = true;
+	</script>
+</body>
+</html>

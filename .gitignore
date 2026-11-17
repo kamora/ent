@@ -1,0 +1,13 @@
+# https://dart.dev/tools/private-files
+# Created by `dart pub`
+.dart_tool/
+
+# Flutter and Dart build output.
+build/
+
+# Pinned upstream checkouts (fetched by tool/fetch_upstream.sh and tool/fetch_gltf_samples.sh), and Node tooling.
+third_party/three.js/
+third_party/glTF-Sample-Assets/
+node_modules/
+
+.idea/
