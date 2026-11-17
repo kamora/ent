@@ -11,3 +11,6 @@ third_party/glTF-Sample-Assets/
 node_modules/
 
 .idea/
+
+# macOS folder metadata.
+.DS_Store

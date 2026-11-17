@@ -32,17 +32,22 @@ pushed or posted without Kai's go-ahead for that step. Small jobs, in this order
    the Flutter GPU switch and a minimal scene; a small example app beside the viewer; a user-facing summary of what
    differs from three.js r187.
 3. P3, licenses and metadata. Licenses done: MIT, © KAMORA Ltd., in the root and both packages; each package's
-   `THIRD_PARTY_NOTICES.md` holds three.js's notice (and earcut's in `ent`); the Khronos models' attribution stays
-   with the models in `fixtures/gltf/khronos/`. Metadata done: descriptions, topics,
-   CHANGELOGs, version `0.1.0-dev.1`, caret ranges, and `ent_flutter` asking for `ent` from pub.dev (the repository
-   resolves it from its path through `pubspec_overrides.yaml`, which pub does not upload). `dart pub publish --dry-run`
-   warns only of uncommitted files and the missing `repository` field. Left, once there is a remote: the `repository`
-   field, and the READMEs' relative links (`../ent/README.md`, `../../docs/...`), which break on pub.dev. `ent` must be
-   published before `ent_flutter`. `ent` and `ent_flutter` were free on pub.dev on 2026-11-10; a name is held only by
-   its first upload.
-4. P4, CI: a workflow running the unit tests, the flutter_tester parity suite (a Linux runner may do; a guess to
-   check) and analyze/format; whether a hosted macOS runner gives Metal for the Metal parity run is a guess to
-   check first. The repository has no remote, so pushing and enabling CI are Kai's steps.
+   `THIRD_PARTY_NOTICES.md` holds three.js's notice (and earcut's in `ent`); the Khronos models' attribution stays with
+   the models in `fixtures/gltf/khronos/`. Metadata done: descriptions, topics, CHANGELOGs, version `0.1.0-dev.1`, caret
+   ranges, and `ent_flutter` asking for `ent` from pub.dev (the repository resolves it from its path through
+   `pubspec_overrides.yaml`, which pub does not upload). `dart pub publish --dry-run` warns only of uncommitted files.
+   The repository is `github.com/kamora/ent` (public): both pubspecs name it, and the READMEs link into it, so the links
+   work on pub.dev. `ent` must be published before `ent_flutter`. `ent` and `ent_flutter` were free on pub.dev on
+   2026-11-10; a name is held only by its first upload.
+4. P4, CI: a workflow running the unit tests, the flutter_tester suite, the Metal parity suite and analyze/format.
+   Two probes (2026-11-17) answered the guesses: GitHub's `macos-15` runner gives Flutter GPU Metal, and its 176
+   parity frames equal the M1's line for line (after one `flutter build macos --debug`, which the device test needs on
+   a fresh checkout); `ubuntu-latest` runs the flutter_tester suite and every test passes, but flutter_tester crashes
+   (segmentation fault) while shutting down after `parity_test.dart`, in both probes and not on the Mac. This release
+   supports neither Linux nor Windows (Kai, 2026-11-17), so CI runs on macOS only and the crash waits for Linux
+   support (known gaps). The workflow is `.github/workflows/ci.yml`: a host job (format, analyze, `ent`'s tests, the
+   flutter_tester suite, the disabled-GPU test) and a Metal job (one build, the parity suite, getting started), both
+   on `macos-15`, for pushes to master and pull requests. Left: its first run on GitHub, which comes with Kai's push.
 
 ## Known gaps
 
@@ -70,5 +75,12 @@ InstancedMesh holds 60 fps at 2000):
 - Uniform blocks split by per-object, per-material and per-frame members and filled only when they change, as r187
   does (a guess: up to about 30%).
 - GPU time per frame, and the cost of MSAA, are not measured.
+
+Linux (not in this release): flutter_tester on GitHub's `ubuntu-latest` passes every test but crashes (segmentation
+fault) while shutting down after `parity_test.dart`; cause unknown. The hook keeps every backend there, since it is not
+settled whether Linux apps would draw through Vulkan or OpenGL.
+
+Tooling: on a fresh checkout an app's device tests need one build first (Flutter collects assets before the shader
+hook runs on that path; `docs/flutter-gpu.md`, "Flags"). Data assets would remove it once Flutter stable has them.
 
 Content: MetalRoughSpheres (11.2 MB, not fetched); Draco, KTX2/Basis, sheen and anisotropy are not supported.

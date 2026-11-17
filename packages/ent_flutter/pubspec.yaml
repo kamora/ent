@@ -3,6 +3,12 @@ description: >-
   Ent Engine for Flutter: a 3D renderer on Flutter GPU (Impeller), with a scene widget, picking and orbit
   controls. Exports all of the ent engine.
 version: 0.1.0-dev.1
+repository: https://github.com/kamora/ent/tree/master/packages/ent_flutter
+issue_tracker: https://github.com/kamora/ent/issues
+platforms:
+  android:
+  ios:
+  macos:
 topics:
   - graphics
   - rendering

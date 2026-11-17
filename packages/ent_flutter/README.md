@@ -2,7 +2,7 @@
 
 Flutter for Ent Engine: `FlutterGpuRenderer`, a renderer on Flutter GPU (Impeller) that draws what three.js r187's
 `WebGLRenderer` draws, and the widgets and adapters an app needs around it. It exports all of
-[`ent`](../ent/README.md), so an app depends on `ent_flutter` only.
+[`ent`][ent], so an app depends on `ent_flutter` only.
 
 - `FlutterGpuRenderer`: the renderer, with WebGLRenderer's method names (`render`, `setSize`, `setRenderTarget`,
   `compile`, `info`, `shadowMap`, ...).
@@ -11,7 +11,7 @@ Flutter for Ent Engine: `FlutterGpuRenderer`, a renderer on Flutter GPU (Impelle
 - `FlutterPlatform.install()`: the image and loader services of `ent` for Flutter.
 
 Its frames are compared pixel by pixel with r187's own frames from Chrome: 159 scenes under `flutter test`, and 176
-on Metal, on an M1 Mac and an iPhone 11 (`docs/flutter-gpu.md`, "Parity on Metal").
+on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "Parity on Metal").
 
 ## Requirements
 
@@ -34,7 +34,7 @@ on Metal, on an M1 Mac and an iPhone 11 (`docs/flutter-gpu.md`, "Parity on Metal
 | macOS | Verified on an M1 (Metal) |
 | iOS | Verified on an iPhone 11 (A13) and the simulator |
 | Android | Not verified: no Vulkan device has run it yet; the tested phone falls back to OpenGL ES |
-| Web, Windows, Linux | Not supported (Flutter GPU has no web backend; the desktop ones are untested) |
+| Web, Windows, Linux | Not supported in this version (Flutter GPU has no web backend; the desktop ones are untested) |
 
 ## Getting started
 
@@ -58,7 +58,7 @@ on Metal, on an M1 Mac and an iPhone 11 (`docs/flutter-gpu.md`, "Parity on Metal
    ```
 
    A draw whose variant is missing throws a `StateError` naming its key. To collect the keys, set
-   `renderer.recorded = {}` and run the app through its scenes; [`docs/usage.md`](../../docs/usage.md), "Shader
+   `renderer.recorded = {}` and run the app through its scenes; [`docs/usage.md`][usage], "Shader
    variants", shows how to save them.
 3. Install the platform services, create the renderer and show the scene:
 
@@ -78,8 +78,8 @@ on Metal, on an M1 Mac and an iPhone 11 (`docs/flutter-gpu.md`, "Parity on Metal
    changes, and pauses while muted by `TickerMode` or while the app is in the background. It does not own the
    renderer: the app disposes it.
 
-`examples/flutter/lib/getting_started.dart` is this as a whole app, with picking and `OrbitControls`; the same
-example app has a glTF viewer.
+[`examples/flutter/lib/getting_started.dart`][getting_started] is this as a whole app, with picking and `OrbitControls`;
+the same example app has a glTF viewer.
 
 ## What it draws
 
@@ -89,7 +89,7 @@ lights; Basic, PCF and VSM shadows; environment maps and HDR backgrounds; skinni
 batching; render targets with depth textures and samples; `CubeCamera`; antialias; and `EffectComposer` with
 bloom, FXAA and vignette.
 
-Limits (the full list is in `docs/flutter-gpu.md`, "Limits"):
+Limits (the full list is in [`docs/flutter-gpu.md`][flutter-gpu], "Limits"):
 
 - At most 4 directional, 8 point, 4 spot, 2 hemisphere and 2 rect area lights, and 6 shadow or spot-light maps,
   per frame; lights past them are dropped with a one-time warning.
@@ -132,7 +132,12 @@ flutter test --enable-impeller test/disabled_test.dart
 
 The first runs the renderer, parity and adapter tests under flutter_tester (Impeller on Vulkan through SwiftShader,
 on the CPU); the second checks the error when Flutter GPU is off. The parity run on Metal is in `examples/flutter`
-(`integration_test/parity_metal_test.dart`).
+([`integration_test/parity_metal_test.dart`][parity_metal_test]).
+
+An app's device tests (`flutter test integration_test -d <device>`) look for the shader bundle before the build hook
+has made it: on a fresh checkout or after `flutter clean` they stop with "No file or variants found for asset:
+packages/ent_flutter/build/shaderbundles/ent.shaderbundle". `flutter build`, `flutter run` and host tests run the hook
+first, so run one of them once before the device tests.
 
 ## License
 
@@ -140,3 +145,9 @@ MIT, © 2026 KAMORA Ltd.; see `LICENSE`.
 
 Derived from [three.js](https://github.com/mrdoob/three.js) r187 (MIT, © three.js authors); its notice is in
 `THIRD_PARTY_NOTICES.md`.
+
+[ent]: https://github.com/kamora/ent/tree/master/packages/ent
+[flutter-gpu]: https://github.com/kamora/ent/blob/master/docs/flutter-gpu.md
+[usage]: https://github.com/kamora/ent/blob/master/docs/usage.md
+[getting_started]: https://github.com/kamora/ent/blob/master/examples/flutter/lib/getting_started.dart
+[parity_metal_test]: https://github.com/kamora/ent/blob/master/examples/flutter/integration_test/parity_metal_test.dart

@@ -10,6 +10,9 @@ flutter run -d macos
 flutter test integration_test/render_test.dart -d <device> --enable-flutter-gpu
 ```
 
+On a fresh checkout or after `flutter clean`, build the app once (`flutter build macos --debug`, or any `flutter run`)
+before the device tests: they look for the shader bundle before the build hook has made it.
+
 ## Getting started
 
 `lib/getting_started.dart` is the scene of `ent`'s README as an app: a lit cube that turns, changes color when

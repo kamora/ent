@@ -47,7 +47,8 @@ void main(List<String> args) async {
       )).outputFile,
     );
 
-    // macOS keeps Vulkan for flutter test (flutter_tester runs Impeller on Vulkan); a target not listed keeps all.
+    // macOS keeps Vulkan for flutter test (flutter_tester runs Impeller on Vulkan); a target not listed (Linux,
+    // Windows) keeps all: neither is supported, and on Linux flutter_tester still reads Vulkan.
     final target = input.config.buildCodeAssets ? input.config.code.targetOS : null;
     final kept = switch (target) {
       OS.iOS => {'metal_ios'},

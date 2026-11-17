@@ -115,8 +115,12 @@ void main() {
     final bytes = File('build/shaderbundles/ent.shaderbundle').readAsBytesSync();
     final vulkan = (await gpu.ShaderLibrary.fromBytes(ByteData.sublistView(strip(bytes, {'vulkan'}))))!;
 
-    // macOS keeps Metal and Vulkan: the bundle's OpenGL slots are empty, so keeping only them leaves the names.
-    expect(strip(bytes, {'opengl_es', 'opengl_desktop'}).length, lessThan(64 << 10));
+    // macOS keeps Metal and Vulkan: the bundle's OpenGL slots are empty, so keeping only them leaves the names. Linux
+    // (not supported in this release) keeps every backend.
+    expect(
+      strip(bytes, {'opengl_es', 'opengl_desktop'}).length,
+      Platform.isMacOS ? lessThan(64 << 10) : greaterThan(64 << 10),
+    );
     expect(shaderOf(vulkan, 'FaceVertex'), isNotNull);
 
     // A bundle with another GPU's backend only (iOS Metal, which the macOS build already left out) has nothing for

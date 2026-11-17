@@ -1,0 +1,72 @@
+# Checks every push to master and every pull request on macOS, the only desktop this release supports. Two jobs run
+# side by side: the host checks (format, analysis, ent's tests, ent_flutter's flutter_tester suite) and the Metal
+# suites inside the example app, on the runner's GPU.
+
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  host:
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.6
+          channel: stable
+          cache: true
+      - name: Format
+        run: dart format --output=none --set-exit-if-changed packages/ent packages/ent_flutter examples/flutter
+      - name: Analyze ent
+        working-directory: packages/ent
+        run: |
+          dart pub get
+          dart analyze --fatal-infos
+      - name: Analyze ent_flutter
+        working-directory: packages/ent_flutter
+        run: flutter analyze --fatal-infos
+      - name: Analyze the example
+        working-directory: examples/flutter
+        run: flutter analyze --fatal-infos
+      - name: ent tests
+        working-directory: packages/ent
+        run: dart test
+      - name: ent_flutter tests (Impeller on Vulkan through SwiftShader)
+        working-directory: packages/ent_flutter
+        run: flutter test --enable-impeller --enable-flutter-gpu
+      - name: ent_flutter without Flutter GPU
+        working-directory: packages/ent_flutter
+        run: flutter test --enable-impeller test/disabled_test.dart
+
+  metal:
+    runs-on: macos-15
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: examples/flutter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.6
+          channel: stable
+          cache: true
+
+      # Device tests look for the shader bundle before the build hook makes it, so one build comes first.
+      - name: Build once
+        run: flutter build macos --debug
+      - name: Metal parity suite
+        run: flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu
+      - name: Getting started
+        run: flutter test integration_test/getting_started_test.dart -d macos --enable-flutter-gpu

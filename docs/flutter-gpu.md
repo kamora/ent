@@ -32,6 +32,12 @@ assumed from documentation alone.
   `true` in `examples/flutter/macos/Runner/Info.plist` and `examples/flutter/ios/Runner/Info.plist`.
 - Android reads the `io.flutter.embedding.android.EnableFlutterGPU` metadata key in `AndroidManifest.xml` (named
   by Flutter's own error message; not tried on a device where Impeller uses Vulkan).
+- The bundle is an asset `ent_flutter` declares (`build/shaderbundles/ent.shaderbundle`), written by its build hook.
+  `flutter build`, `flutter run` and `flutter test` on the host run the hook before they collect assets; `flutter
+  test integration_test -d <device>` collects them first, so with no bundle yet (a fresh checkout, `flutter clean`)
+  it stops with "No file or variants found for asset" (Flutter 3.47.6, macOS, 2026-11-17; the app's own build then
+  copies the hook's bundle, byte for byte). Building once first avoids it. `flutter_gpu_shaders`' data-asset mode
+  would drop the pubspec entry, but Flutter 3.47.6 stable reports data assets as unavailable.
 - Without the switch, `gpu.gpuContext` throws; `FlutterGpuRenderer.create()` turns that into a `StateError` that
   names the switch (`test/disabled_test.dart`, run without the flag).
 

@@ -5,7 +5,7 @@ scene graph, math, cameras, geometries, materials, lights, animation, loaders, c
 post-processing. It imports no Flutter, `dart:ui` or `dart:io`, so it runs anywhere Dart does.
 
 `ent` does not draw. A renderer package draws its scenes: today that is
-[`ent_flutter`](../ent_flutter/README.md), a renderer on Flutter GPU, which also exports all of `ent`. A Flutter
+[`ent_flutter`][ent_flutter], a renderer on Flutter GPU, which also exports all of `ent`. A Flutter
 app depends on `ent_flutter` only.
 
 ## A scene
@@ -69,7 +69,7 @@ still work.
 ## Differences from three.js r187
 
 Most code reads as it does in three.js. Where Dart or the renderer needs another shape, the difference is recorded,
-with its reason and tests, in [the compatibility exceptions](../../docs/compatibility-exceptions.md). The ones a
+with its reason and tests, in [the compatibility exceptions][compatibility-exceptions]. The ones a
 user meets first:
 
 - No shaders at runtime: there is no `ShaderMaterial`, `RawShaderMaterial` or `onBeforeCompile`; a loader reads a
@@ -80,7 +80,7 @@ user meets first:
   `OrbitControlsListener` feeds them.
 - three.js's plain objects (`{ start, count }`, raycast hits, camera views) are small classes with the same fields.
 
-More usage, for controls, GLTFLoader and post-processing, is in [`docs/usage.md`](../../docs/usage.md).
+More usage, for controls, GLTFLoader and post-processing, is in [`docs/usage.md`][usage].
 
 ## Status
 
@@ -91,8 +91,8 @@ every change to it is deliberate.
 dart test
 ```
 
-The tests compare ent with values the pinned three.js r187 source computes in Node (`fixtures/`, written by
-`tool/reference/js/`).
+The tests compare ent with values the pinned three.js r187 source computes in Node ([`fixtures/`][fixtures], written by
+[`tool/reference/js/`][reference]).
 
 ## License
 
@@ -100,3 +100,9 @@ MIT, © 2026 KAMORA Ltd.; see `LICENSE`.
 
 Derived from [three.js](https://github.com/mrdoob/three.js) r187 (MIT, © three.js authors), with a port of
 [earcut](https://github.com/mapbox/earcut) (ISC, © Mapbox); their notices are in `THIRD_PARTY_NOTICES.md`.
+
+[ent_flutter]: https://github.com/kamora/ent/tree/master/packages/ent_flutter
+[compatibility-exceptions]: https://github.com/kamora/ent/blob/master/docs/compatibility-exceptions.md
+[usage]: https://github.com/kamora/ent/blob/master/docs/usage.md
+[fixtures]: https://github.com/kamora/ent/tree/master/fixtures
+[reference]: https://github.com/kamora/ent/tree/master/tool/reference/js
