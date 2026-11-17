@@ -26,13 +26,19 @@ jobs:
           flutter-version: 3.47.6
           channel: stable
           cache: true
+
+      # The formatter reads page_width through analysis_options.yaml, whose include needs package:lints resolved;
+      # without it, it falls back to 80 columns.
+      - name: Resolve
+        run: |
+          (cd packages/ent && dart pub get)
+          (cd packages/ent_flutter && flutter pub get)
+          (cd examples/flutter && flutter pub get)
       - name: Format
         run: dart format --output=none --set-exit-if-changed packages/ent packages/ent_flutter examples/flutter
       - name: Analyze ent
         working-directory: packages/ent
-        run: |
-          dart pub get
-          dart analyze --fatal-infos
+        run: dart analyze --fatal-infos
       - name: Analyze ent_flutter
         working-directory: packages/ent_flutter
         run: flutter analyze --fatal-infos
