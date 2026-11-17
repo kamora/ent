@@ -749,6 +749,8 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
       return;
     }
 
+    // A readback right after a submit can miss the GPU's writes on some Vulkan drivers (HostBuffers.idle).
+    await Future.wait([_buffers.idle(), _passes.idle()]);
     final data = (await _textures.target(target).color.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
 
     for (var row = 0; row < height; row++) {

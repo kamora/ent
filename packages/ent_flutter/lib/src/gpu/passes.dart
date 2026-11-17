@@ -55,6 +55,9 @@ class GpuPasses {
     _buffers.next();
   }
 
+  /// Completes when every pass submitted so far has completed (HostBuffers.idle).
+  Future<void> idle() => _buffers.idle();
+
   /// Renders the fragment shader [name] into [level] of [target] (and [slice] of a cube). [blocks] fill the
   /// shader's uniform blocks by name (each block is started first); [textures] are bound by sampler name and
   /// must be exactly the samplers the shader reads.

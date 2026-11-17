@@ -5,6 +5,7 @@
 // own, which return to a capped pool when every command buffer submitted with them has completed
 // (docs/flutter-gpu.md, Host buffers).
 
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter_gpu/gpu.dart' as gpu;
@@ -35,6 +36,15 @@ class HostBuffers {
 
   /// The current frame's number: a view [emplace] returns stays valid while it is unchanged.
   int frame = 0;
+
+  // The command buffers submitted and not completed yet, across frames, and the completer [idle] handed out.
+  int _pending = 0;
+
+  Completer<void>? _idle;
+
+  /// Completes when every command buffer submitted so far has completed. A readback must wait for it: on some
+  /// Vulkan drivers (the Galaxy S10's Mali-G76) a texture read back right after a submit misses the GPU's writes.
+  Future<void> idle() => _pending == 0 ? Future.value() : (_idle ??= Completer<void>()).future;
 
   /// Whether [view] lies in a block of the current frame (the reuse check of [UniformBlock]).
   bool holds(gpu.BufferView view) => _frame.blocks.any((block) => identical(block, view.buffer));
@@ -81,12 +91,19 @@ class HostBuffers {
   /// Submits [commands], which read the current frame's data, with [done] as the completion callback.
   void submit(gpu.CommandBuffer commands, [gpu.CompletionCallback? done]) {
     final frame = _frame..flight += 1;
+    _pending += 1;
     commands.submit(
       completionCallback: (success) {
         frame.flight -= 1;
+        _pending -= 1;
 
         if (frame.flight == 0 && frame.ended) {
           _release(frame);
+        }
+
+        if (_pending == 0) {
+          _idle?.complete();
+          _idle = null;
         }
 
         done?.call(success);

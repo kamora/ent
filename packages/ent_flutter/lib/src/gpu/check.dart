@@ -2,6 +2,7 @@
 // Android devices where Impeller falls back to OpenGL ES, a render pass writes nothing to its attachment
 // (docs/flutter-gpu.md, Platforms), so every frame would come out black.
 
+import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -9,6 +10,14 @@ import 'package:flutter_gpu/gpu.dart' as gpu;
 import 'package:vector_math/vector_math.dart' as vm;
 
 import 'passes.dart';
+
+// Submits [commands] and completes when the GPU has finished them: a readback right after a submit can miss the
+// GPU's writes on some Vulkan drivers (HostBuffers.idle).
+Future<void> _submit(gpu.CommandBuffer commands) {
+  final done = Completer<void>();
+  commands.submit(completionCallback: (_) => done.complete());
+  return done.future;
+}
 
 Future<void>? _checked;
 
@@ -23,7 +32,7 @@ Future<void> _check() async {
   commands.createRenderPass(
     gpu.RenderTarget.singleColor(gpu.ColorAttachment(texture: target, clearValue: vm.Vector4(1, 0, 1, 1))),
   );
-  commands.submit();
+  await _submit(commands);
 
   final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
 
@@ -59,7 +68,7 @@ Future<bool> _load() async {
         ),
       ),
     );
-    commands.submit();
+    await _submit(commands);
   }
 
   final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
@@ -101,6 +110,7 @@ Future<bool> _filter(GpuPasses passes) async {
         ),
       },
     );
+  await passes.idle();
 
   final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
   return (pixel.getUint8(0) - 128).abs() < 32;
@@ -142,6 +152,7 @@ Future<bool> _depthRead(GpuPasses passes) async {
       },
       textures: {'source': PassTexture(depth, gpu.SamplerOptions())},
     );
+  await passes.idle();
 
   final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
   return (pixel.getUint8(0) - 64).abs() < 3;
