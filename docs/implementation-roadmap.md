@@ -47,7 +47,8 @@ pushed or posted without Kai's go-ahead for that step. Small jobs, in this order
    supports neither Linux nor Windows (Kai, 2026-11-17), so CI runs on macOS only and the crash waits for Linux
    support (known gaps). The workflow is `.github/workflows/ci.yml`: a host job (format, analyze, `ent`'s tests, the
    flutter_tester suite, the disabled-GPU test) and a Metal job (one build, the parity suite, getting started), both
-   on `macos-15`, for pushes to master and pull requests. Left: its first run on GitHub, which comes with Kai's push.
+   on `macos-15`, for pushes to master and pull requests. Its first full run passed on 2026-11-17 (`051c5d4`): host
+   about 30 min, Metal about 8 min. macOS arm64 runners were short that day: two attempts timed out in the queue.
 
 ## Known gaps
 
@@ -66,7 +67,9 @@ Rendering:
 
 Devices:
 
-- Android has run nothing; a Vulkan device is needed. A second backend for OpenGL ES devices is kept in mind.
+- Android has run nothing; a Vulkan device is needed. Both test phones fall back to OpenGL ES (Galaxy A22, MediaTek;
+  Galaxy S10, Exynos 9820), and Flutter never picks Vulkan on an emulator. A second backend for OpenGL ES devices is
+  kept in mind.
 
 Performance, for when an app needs more than a few hundred separate draws at 60 fps on the iPhone 11 (one
 InstancedMesh holds 60 fps at 2000):

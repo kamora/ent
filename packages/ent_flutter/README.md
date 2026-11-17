@@ -25,9 +25,9 @@ on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "
   | iOS, macOS | `FLTEnableFlutterGPU` and `FLTEnableImpeller` set to `true` in `Info.plist` |
   | Android | `io.flutter.embedding.android.EnableFlutterGPU` set to `true` as `<meta-data>` in `AndroidManifest.xml` |
 
-- On Android, a device where Impeller runs on Vulkan. On its OpenGL ES fallback (MediaTek below vendor API 32,
-  Adreno 650 and older, older PowerVR, Huawei), Flutter GPU draws nothing (flutter/flutter#196045), and `create()`
-  throws a `StateError` that says so.
+- On Android, a device where Impeller runs on Vulkan. Flutter falls back to OpenGL ES on emulators, Huawei, MediaTek
+  below vendor API 32, Exynos 9825 and older, Adreno 650 and older, older PowerVR and the first Samsung Xclipse; there
+  Flutter GPU draws nothing (flutter/flutter#196045), and `create()` throws a `StateError` that says so.
 
 | Platform | Status |
 |---|---|

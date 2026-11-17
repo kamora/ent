@@ -31,8 +31,8 @@ Future<void> _check() async {
     throw StateError(
       'ent_flutter: Flutter GPU cannot render on this device: a cleared texture reads back '
       '${[for (var i = 0; i < 4; i++) pixel.getUint8(i)]}. On Android this happens when Impeller uses its '
-      'OpenGL ES backend (MediaTek below vendor API 32, Adreno 650 and older, older PowerVR, Huawei); Flutter '
-      'GPU needs Vulkan there.',
+      'OpenGL ES backend (emulators, Huawei, MediaTek below vendor API 32, Exynos 9825 and older, Adreno 650 and '
+      'older, older PowerVR, the first Samsung Xclipse); Flutter GPU needs Vulkan there.',
     );
   }
 }
