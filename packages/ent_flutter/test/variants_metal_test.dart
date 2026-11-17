@@ -1,7 +1,8 @@
 // Compiles every variant of the test registry for Metal and checks that the shader uses every uniform block and
 // sampler its reflection lists. impellerc drops what a stage declares but never reads while the reflection keeps it,
 // so the renderer binds it out of range: Metal crashes (a bus error in setFragmentBuffer), SwiftShader does not, so
-// the GPU tests under flutter test would not catch it.
+// the GPU tests under flutter test would not catch it. A dropped sampler also keeps binding 0 in the reflection, and
+// a Vulkan descriptor layout that repeats a binding hung the Galaxy S10.
 
 import 'dart:convert';
 import 'dart:io';
@@ -51,13 +52,9 @@ void main() {
                 }
               }
 
-              // The physical stages bind their maps through slots, never by name: there the renderer binds only the
-              // slots and the env map.
               for (final sampler in reflection['sampled_images'] as List<Object?>) {
-                final name = (sampler as Map)['name'] as String;
-                if ((parseKey(key).kind != 'physical' || name.startsWith('slot_') || name == 'env_map') &&
-                    !samplers.contains(name)) {
-                  problems.add('$key: declares sampler $name but does not use it');
+                if (!samplers.contains((sampler as Map)['name'])) {
+                  problems.add('$key: declares sampler ${sampler['name']} but does not use it');
                 }
               }
             }(),

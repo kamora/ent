@@ -4,7 +4,9 @@
 // (envmaps.glsl), and the physical layers: ior and specular, clearcoat, iridescence, sheen, anisotropy, diffuse
 // roughness (EON), retroreflection and transmission. Compiled only as variants (lib/src/gpu/variants.dart): a
 // variant's flags define its maps (PHYSICAL_MAPS), layers (LAYER_*, with PHYSICAL), transmission (TRANSMISSION)
-// and dispersion (DISPERSION). A layer a variant leaves out is off, and its samplers and blocks are not declared.
+// and dispersion (DISPERSION). A layer a variant leaves out is off, and its blocks are not declared. Every texture,
+// the DFG table and the light textures included, is read through the generic slots (slots.glsl), never by its own
+// sampler name.
 // MeshStandardMaterial is a physical material with ior 1.5 and white specular of intensity 1, as the reference's
 // values without PHYSICAL are.
 //
@@ -119,31 +121,6 @@ uniform TransmissionInfo {
 	mat4 model_matrix;
 	mat4 projection_matrix;
 } transmission_info;
-#endif
-
-uniform sampler2D roughness_map;
-uniform sampler2D metalness_map;
-
-uniform sampler2D dfg_lut;
-
-#ifdef PHYSICAL
-uniform sampler2D clearcoat_map;
-uniform sampler2D clearcoat_roughness_map;
-uniform sampler2D clearcoat_normal_map;
-uniform sampler2D sheen_color_map;
-uniform sampler2D sheen_roughness_map;
-uniform sampler2D iridescence_map;
-uniform sampler2D iridescence_thickness_map;
-uniform sampler2D anisotropy_map;
-uniform sampler2D specular_intensity_map;
-uniform sampler2D specular_color_map;
-uniform sampler2D diffuse_roughness_map;
-#endif
-
-#ifdef TRANSMISSION
-uniform sampler2D transmission_map;
-uniform sampler2D thickness_map;
-uniform sampler2D transmission_sampler_map;
 #endif
 
 // Whether the physical map [i] (the indices of UvInfo) is in use: bit i of the variant's PHYSICAL_MAPS.

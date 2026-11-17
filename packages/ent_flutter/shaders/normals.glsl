@@ -21,12 +21,15 @@ uniform NormalInfo {
 	float use_tangent;
 } normal_info;
 
+// A stage that reads its textures through slots (slots.glsl) declares none of these samplers by name.
+#ifndef TEXTURE_SLOTS
 #if defined(USE_NORMALMAP_TANGENTSPACE) || defined(USE_NORMALMAP_OBJECTSPACE)
 uniform sampler2D normal_map;
 #endif
 
 #ifdef USE_BUMPMAP
 uniform sampler2D bump_map;
+#endif
 #endif
 
 // Normal mapping without precomputed tangents (http://www.thetenthplanet.de/archives/1180).

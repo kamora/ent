@@ -10,6 +10,8 @@ uniform MapInfo {
 	float light_map_intensity;
 } map_info;
 
+// A stage that reads its textures through slots (slots.glsl) declares none of these samplers by name.
+#ifndef TEXTURE_SLOTS
 #ifdef USE_MAP
 uniform sampler2D map;
 #endif
@@ -32,6 +34,7 @@ uniform sampler2D emissive_map;
 
 #ifdef USE_SPECULARMAP
 uniform sampler2D specular_map;
+#endif
 #endif
 
 // map_fragment, color_fragment, alphamap_fragment and alphatest_fragment applied to [color].

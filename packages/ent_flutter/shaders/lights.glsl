@@ -93,12 +93,17 @@ uniform LightInfo {
 // portable through impellerc.
 #define MAX_LIGHT_TEXTURES 6
 
+// A stage that reads its textures through slots (slots.glsl, the physical one) reads light texture k from slot_k, so
+// it declares none of these: the compiler would drop them, its reflection would keep them all at binding 0, and a
+// Vulkan descriptor layout that repeats a binding hung the Galaxy S10 (Mali-G76).
+#ifndef TEXTURE_SLOTS
 uniform sampler2D light_texture_0;
 uniform sampler2D light_texture_1;
 uniform sampler2D light_texture_2;
 uniform sampler2D light_texture_3;
 uniform sampler2D light_texture_4;
 uniform sampler2D light_texture_5;
+#endif
 
 // Light texture [slot] at [uv], in uniform control flow wherever the texture has mipmaps.
 vec4 lightTexture(int slot, vec2 uv) {
