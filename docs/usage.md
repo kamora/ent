@@ -77,6 +77,34 @@ final composer = EffectComposer(renderer)
 composer.render();
 ```
 
+## HologramMaterial
+
+Ent's own material, not one of three.js r187: a see-through glow, brightest at the silhouette, banded by scanlines
+that move up, with an optional flicker. It ignores lights. By default it blends additively, draws both sides and
+writes no depth, so holograms add up where they overlap. A transparent double-sided object draws its back faces, then
+its front faces, as in three.js, so a closed shape shows both its walls.
+
+```dart
+final material = HologramMaterial({'color': Color(0x4fd8ff), 'rim': 1.5, 'flicker': 0.1});
+final clock = Clock();
+
+// Every frame, before rendering: the scanlines and the flicker follow time.
+material.time = clock.getElapsedTime();
+```
+
+| Property | Default | Effect |
+| --- | --- | --- |
+| `color`, `opacity` | `0x4fd8ff`, `1` | The glow's color and overall strength |
+| `fill` | `0.15` | The glow where the surface faces the camera |
+| `rim`, `rimPower` | `1`, `2` | The glow added at the silhouette, and how tightly it hugs the edge |
+| `scanlines` | `0.5` | How deep the lines cut, `0` to `1` |
+| `scanlineDensity`, `scanlineSpeed` | `40`, `0.5` | Lines per world unit along y, and their speed up in units per second |
+| `flicker` | `0` | Random dimming, a new amount 30 times a second, `0` to `1` |
+| `time` | `0` | Seconds; the app advances it |
+
+Above a glow of 1 the color gets brighter instead of more opaque, so a bloom pass (`TuningPass`) picks up a strong
+rim. Its shader variant is `hologram` (with `polygon_offset` when the material sets it).
+
 ## Shader variants
 
 The material shaders are compiled when the app is built, one variant per material setup it uses: a kind and its

@@ -217,6 +217,50 @@ void main() {
     expect(renderer.info.render.triangles, 12);
   });
 
+  test('HologramMaterial: the silhouette glows over the face, and the scanlines move up with time', () async {
+    // White over the clear color (0x33, 0x66, 0x99), additive: each channel gains 255 × glow. Facing the camera the
+    // glow is the fill alone, 0.15 (38.25), once for the far wall and once for the near one: transparent and
+    // double-sided, the sphere draws its back faces, then its front faces. Near the edge the rim adds up to 1.
+    final sphere = HologramMaterial({'color': Color(0xffffff), 'scanlines': 0});
+    final f = await frame(renderer, Scene()..add(Mesh(SphereGeometry(0.8, 64, 32), sphere)), ortho());
+    expect(f.pixel(32, 32), rgb(127, 178, 229), reason: 'facing the camera, both walls');
+    expect(f.pixel(57, 32)[0], greaterThan(51 + 180), reason: 'near the silhouette');
+
+    // A plane of full fill and no rim, cut to 4 lines per unit: rows 32 (y = -1/64) and 27 (y = 9/64) sit
+    // near a line (0.96: saturated) and near the middle between two (0.04: 9.75 over the clear color).
+    final plane = HologramMaterial({
+      'color': Color(0xffffff),
+      'fill': 1,
+      'rim': 0,
+      'scanlines': 1,
+      'scanlineDensity': 4,
+      'scanlineSpeed': 1,
+    });
+    final scene = Scene()..add(Mesh(PlaneGeometry(2, 2), plane));
+    final before = await frame(renderer, scene, ortho());
+    expect(before.pixel(10, 32), rgb(255, 255, 255), reason: 'on a line');
+    expect(before.pixel(10, 27), rgb(61, 112, 163), reason: 'between lines');
+
+    // A sixteenth of a second at 1 unit per second moves the lines up by a quarter of their spacing, to y = 1/16:
+    // row 30 (y = 3/64) is then near a line and row 34 (y = -5/64) between two. Moved down, it would be the reverse.
+    plane.time = 1 / 16;
+    final after = await frame(renderer, scene, ortho());
+    expect(after.pixel(10, 30), rgb(255, 255, 255), reason: 'on a line once they moved up');
+    expect(after.pixel(10, 34), rgb(61, 112, 163), reason: 'between lines once they moved up');
+
+    // The flicker dims by a new random amount each thirtieth of a second.
+    final flickering = HologramMaterial({'fill': 1, 'rim': 0, 'scanlines': 0, 'flicker': 1, 'opacity': 0.3});
+    final flat = Scene()..add(Mesh(PlaneGeometry(2, 2), flickering));
+    final levels = <int>{};
+
+    for (var i = 1; i <= 8; i++) {
+      flickering.time = i / 30;
+      levels.add((await frame(renderer, flat, ortho())).pixel(32, 32)[1]);
+    }
+
+    expect(levels.length, greaterThan(1), reason: 'the glow over eight thirtieths of a second: $levels');
+  });
+
   test(
     'each variant kind draws through its own variants: an unregistered one is named, not drawn another way',
     () async {

@@ -49,6 +49,7 @@
 		"matcap",
 		"matcap matcap",
 		"matcap alpha_map map matcap normal_map",
+		"hologram",
 		"physical",
 		"physical alpha_map light_map map",
 		"physical ao_map",

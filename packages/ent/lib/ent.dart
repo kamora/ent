@@ -96,6 +96,7 @@ part 'src/lights/spot_light.dart';
 part 'src/lights/spot_light_shadow.dart';
 part 'src/lights/webgpu/ies_spot_light.dart';
 part 'src/lights/webgpu/projector_light.dart';
+part 'src/materials/hologram_material.dart';
 part 'src/materials/line_basic_material.dart';
 part 'src/materials/line_dashed_material.dart';
 part 'src/materials/material.dart';

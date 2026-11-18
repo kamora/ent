@@ -194,6 +194,7 @@ HalfFloatType
 HemisphereLight
 HemisphereLightHelper
 HighPassMaterial
+HologramMaterial
 HttpError
 IESSpotLight
 IcosahedronGeometry

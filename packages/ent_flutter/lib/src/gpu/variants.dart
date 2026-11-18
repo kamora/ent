@@ -71,6 +71,7 @@ const kinds = {
     source: 'shaders/matcap.glsl',
     flags: {..._diffuse, ..._normals, 'matcap': ('USE_MATCAP', 'matcap'), ..._offset},
   ),
+  'hologram': (source: 'shaders/hologram.glsl', flags: _offset),
 };
 
 /// The key of the [kind] variant with [flags]: the kind, then the flags sorted, separated by spaces.

@@ -146,6 +146,7 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
         'bump_map',
         'matcap',
       }),
+      _hologram = Program(library, 'HologramMaterial', 'MeshVertex', 'hologram', const {}),
       _depth = Program(library, 'MeshDepthMaterial', 'MeshVertex', 'depth', {'map', 'alpha_map'}),
       _distance = Program(library, 'MeshDistanceMaterial', 'MeshVertex', 'distance', {'map', 'alpha_map'}),
       _points = Program(
@@ -337,6 +338,8 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
   final Program _shadow;
 
   final Program _matcap;
+
+  final Program _hologram;
 
   final Program _depth;
 
@@ -1871,6 +1874,7 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
       MeshPhongMaterial _ => _phong,
       MeshToonMaterial _ => _toon,
       MeshMatcapMaterial _ => _matcap,
+      HologramMaterial _ => _hologram,
       MeshStandardMaterial _ => _physical,
       MeshDepthMaterial _ => _depth,
       ShadowMaterial _ => _shadow,
@@ -2231,6 +2235,10 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
       _morphUniforms(pass, variant, object, geometry, material, surface, morph, index == null ? start.floor() : 0);
     }
     _materialUniforms(pass, variant, material, side);
+
+    if (kind == _hologram) {
+      variant.fragInfo.flag('is_orthographic', camera is OrthographicCamera);
+    }
 
     if (kind == _basic || kind == _dashed) {
       variant.fragInfo
@@ -2921,6 +2929,18 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
           ..floats('diffuse', [m.color.r, m.color.g, m.color.b])
           ..float('opacity', m.opacity);
         _bindTexture(pass, variant, 'matcap', m.matcap);
+      case HologramMaterial m:
+        block
+          ..floats('diffuse', [m.color.r, m.color.g, m.color.b])
+          ..float('opacity', m.opacity)
+          ..float('fill', m.fill)
+          ..float('rim', m.rim)
+          ..float('rim_power', m.rimPower)
+          ..float('scanlines', m.scanlines)
+          ..float('scanline_density', m.scanlineDensity)
+          ..float('scanline_speed', m.scanlineSpeed)
+          ..float('flicker', m.flicker)
+          ..float('time', m.time);
       case ShadowMaterial m:
         block
           ..floats('color', [m.color.r, m.color.g, m.color.b])
@@ -3413,6 +3433,7 @@ class _Surface {
         flatShading: m.flatShading,
         wireframe: m.wireframe,
       ),
+      HologramMaterial m => _Surface(fog: m.fog),
       LineBasicMaterial m => _Surface(map: m.map, fog: m.fog),
       PointsMaterial m => _Surface(map: m.map, alphaMap: m.alphaMap, fog: m.fog),
       SpriteMaterial m => _Surface(map: m.map, alphaMap: m.alphaMap, fog: m.fog),
