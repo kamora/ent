@@ -1,5 +1,5 @@
 name: ent_example
-description: Minimal ent scene rendered with Flutter GPU (the render proof).
+description: Ent Engine examples on Flutter GPU, opening with a glTF viewer.
 publish_to: none
 version: 0.1.0+1
 

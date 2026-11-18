@@ -1,13 +1,13 @@
 # ent_example
 
-A minimal ent scene rendered with Flutter GPU: an orange triangle behind a rotating, normal-shaded cube.
+Ent Engine on Flutter GPU. The app opens with the example viewer (below); getting started and the render proof are
+other entry points of the same app.
 
 Flutter GPU must be enabled: the `Info.plist` files of `macos/` and `ios/` already set `FLTEnableFlutterGPU` and
 `FLTEnableImpeller` to `true` (see `packages/ent_flutter/README.md`).
 
 ```sh
 flutter run -d macos
-flutter test integration_test/render_test.dart -d <device> --enable-flutter-gpu
 ```
 
 On a fresh checkout or after `flutter clean`, build the app once (`flutter build macos --debug`, or any `flutter run`)
@@ -26,12 +26,12 @@ flutter test integration_test/getting_started_test.dart -d macos --enable-flutte
 
 ## Viewer
 
-`lib/viewer.dart` is the example viewer: a skinned, textured glTF worm (`assets/worm.glb`) wiggling on a ground
-plane with PCF shadows, orbited with the mouse (drag to rotate, right drag to pan, wheel to zoom; damping on).
-Pipelines are warmed with `compileAsync` while a loading state shows.
+`lib/viewer.dart`, the app's default, is the example viewer: a skinned, textured glTF worm (`assets/worm.glb`)
+wiggling on a ground plane with PCF shadows, orbited with the mouse (drag to rotate, right drag to pan, wheel to zoom;
+damping on). Pipelines are warmed with `compileAsync` while a loading state shows.
 
 ```sh
-flutter run -t lib/viewer.dart -d macos
+flutter run -d macos
 flutter test integration_test/viewer_test.dart -d macos --enable-flutter-gpu
 ```
 
@@ -42,3 +42,13 @@ running view holds 60 frames per second.
 
 The asset is generated, not downloaded: `node tool/reference/js/worm_glb.mjs` (from the repository root)
 rewrites it with the same bytes.
+
+## Render proof
+
+`lib/proof.dart` is the first scene ent drew: an orange triangle behind a rotating, normal-shaded cube, orbited with
+the mouse or touch.
+
+```sh
+flutter run -t lib/proof.dart -d macos
+flutter test integration_test/render_test.dart -d <device> --enable-flutter-gpu
+```

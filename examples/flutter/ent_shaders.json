@@ -4,6 +4,7 @@
 		"dashed",
 		"depth",
 		"depth alpha_map map",
+		"depth map",
 		"depth rgba_packing",
 		"depth rgb_packing",
 		"depth rg_packing",
