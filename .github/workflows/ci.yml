@@ -79,3 +79,5 @@ jobs:
         run: flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu
       - name: Getting started
         run: flutter test integration_test/getting_started_test.dart -d macos --enable-flutter-gpu
+      - name: Viewer
+        run: flutter test integration_test/viewer_test.dart -d macos --enable-flutter-gpu
