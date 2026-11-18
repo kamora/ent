@@ -39,6 +39,9 @@ dev_dependencies:
 
 flutter:
   assets:
+
+    # The build hook writes this bundle when an app is built, so a published copy of the package has none yet.
+    # ignore: asset_does_not_exist
     - build/shaderbundles/ent.shaderbundle
 
 # The shader variants this package's own tests draw with.
