@@ -1,4 +1,8 @@
-include: ../../analysis_options.yaml
+# Self-contained, as pub.dev reads it: a published package has no parent directory to include from.
+include: package:lints/recommended.yaml
+
+formatter:
+  page_width: 120
 
 analyzer:
   language:
@@ -7,6 +11,8 @@ analyzer:
 
 linter:
   rules:
-    # three.js names are the public API (DEG2RAD, SRGBToLinear, ...); they keep the upstream spelling.
+    curly_braces_in_flow_control_structures: true
+
+    # The public API keeps its established names (DEG2RAD, SRGBToLinear, ...), which these rules would rename.
     constant_identifier_names: false
     non_constant_identifier_names: false
