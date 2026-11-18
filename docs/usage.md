@@ -77,6 +77,13 @@ final composer = EffectComposer(renderer)
 composer.render();
 ```
 
+In Flutter, hand the composer to `EntView` instead of calling `render` yourself: the view runs it every frame, shows
+its frame and sizes it with the renderer. The app owns and disposes it:
+
+```dart
+EntView(renderer: renderer, scene: scene, camera: camera, composer: composer);
+```
+
 ## HologramMaterial
 
 Ent's own material, not one of three.js r187: a see-through glow, brightest at the silhouette, banded by scanlines

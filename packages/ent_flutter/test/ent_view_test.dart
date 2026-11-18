@@ -135,6 +135,34 @@ void main() {
     expect(camera.aspect, 2);
   });
 
+  testWidgets('with a composer, the frame is the composer\'s and the composer is sized with the renderer', (
+    tester,
+  ) async {
+    view(tester, 300, 150, 1.5);
+
+    // The view's own scene is empty; the composer's RenderPass draws a red one, so red can only come from it.
+    final camera = OrthographicCamera(-1, 1, 1, -1, 0.1, 10)..position.set(0, 0, 5);
+    final red = Scene()..add(Mesh(PlaneGeometry(4, 4), MeshBasicMaterial({'color': 0xff0000})));
+    final composer = EffectComposer(renderer)
+      ..addPass(RenderPass(red, camera))
+      ..addPass(OutputPass());
+    addTearDown(composer.dispose);
+    await tester.pumpWidget(EntView(renderer: renderer, scene: Scene(), camera: camera, composer: composer));
+    await pumps(tester, 2);
+    expect(dims(shown(tester)), [300, 150]);
+    expect([composer.renderTarget1.width, composer.renderTarget1.height], [300, 150]);
+
+    final rgba = (await tester.runAsync(() => shown(tester)!.toByteData()))!;
+    expect([rgba.getUint8(0), rgba.getUint8(1), rgba.getUint8(2)], [255, 0, 0]);
+
+    // A new ratio sizes the composer's targets again.
+    tester.view
+      ..physicalSize = const Size(600, 300)
+      ..devicePixelRatio = 3;
+    await pumps(tester, 2);
+    expect([composer.renderTarget1.width, composer.renderTarget1.height], [600, 300]);
+  });
+
   testWidgets('the frame is shown at one image pixel per physical pixel', (tester) async {
     view(tester, 150, 96, 1.5);
     final scene = Scene();

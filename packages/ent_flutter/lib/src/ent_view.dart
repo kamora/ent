@@ -27,6 +27,10 @@ typedef EntPointerCallback = void Function(PointerEvent event, Vector2 ndc);
 ///
 /// The pointer callbacks give each event's position as normalized device coordinates ([ndc]), for picking with a
 /// [Raycaster] as the reference's examples do; hover comes only from a mouse.
+///
+/// With a [composer], each frame is the composer's instead: its passes draw the scene (a `RenderPass` of [scene]
+/// and [camera]) and their effects, such as bloom. The view sizes the composer with the renderer; the app owns and
+/// disposes it.
 class EntView extends StatefulWidget {
   /// A view that draws [scene] through [camera] with [renderer].
   const EntView({
@@ -34,6 +38,7 @@ class EntView extends StatefulWidget {
     required this.renderer,
     required this.scene,
     required this.camera,
+    this.composer,
     this.onFrame,
     this.onPointerDown,
     this.onPointerMove,
@@ -49,6 +54,9 @@ class EntView extends StatefulWidget {
 
   /// The camera the scene is drawn through.
   final Camera camera;
+
+  /// The post-processing chain that draws each frame in place of a plain render, or `null` for none.
+  final EffectComposer? composer;
 
   /// Called before each frame.
   final EntFrameCallback? onFrame;
@@ -92,8 +100,8 @@ class _EntViewState extends State<EntView> with SingleTickerProviderStateMixin {
   void didUpdateWidget(EntView old) {
     super.didUpdateWidget(old);
 
-    // A new renderer or camera is sized on the next layout.
-    if (widget.renderer != old.renderer || widget.camera != old.camera) {
+    // A new renderer, camera or composer is sized on the next layout.
+    if (widget.renderer != old.renderer || widget.camera != old.camera || widget.composer != old.composer) {
       _size = Size.zero;
     }
   }
@@ -106,8 +114,20 @@ class _EntViewState extends State<EntView> with SingleTickerProviderStateMixin {
     widget.onFrame?.call(elapsed);
     setState(() {
       _image?.dispose();
-      _image = widget.renderer.render(widget.scene, widget.camera);
+      _image = _render();
     });
+  }
+
+  // The frame: the composer's, whose last pass draws into the renderer's frame texture, or a plain render.
+  ui.Image _render() {
+    final composer = widget.composer;
+
+    if (composer == null) {
+      return widget.renderer.render(widget.scene, widget.camera);
+    }
+
+    composer.render();
+    return widget.renderer.texture!.asImage();
   }
 
   void _resize(Size size, double pixelRatio) {
@@ -123,6 +143,9 @@ class _EntViewState extends State<EntView> with SingleTickerProviderStateMixin {
     _size = size;
     widget.renderer
       ..setPixelRatio(pixelRatio)
+      ..setSize(size.width, size.height);
+    widget.composer
+      ?..setPixelRatio(pixelRatio)
       ..setSize(size.width, size.height);
     final camera = widget.camera;
 
