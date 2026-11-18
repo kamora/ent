@@ -33,7 +33,7 @@ on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "
 |---|---|
 | macOS | Verified on an M1 (Metal) |
 | iOS | Verified on an iPhone 11 (A13) and the simulator |
-| Android | Not verified: no Vulkan device has run it yet; the tested phone falls back to OpenGL ES |
+| Android | Not verified by default: the tested phones fall back to OpenGL ES. A Galaxy S10 forced to Vulkan passes the getting-started and render tests and draws correctly |
 | Web, Windows, Linux | Not supported in this version (Flutter GPU has no web backend; the desktop ones are untested) |
 
 ## Getting started
