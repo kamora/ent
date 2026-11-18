@@ -1,7 +1,7 @@
 name: ent
 description: >-
-  Ent Engine, a 3D engine in pure Dart with three.js's API: scene graph, materials, lights, animation, glTF
-  loading, camera controls and post-processing.
+  Ent Engine, a 3D engine in pure Dart: scene graph, materials, lights, animation, glTF loading, camera controls
+  and post-processing.
 version: 0.1.0-dev.1
 repository: https://github.com/kamora/ent/tree/master/packages/ent
 issue_tracker: https://github.com/kamora/ent/issues

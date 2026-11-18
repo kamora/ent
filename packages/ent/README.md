@@ -1,8 +1,8 @@
 # ent
 
-The scene layer of Ent Engine, a 3D engine for Dart, in pure Dart. It follows three.js r187's API and behaviour:
-scene graph, math, cameras, geometries, materials, lights, animation, loaders, camera controls and
-post-processing. It imports no Flutter, `dart:ui` or `dart:io`, so it runs anywhere Dart does.
+The scene layer of Ent Engine, a 3D engine for Dart, in pure Dart: scene graph, math, cameras, geometries,
+materials, lights, animation, loaders, camera controls and post-processing. It imports no Flutter, `dart:ui` or
+`dart:io`, so it runs anywhere Dart does.
 
 `ent` does not draw. A renderer package draws its scenes: today that is
 [`ent_flutter`][ent_flutter], a renderer on Flutter GPU, which also exports all of `ent`. A Flutter
@@ -66,40 +66,38 @@ Loading images and files needs the platform: set `ImageUtils.platform` and `Load
 platform, loaders that parse what they are given (`ObjectLoader.parse`, `GLTFLoader.parse` of a GLB without images)
 still work.
 
-## Differences from three.js r187
+## Design notes
 
-Most code reads as it does in three.js. Where Dart or the renderer needs another shape, the difference is recorded,
-with its reason and tests, in [the compatibility exceptions][compatibility-exceptions]. The ones a
-user meets first:
+Where Dart or the renderer needs its own shape, the choice is recorded, with its reason and tests, in
+[the compatibility exceptions][compatibility-exceptions]. The ones a user meets first:
 
 - No shaders at runtime: there is no `ShaderMaterial`, `RawShaderMaterial` or `onBeforeCompile`; a loader reads a
   shader material as a plain `Material`, with a warning.
 - Post-processing effects are typed materials (`CopyMaterial`, `VignetteMaterial`, ...) drawn by `EffectPass`; the
-  renderer owns their shaders. three.js's `UnrealBloomPass` is `TuningPass`.
+  renderer owns their shaders. Bloom is `TuningPass`.
 - Controls take a `ControlsElement` and plain pointer, wheel and key events instead of a DOM element; in Flutter,
   `OrbitControlsListener` feeds them.
-- three.js's plain objects (`{ start, count }`, raycast hits, camera views) are small classes with the same fields.
+- Ranges, raycast hits and camera views are small typed classes, not maps.
 
 More usage, for controls, GLTFLoader and post-processing, is in [`docs/usage.md`][usage].
 
 ## Status
 
-Version `0.1.0-dev.1`, a preview: the API may still change before 0.1.0. The API is listed in `test/api.txt`, which `test/api_test.dart` checks, so
-every change to it is deliberate.
+Version `0.1.0-dev.1`, a preview: the API may still change before 0.1.0. The API is listed in `test/api.txt`,
+which `test/api_test.dart` checks, so every change to it is deliberate.
 
 ```sh
 dart test
 ```
 
-The tests compare ent with values the pinned three.js r187 source computes in Node ([`fixtures/`][fixtures], written by
-[`tool/reference/js/`][reference]).
+The tests compare ent with reference values in [`fixtures/`][fixtures], written by the scripts in
+[`tool/reference/js/`][reference].
 
 ## License
 
 MIT, © 2026 KAMORA Ltd.; see `LICENSE`.
 
-Derived from [three.js](https://github.com/mrdoob/three.js) r187 (MIT, © three.js authors), with a port of
-[earcut](https://github.com/mapbox/earcut) (ISC, © Mapbox); their notices are in `THIRD_PARTY_NOTICES.md`.
+The notices of the third-party code it builds on are in `THIRD_PARTY_NOTICES.md`.
 
 [ent_flutter]: https://github.com/kamora/ent/tree/master/packages/ent_flutter
 [compatibility-exceptions]: https://github.com/kamora/ent/blob/master/docs/compatibility-exceptions.md

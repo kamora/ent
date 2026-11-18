@@ -1,49 +1,108 @@
-# Ent Engine
+<div align="center">
 
-Ent Engine (`ent`) is a 3D engine for Dart built on three.js r187: the scene graph, math, geometries, materials, lights,
-animation and loaders follow r187's API and behaviour, and scenes render on the GPU through Flutter GPU (Impeller).
+![Ent Engine's mascot, an old tree spirit](media/ent-concept.jpg)
+
+</div>
+
+<h1 align="center">Ent Engine</h1>
+
+<p align="center">
+  <strong>A 3D engine for Dart, drawn on the GPU by Flutter.</strong>
+</p>
+
+<p align="center">
+  <em>“…we do not say anything in it, unless it is worth taking a long time to say, and to listen to.”</em><br>
+  <sub>Treebeard on Entish, the language of the Ents, in J. R. R. Tolkien's <em>The Two Towers</em></sub>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2f7d4f" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/Flutter-3.47.6%2B-02569B?logo=flutter" alt="Flutter 3.47.6 or later">
+  <img src="https://img.shields.io/badge/platforms-iOS%20%C2%B7%20macOS%20%C2%B7%20Android-6b4f2a" alt="Platforms: iOS, macOS, Android">
+  <img src="https://img.shields.io/badge/status-preview-c27c0e" alt="Status: preview">
+</p>
+
+<p align="center">
+  <a href="#get-started">Get started</a> ·
+  <a href="docs/usage.md">Documentation</a> ·
+  <a href="examples/worm">Example</a> ·
+  <a href="#platforms">Platforms</a>
+</p>
+
+---
+
+Build 3D scenes in Dart and show them in your Flutter app. Ent is a pure-Dart engine (scenes, materials, lights,
+animation, model loading) with a renderer on Flutter GPU (Impeller), so the whole scene lives in the same code as the
+rest of your app.
+
+## What's inside
+
+- **Scenes**: cameras, geometries, materials and lights, with shadows.
+- **Models and motion**: glTF and GLB loading, skeletal animation and morph targets.
+- **Rendering**: physically based materials, environment maps, MSAA and post-processing (bloom, FXAA, vignette).
+- **Interaction**: picking, orbit controls and pointer input.
+- **Flutter**: `EntView`, a widget with its own frame loop that sizes itself to the layout.
+
+> [!NOTE]
+> Ent is a preview, and so is Flutter GPU, which it draws with. Read the
+> [requirements](packages/ent_flutter/README.md#requirements) before you build on it.
+
+## Get started
+
+Run the example, a skinned glTF worm wiggling under a shadow-casting light:
+
+```sh
+git clone https://github.com/kamora/ent.git
+cd ent/examples/worm
+flutter run -d macos
+```
+
+A smaller start, a lit cube you can tap and orbit:
+
+```sh
+flutter run -t lib/getting_started.dart -d macos
+```
+
+To draw in your own app, follow the [setup guide](packages/ent_flutter/README.md#getting-started): enable Flutter
+GPU and list the shader variants your materials need.
 
 ## Packages
 
-- `packages/ent`: the engine in pure Dart, with no Flutter dependency: the scene layer, GLTFLoader, HDRLoader,
-  OrbitControls and post-processing.
-- `packages/ent_flutter`: `FlutterGpuRenderer` and `EntView`, a widget with a frame loop and pointer
-  coordinates for picking.
-- `examples/worm`: the example app (`ent_example`), a glTF viewer and the integration tests.
+| Package | What it is |
+| --- | --- |
+| [`ent`](packages/ent) | The engine in pure Dart: scenes, loaders, controls and post-processing. No Flutter needed. |
+| [`ent_flutter`](packages/ent_flutter) | The Flutter GPU renderer, `EntView` and the platform adapters. Exports all of `ent`. |
 
-Each package and the example resolve on their own: `dart pub get` in `packages/ent`, `flutter pub get` in
-`packages/ent_flutter` and `examples/worm`. `ent_flutter` exports all of `ent`, so a Flutter app depends on
-`ent_flutter` only, as the example does.
+A Flutter app depends on `ent_flutter` only.
 
 ## Platforms
 
-macOS and iOS on Metal are verified. Android needs a device where Impeller uses Vulkan and is not tested yet.
-Flutter GPU must be enabled in every app: `--enable-flutter-gpu`, `FLTEnableFlutterGPU` in Info.plist, or
-`io.flutter.embedding.android.EnableFlutterGPU` in AndroidManifest.xml.
+| Platform | Status |
+| --- | --- |
+| macOS | Verified on an M1 (Metal) |
+| iOS | Verified on an iPhone 11 and the simulator |
+| Android | Needs a device where Impeller runs on Vulkan; not verified by default |
+| Web, Windows, Linux | Not supported in this release |
+
+## Learn more
+
+- [Usage](docs/usage.md): controls, model loading and post-processing
+- [Shader variants](docs/shader-variants.md): how material shaders are built with your app
+- [Renderer notes](docs/flutter-gpu.md): what Flutter GPU draws, and its limits
+- [Roadmap](docs/implementation-roadmap.md)
 
 ## Tests
 
 ```sh
 (cd packages/ent && dart test)
-
-# Renderer and parity tests under flutter_tester (Impeller on Vulkan through SwiftShader)
 (cd packages/ent_flutter && flutter test --enable-impeller --enable-flutter-gpu)
-
-# Parity with r187 on Metal, in the macOS app
 (cd examples/worm && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
 ```
 
-Expected values and reference frames are in `fixtures/`; they are written from the pinned r187 source by the
-scripts in `tool/reference/` (`js/` in Node, `render/` in headless Chrome), each with its own README.
-
-## Docs
-
-`docs/` holds the porting conventions, the compatibility exceptions, the Flutter GPU notes, the usage of controls,
-loaders and post-processing, the upstream pin and the roadmap. Each package and the example have a README.
+The device tests and what they need are in the [example's README](examples/worm/README.md).
 
 ## License
 
-MIT, © 2026 KAMORA Ltd.; see `LICENSE`. Each package carries the same `LICENSE` and a `THIRD_PARTY_NOTICES.md`.
-
-Derived from [three.js](https://github.com/mrdoob/three.js) (MIT, © three.js authors). The test models in
-`fixtures/gltf/khronos/` are Khronos glTF sample models under their own licenses; see their `ATTRIBUTION.md`.
+[MIT](LICENSE), © 2026 KAMORA Ltd. Third-party notices are in [`ent`](packages/ent/THIRD_PARTY_NOTICES.md) and
+[`ent_flutter`](packages/ent_flutter/THIRD_PARTY_NOTICES.md). The test models in `fixtures/gltf/khronos/` are Khronos
+glTF samples under their own licenses (see their `ATTRIBUTION.md`).

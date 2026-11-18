@@ -1,16 +1,16 @@
 # ent_flutter
 
-Flutter for Ent Engine: `FlutterGpuRenderer`, a renderer on Flutter GPU (Impeller) that draws what three.js r187's
-`WebGLRenderer` draws, and the widgets and adapters an app needs around it. It exports all of
+Flutter for Ent Engine: `FlutterGpuRenderer`, a 3D renderer on Flutter GPU (Impeller), and the widgets and
+adapters an app needs around it. It exports all of
 [`ent`][ent], so an app depends on `ent_flutter` only.
 
-- `FlutterGpuRenderer`: the renderer, with WebGLRenderer's method names (`render`, `setSize`, `setRenderTarget`,
-  `compile`, `info`, `shadowMap`, ...).
+- `FlutterGpuRenderer`: the renderer (`render`, `setSize`, `setRenderTarget`, `compile`, `info`, `shadowMap`,
+  ...).
 - `EntView`: a widget that draws a scene every frame, sized to its layout, with pointer callbacks for picking.
 - `OrbitControlsListener`: feeds Flutter's pointer events to `OrbitControls` or `MapControls`.
 - `FlutterPlatform.install()`: the image and loader services of `ent` for Flutter.
 
-Its frames are compared pixel by pixel with r187's own frames from Chrome: 159 scenes under `flutter test`, and 176
+Its frames are checked pixel by pixel against reference frames: 159 scenes under `flutter test`, and 176
 on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "Parity on Metal").
 
 ## Requirements
@@ -100,8 +100,8 @@ Limits (the full list is in [`docs/flutter-gpu.md`][flutter-gpu], "Limits"):
 
 ## Picking
 
-The pointer callbacks get the Flutter `PointerEvent` and its normalized device coordinates, as r187 computes them
-from CSS pixels:
+The pointer callbacks get the Flutter `PointerEvent` and its normalized device coordinates, computed from logical
+pixels:
 
 ```dart
 EntView(
@@ -143,8 +143,7 @@ first, so run one of them once before the device tests.
 
 MIT, © 2026 KAMORA Ltd.; see `LICENSE`.
 
-Derived from [three.js](https://github.com/mrdoob/three.js) r187 (MIT, © three.js authors); its notice is in
-`THIRD_PARTY_NOTICES.md`.
+The notices of the third-party code it builds on are in `THIRD_PARTY_NOTICES.md`.
 
 [ent]: https://github.com/kamora/ent/tree/master/packages/ent
 [flutter-gpu]: https://github.com/kamora/ent/blob/master/docs/flutter-gpu.md
