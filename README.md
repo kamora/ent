@@ -1,9 +1,3 @@
-<div align="center">
-
-![Ent Engine's mascot, an old tree spirit](media/ent-concept.jpg)
-
-</div>
-
 <h1 align="center">Ent Engine</h1>
 
 <p align="center">
@@ -34,6 +28,12 @@
 Build 3D scenes in Dart and show them in your Flutter app. Ent is a pure-Dart engine (scenes, materials, lights,
 animation, model loading) with a renderer on Flutter GPU (Impeller), so the whole scene lives in the same code as the
 rest of your app.
+
+<div align="center">
+
+![Ent Engine's mascot, an old tree spirit](media/ent-concept.jpg)
+
+</div>
 
 ## What's inside
 
