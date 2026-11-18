@@ -717,6 +717,11 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
     }
   }
 
+  /// Completes when the GPU has finished every frame and pass submitted so far. Read an image [render] returned only
+  /// after it: on some Vulkan drivers (the Galaxy S10's Mali-G76) a texture read back right after a submit misses the
+  /// GPU's writes (HostBuffers.idle). [readRenderTargetPixels] waits for it itself.
+  Future<void> idle() => Future.wait([_buffers.idle(), _passes.idle()]);
+
   /// Reads the [width] × [height] rectangle at ([x], [y]) of [target]'s color texture into [buffer] as the reference
   /// does (rows from the bottom, as glReadPixels), for 8-bit RGBA targets (with the reference's error otherwise).
   /// Asynchronous: Flutter GPU hands texture contents back through `asImage().toByteData()`.
@@ -749,8 +754,7 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
       return;
     }
 
-    // A readback right after a submit can miss the GPU's writes on some Vulkan drivers (HostBuffers.idle).
-    await Future.wait([_buffers.idle(), _passes.idle()]);
+    await idle();
     final data = (await _textures.target(target).color.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
 
     for (var row = 0; row < height; row++) {
@@ -761,7 +765,8 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
 
   /// Renders [scene] as seen by [camera] and returns the frame as an image; with a render target set
   /// ([setRenderTarget]) it draws into the target's texture and returns that texture as an image (for a cube
-  /// target, which Flutter GPU cannot show as an image, a 1 × 1 black one).
+  /// target, which Flutter GPU cannot show as an image, a 1 × 1 black one). Before reading the image's pixels
+  /// (`toByteData`), await [idle].
   @override
   ui.Image render(Object3D scene, Camera camera) {
     _prepareCamera(camera);

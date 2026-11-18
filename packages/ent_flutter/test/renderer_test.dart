@@ -40,6 +40,7 @@ class Frame {
 
 Future<Frame> frame(FlutterGpuRenderer renderer, Object3D scene, Camera camera) async {
   final image = renderer.render(scene, camera);
+  await renderer.idle();
   final rgba = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
   return Frame(image.width, image.height, rgba!);
 }

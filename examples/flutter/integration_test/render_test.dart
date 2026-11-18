@@ -19,6 +19,7 @@ void main() {
       ..setSize(128, 128);
     final demo = DemoScene()..rotate(0.8);
     final image = renderer.render(demo.scene, demo.camera);
+    await tester.runAsync(renderer.idle);
     final rgba = (await tester.runAsync(() => image.toByteData(format: ui.ImageByteFormat.rawRgba)))!;
 
     List<int> pixel(int x, int y) {

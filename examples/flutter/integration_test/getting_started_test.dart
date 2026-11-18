@@ -23,6 +23,7 @@ void main() {
     // The pixel at (x, y) of a fresh frame, as RGB.
     Future<List<int>> pixel(int x, int y) async {
       final image = renderer.render(demo.scene, demo.camera);
+      await tester.runAsync(renderer.idle);
       final rgba = (await tester.runAsync(() => image.toByteData(format: ui.ImageByteFormat.rawRgba)))!;
       image.dispose();
       final i = (y * size + x) * 4;
