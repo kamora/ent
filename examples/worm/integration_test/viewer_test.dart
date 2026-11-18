@@ -1,4 +1,4 @@
-// Runs the example viewer (lib/viewer.dart) inside the app on macOS: loads assets/worm.glb, then checks the skin
+// Runs the example viewer (lib/main.dart) inside the app on macOS: loads assets/worm.glb, then checks the skin
 // and clip, that compileAsync finished before anything rendered, two animation times, the shadow on the ground,
 // a mouse drag through OrbitControls and the frame loop driving the mixer.
 //
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart' hide Material;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:ent_example/viewer.dart';
+import 'package:ent_example/main.dart';
 import 'package:ent_flutter/ent_flutter.dart';
 
 const size = 200;

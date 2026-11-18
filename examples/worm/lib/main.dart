@@ -1,7 +1,7 @@
 // The example viewer: a skinned, textured glTF worm (assets/worm.glb, written by
 // tool/reference/js/worm_glb.mjs) on a ground plane, lit by a hemisphere light and a directional light that
 // casts PCF shadows, its `wiggle` clip looping through an AnimationMixer, orbited with OrbitControls (damping on).
-// The pipelines are warmed with compileAsync while a loading state shows. Run with `flutter run -t lib/viewer.dart`.
+// The pipelines are warmed with compileAsync while a loading state shows. The app's default: `flutter run`.
 
 import 'dart:math' as math;
 import 'dart:typed_data';

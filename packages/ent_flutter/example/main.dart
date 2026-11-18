@@ -1,6 +1,6 @@
 // A lit cube turning in an EntView; drag to orbit, scroll or pinch to zoom. The app around it enables Flutter GPU
 // (README, Requirements) and registers the one shader variant it draws with, "physical" (MeshStandardMaterial). More
-// examples, a glTF viewer with shadows and animation among them, are in the repository's examples/flutter.
+// examples, a glTF viewer with shadows and animation among them, are in the repository's examples/worm.
 
 import 'package:flutter/material.dart' hide Color;
 import 'package:ent_flutter/ent_flutter.dart';

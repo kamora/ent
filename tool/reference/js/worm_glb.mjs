@@ -1,4 +1,4 @@
-// Writes examples/flutter/assets/worm.glb, the model of the example viewer (lib/viewer.dart), built by hand (no
+// Writes examples/worm/assets/worm.glb, the model of the example viewer (lib/main.dart), built by hand (no
 // downloads): a striped, skinned tube with a looping `wiggle` animation. Deterministic, so running this again
 // reproduces the same bytes.
 //
@@ -14,7 +14,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 
-const out = new URL( '../../../examples/flutter/assets/', import.meta.url );
+const out = new URL( '../../../examples/worm/assets/', import.meta.url );
 mkdirSync( out, { recursive: true } );
 
 const FLOAT = 5126, UBYTE = 5121, USHORT = 5123;
@@ -343,4 +343,4 @@ const json = {
 
 const bytes = glb( json, b.buffer() );
 writeFileSync( new URL( 'worm.glb', out ), bytes );
-console.log( 'wrote examples/flutter/assets/worm.glb,', bytes.length, 'bytes' );
+console.log( 'wrote examples/worm/assets/worm.glb,', bytes.length, 'bytes' );

@@ -33,9 +33,9 @@ jobs:
         run: |
           (cd packages/ent && dart pub get)
           (cd packages/ent_flutter && flutter pub get)
-          (cd examples/flutter && flutter pub get)
+          (cd examples/worm && flutter pub get)
       - name: Format
-        run: dart format --output=none --set-exit-if-changed packages/ent packages/ent_flutter examples/flutter
+        run: dart format --output=none --set-exit-if-changed packages/ent packages/ent_flutter examples/worm
       - name: Analyze ent
         working-directory: packages/ent
         run: dart analyze --fatal-infos
@@ -55,7 +55,7 @@ jobs:
         working-directory: packages/ent_flutter
         run: flutter analyze --fatal-infos
       - name: Analyze the example
-        working-directory: examples/flutter
+        working-directory: examples/worm
         run: flutter analyze --fatal-infos
 
   metal:
@@ -63,7 +63,7 @@ jobs:
     timeout-minutes: 45
     defaults:
       run:
-        working-directory: examples/flutter
+        working-directory: examples/worm
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2

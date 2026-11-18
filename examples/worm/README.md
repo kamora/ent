@@ -26,7 +26,7 @@ flutter test integration_test/getting_started_test.dart -d macos --enable-flutte
 
 ## Viewer
 
-`lib/viewer.dart`, the app's default, is the example viewer: a skinned, textured glTF worm (`assets/worm.glb`)
+`lib/main.dart`, the app's default, is the example viewer: a skinned, textured glTF worm (`assets/worm.glb`)
 wiggling on a ground plane with PCF shadows, orbited with the mouse (drag to rotate, right drag to pan, wheel to zoom;
 damping on). Pipelines are warmed with `compileAsync` while a loading state shows.
 

@@ -9,10 +9,10 @@ animation and loaders follow r187's API and behaviour, and scenes render on the 
   OrbitControls and post-processing.
 - `packages/ent_flutter`: `FlutterGpuRenderer` and `EntView`, a widget with a frame loop and pointer
   coordinates for picking.
-- `examples/flutter`: the example app (`ent_example`), a glTF viewer and the integration tests.
+- `examples/worm`: the example app (`ent_example`), a glTF viewer and the integration tests.
 
 Each package and the example resolve on their own: `dart pub get` in `packages/ent`, `flutter pub get` in
-`packages/ent_flutter` and `examples/flutter`. `ent_flutter` exports all of `ent`, so a Flutter app depends on
+`packages/ent_flutter` and `examples/worm`. `ent_flutter` exports all of `ent`, so a Flutter app depends on
 `ent_flutter` only, as the example does.
 
 ## Platforms
@@ -30,7 +30,7 @@ Flutter GPU must be enabled in every app: `--enable-flutter-gpu`, `FLTEnableFlut
 (cd packages/ent_flutter && flutter test --enable-impeller --enable-flutter-gpu)
 
 # Parity with r187 on Metal, in the macOS app
-(cd examples/flutter && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
+(cd examples/worm && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
 ```
 
 Expected values and reference frames are in `fixtures/`; they are written from the pinned r187 source by the

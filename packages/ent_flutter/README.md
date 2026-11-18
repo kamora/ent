@@ -78,7 +78,7 @@ on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "
    changes, and pauses while muted by `TickerMode` or while the app is in the background. It does not own the
    renderer: the app disposes it.
 
-[`examples/flutter/lib/getting_started.dart`][getting_started] is this as a whole app, with picking and `OrbitControls`;
+[`examples/worm/lib/getting_started.dart`][getting_started] is this as a whole app, with picking and `OrbitControls`;
 the same example app has a glTF viewer.
 
 ## What it draws
@@ -131,7 +131,7 @@ flutter test --enable-impeller test/disabled_test.dart
 ```
 
 The first runs the renderer, parity and adapter tests under flutter_tester (Impeller on Vulkan through SwiftShader,
-on the CPU); the second checks the error when Flutter GPU is off. The parity run on Metal is in `examples/flutter`
+on the CPU); the second checks the error when Flutter GPU is off. The parity run on Metal is in `examples/worm`
 ([`integration_test/parity_metal_test.dart`][parity_metal_test]).
 
 An app's device tests (`flutter test integration_test -d <device>`) look for the shader bundle before the build hook
@@ -149,5 +149,5 @@ Derived from [three.js](https://github.com/mrdoob/three.js) r187 (MIT, © three.
 [ent]: https://github.com/kamora/ent/tree/master/packages/ent
 [flutter-gpu]: https://github.com/kamora/ent/blob/master/docs/flutter-gpu.md
 [usage]: https://github.com/kamora/ent/blob/master/docs/usage.md
-[getting_started]: https://github.com/kamora/ent/blob/master/examples/flutter/lib/getting_started.dart
-[parity_metal_test]: https://github.com/kamora/ent/blob/master/examples/flutter/integration_test/parity_metal_test.dart
+[getting_started]: https://github.com/kamora/ent/blob/master/examples/worm/lib/getting_started.dart
+[parity_metal_test]: https://github.com/kamora/ent/blob/master/examples/worm/integration_test/parity_metal_test.dart

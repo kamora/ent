@@ -21,7 +21,7 @@ assumed from documentation alone.
 | `flutter test --enable-impeller --enable-flutter-gpu` (flutter_tester) | Works: offscreen rendering, readback through `Texture.asImage()` + `toByteData`. flutter_tester runs Impeller on Vulkan through its bundled SwiftShader, on the CPU, not Metal; SwiftShader logs `VkImage.cpp` warnings at run time, and only here does `LoadAction.load` clear (flutter/flutter#196199). The renderer and parity unit tests run here, so they check SwiftShader; Metal is checked by the app integration tests (macOS, iPhone) |
 | macOS desktop app | Works on Metal; see "macOS run" |
 | Web (Chrome) | Not supported: `flutter_gpu` binds native engine symbols (`dart:ffi`, `@Native`) |
-| iOS simulator (iPhone 17, iOS 26.5) | Works: `flutter test integration_test/render_test.dart -d <id> --enable-flutter-gpu` in `examples/flutter` passes; the three sampled pixels equal the golden exactly. `ios/Runner/Info.plist` sets `FLTEnableImpeller` and `FLTEnableFlutterGPU` |
+| iOS simulator (iPhone 17, iOS 26.5) | Works: `flutter test integration_test/render_test.dart -d <id> --enable-flutter-gpu` in `examples/worm` passes; the three sampled pixels equal the golden exactly. `ios/Runner/Info.plist` sets `FLTEnableImpeller` and `FLTEnableFlutterGPU` |
 | iPhone 11 (iPhone12,1, A13, iOS 16.3.1, wired) | Works: the render test passes, and the Metal parity suite passes with three recorded allowances (see "iPhone 11"). The A13 skips, without an error, the draw of a pipeline whose stage declares more than 16 sampler states (hence the texture slots, "Programs and uniforms"), samples float32 textures with nearest filtering (hence the half-float LTC tables and E-FLOATFILTER), and reads a depth buffer as a texture |
 | Android, Galaxy A22 (SM-A225F, MediaTek MT6768, Mali-G52, Android 13, vendor API 31) | Fails: Impeller picks OpenGL ES, because Flutter avoids Vulkan on MediaTek devices below vendor API 32 (`android_context_dynamic_impeller.cc`, a workaround for AHB import crashes); on that backend the render test reads an all-black frame. A probe isolated it to Flutter GPU itself: uploading a texture and reading it back works, but a render pass writes nothing to its color attachment, not even the clear, in device-private or host-visible storage, also after waiting for the command buffer to complete. Android therefore needs a device where Impeller picks Vulkan; `FlutterGpuRenderer.create()` checks this and throws. Reported upstream: flutter/flutter#196045. Flutter also avoids Vulkan on Adreno 650 and older, older PowerVR, Huawei Maleoon and Samsung Xclipse below Vulkan 1.3 (`driver_info_vk.cc`) |
 | Android, Galaxy S10 (SM-G973F, Exynos 9820, Mali-G76, Android 12, Vulkan 1.1) | Fails: Impeller picks OpenGL ES, because Flutter lists `exynos9820` among its known-bad SoCs (`android_context_dynamic_impeller.cc`, graphical errors, flutter/flutter#171992); `create()` throws its StateError. Forced to Vulkan (`io.flutter.embedding.android.ImpellerBackend` set to `vulkan`, honored in debug and profile only), Impeller starts on Vulkan, then about 8 s later logs "Fence waiter encountered an unexpected error" and the getting-started test never completes, twice in two runs. Isolated (2026-11-18): plain Flutter widgets and `create()`'s clear and readback pass on it; one frame each of a clear, MeshBasicMaterial, unlit MeshLambertMaterial and MeshPhongMaterial, and MeshNormalMaterial draws correctly; MeshStandardMaterial (no lights) and MeshPhysicalMaterial hang reading the frame back, with the fence error. It hangs even when the physical fragment shader returns on its first line (a uniform-keyed exit, scratch copy); lambert uses the same vertex shader. Cause found: the physical stage declares samplers it never reads (`roughness_map`, `metalness_map`, `dfg_lut` and the other map names it reads through `slot_k`, and `light_texture_0` to `_5` from `lights.glsl`). The compiler drops them, but its reflection keeps all nine at binding 0, and Flutter GPU makes a descriptor-layout entry for each, so the layout repeats binding 0; lambert's stage has no such samplers. Textured variants also declared `map`, `normal_map` and the other shared map samplers that way. Fixed (2026-11-18): a stage that reads through slots declares no sampler by name (`physical.glsl`, and `#ifndef TEXTURE_SLOTS` in `lights.glsl`, `maps.glsl` and `normals.glsl`), and `test/variants_metal_test.dart` no longer exempts the physical stages. On the S10 with the fix, Vulkan still forced: no fence error in any run; the getting-started test passes (3 of 3); unlit standard, lit physical (clearcoat) and a textured lit standard draw what macOS draws. Two more findings: (1) the draw probe stopped silently while the phone was locked (Android stops the activity behind the lock screen); unlocked, it completes. (2) A frame read back right after `render` is sometimes empty: in 2 of 2 runs the lit standard frame read [0,0,0,0] everywhere (not even cleared), and once the lit physical frame had its background but not its sphere, while the same image read 1 s later was right every time. Flutter GPU submits straight to the Vulkan queue and the readback is queued after it, so the readback seems not to wait for the render's writes on this driver (an inference from the engine source, not proven). Worked around (2026-11-18): `readRenderTargetPixels` and the checks in `check.dart` wait until every submitted command buffer has completed (`HostBuffers.idle`). On the S10, lit standard, physical and lambert frames read through `readRenderTargetPixels` right after rendering: 12 of 12 right with the wait; without it, the first physical and lambert reads were [0,0,0,0] in 2 of 2 runs. `render`'s returned image: an app reads its pixels after awaiting `renderer.idle()` (2026-11-18), which waits as `readRenderTargetPixels` does. On the S10, lit standard, physical and lambert images read with `toByteData` right after `render`: 18 of 18 right after `idle()` (2 runs); without it, 6 of 36 reads were [0,0,0,0] (2 runs). On screen it does not show: an `EntView` with a lit standard sphere and a lit physical cube, recorded with `adb shell screenrecord` (about 60 frames a second), had both objects in every frame, 1198 of 1198 over 20 s, and in each of 3 cold starts from the first frame the app showed (946 frames); none was black or background only (2026-11-18). |
@@ -30,7 +30,7 @@ assumed from documentation alone.
 
 - `flutter test` and `flutter run` (desktop) take `--enable-flutter-gpu`; `--enable-impeller` for flutter_tester.
 - A built macOS or iOS app reads `FLTEnableImpeller` and `FLTEnableFlutterGPU` from `Info.plist`; both are set to
-  `true` in `examples/flutter/macos/Runner/Info.plist` and `examples/flutter/ios/Runner/Info.plist`.
+  `true` in `examples/worm/macos/Runner/Info.plist` and `examples/worm/ios/Runner/Info.plist`.
 - Android reads the `io.flutter.embedding.android.EnableFlutterGPU` metadata key in `AndroidManifest.xml` (named
   by Flutter's own error message; not tried on a device where Impeller uses Vulkan).
 - The bundle is an asset `ent_flutter` declares (`build/shaderbundles/ent.shaderbundle`), written by its build hook.
@@ -775,7 +775,7 @@ full-target quads, so the GPU is still drawing one render when the next writes, 
   `fixtures/rendering/flutter_gpu_scene.png` (metadata in `flutter_gpu_scene.json`): 2/255 per channel, 0
   differing pixels on the generating machine.
 - Parity: `test/parity.dart` holds the scenes and the comparison (`declare`, given a file reader);
-  `test/parity_test.dart` runs it under flutter_tester and `examples/flutter/integration_test/parity_metal_test.dart`
+  `test/parity_test.dart` runs it under flutter_tester and `examples/worm/integration_test/parity_metal_test.dart`
   in the example app on Metal ("Parity on Metal"). It compares every scene in `fixtures/rendering/reference/` (162
   scene files; animated scenes compare several frames each) with the frame r187's `WebGLRenderer` drew in headless
   Chrome (`tool/reference/render/`; `meta.json`: Chrome 157.0.8103.39, ANGLE on Metal, Apple M1, macOS 26.5.2).
@@ -855,9 +855,9 @@ full-target quads, so the GPU is still drawing one render when the next writes, 
 
 ## Parity on Metal
 
-`examples/flutter/integration_test/parity_metal_test.dart` runs `parity.dart` in the example app (debug, Metal),
+`examples/worm/integration_test/parity_metal_test.dart` runs `parity.dart` in the example app (debug, Metal),
 with the `swiftShader` scenes included. The references reach the app as assets:
-`examples/flutter/integration_test/fixtures` is a symlink to the repository's `fixtures/`, and the example's pubspec
+`examples/worm/integration_test/fixtures` is a symlink to the repository's `fixtures/`, and the example's pubspec
 lists `fixtures/rendering/reference/`, `fixtures/gltf/`, each used Khronos model's variant folder (a Flutter asset
 folder is not recursive) and `fixtures/hdr/` under it (7.2 MB of reference frames and 6.8 MB of glTF fixtures in
 every build of the example; entitlements unchanged). A failing frame is saved to `parity_failures` in the app's
@@ -1078,7 +1078,7 @@ the renderer's (exception E-POSTPROCESSING):
   where a float64 run of the shader shows the search ending where `abs(delta)` equals `gradient * 0.25` exactly (a
   stair corner's bilinear sample), so rounding picks the end (`ties`). Why the app and flutter_tester differ is not
   known. The iPhone 11 differs in 22 pixels (worst 8; "iPhone 11").
-- `examples/flutter/integration_test/composer_test.dart` draws three chains (RenderPass + OutputPass under ACES with
+- `examples/worm/integration_test/composer_test.dart` draws three chains (RenderPass + OutputPass under ACES with
   sRGB; + VignettePass + CopyPass under Neutral; + FXAAPass on composer_fxaa's pattern) and compares them with
   the frames the macOS app drew (`integration_test/composer/*.png`). On the iPhone 11: output 0 pixels over 2/255
   (worst 0), vignette 0 (worst 1), FXAA 22 pixels (worst 8, at the yellow edge's stair corners, 8/255 darker; cause
@@ -1125,7 +1125,7 @@ E-ANTIALIAS.
   part of it and the lines keep their own difference). The transmission target, an offscreen framebuffer in Chrome,
   matches with the same pattern.
 - Cost: not measured. A timing in flutter_tester (1024 × 1024, with readback) is dominated by the readback (about
-  309 ms a frame without antialias); it needs the running app (`examples/flutter`).
+  309 ms a frame without antialias); it needs the running app (`examples/worm`).
 
 ## Render targets with samples
 
@@ -1199,7 +1199,7 @@ same way, so nothing in the check depends on timing.
   on Metal; stable over repeated runs on both.
 - The Khronos models AnimatedMorphCube and CesiumMan ("Khronos sample models").
 
-The loop (`examples/flutter/lib/animation.dart`, which builds `anim_skinned` in Dart): `onFrame` updates a `Timer`
+The loop (`examples/worm/lib/animation.dart`, which builds `anim_skinned` in Dart): `onFrame` updates a `Timer`
 and advances the mixer by its delta, as in r187, where `Clock` is deprecated since r183:
 
 ```dart
@@ -1222,7 +1222,7 @@ onFrame: (elapsed) {
 
 ## macOS run
 
-The example app (`examples/flutter`) runs on Metal on the M1 with `FLTEnableImpeller` and `FLTEnableFlutterGPU` in
+The example app (`examples/worm`) runs on Metal on the M1 with `FLTEnableImpeller` and `FLTEnableFlutterGPU` in
 `macos/Runner/Info.plist`. Its integration tests run with `flutter test integration_test/<test>.dart -d macos
 --enable-flutter-gpu`: `render_test.dart`, `parity_metal_test.dart` ("Parity on Metal"), `composer_test.dart`,
 `viewer_test.dart`, and the profile benchmark `bench_test.dart` through `flutter drive --profile` ("CPU cost per
@@ -1268,7 +1268,7 @@ drawn cold takes 1312–1315 ms in its first frame; `compileAsync` on the same t
 remeasured). A cold Standard or Physical state is a hitch of half a second on the A13, so `compileAsync` during
 loading matters.
 
-The example viewer (`examples/flutter/lib/viewer.dart`), rough numbers from `integration_test/viewer_test.dart` in
+The example viewer (`examples/worm/lib/main.dart`), rough numbers from `integration_test/viewer_test.dart` in
 a debug build (`flutter test -d <device>`), two runs each: on the iPhone 11 `load` (GLTFLoader `parseAsync` plus
 `compileAsync` of the skinned Standard worm, the Standard ground, the PCF shadow pass and the hemisphere and
 directional lights) takes 807 and 765 ms in a freshly installed app, of which parsing takes about 10 ms, so
@@ -1280,7 +1280,7 @@ CPU side, not a frame time (the profile-build numbers are under "Animation").
 
 ## CPU cost per frame
 
-Benchmark: `examples/flutter/lib/bench.dart` draws N boxes on a 20 × 20 grid on a ground plane under a fixed
+Benchmark: `examples/worm/lib/bench.dart` draws N boxes on a 20 × 20 grid on a ground plane under a fixed
 camera, in a 400 × 400 view (800 × 800 px at pixel ratio 2), every box turned each frame. Cases: `meshes`, N meshes
 sharing one BoxGeometry and one MeshStandardMaterial under an ambient and a directional light (N + 1 draws);
 `shadowed`, the same with the directional light casting a 1024² PCF shadow (2N + 1 draws); `instanced`, one

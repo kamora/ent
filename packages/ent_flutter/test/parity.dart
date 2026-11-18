@@ -1,5 +1,5 @@
 // The parity comparison with the reference frames, shared by test/parity_test.dart (flutter_tester, which runs Impeller
-// on Vulkan through SwiftShader) and examples/flutter/integration_test/parity_metal_test.dart (a macOS app on Metal):
+// on Vulkan through SwiftShader) and examples/worm/integration_test/parity_metal_test.dart (a macOS app on Metal):
 // every scene in fixtures/rendering/reference was drawn by the reference renderer in headless Chrome
 // (tool/reference/render/render.mjs, metadata in meta.json). Each test loads the scene's JSON with ObjectLoader, draws
 // it with FlutterGpuRenderer and compares the frames.

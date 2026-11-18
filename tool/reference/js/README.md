@@ -36,7 +36,7 @@ and commit.
   `flat.hdr`); deterministic, no downloads, no three.js. `hdr_loader.mjs` parses them with r187's `HDRLoader` in
   Node (HalfFloatType and FloatType) and writes `fixtures/values/hdr_loader.json`, which
   `packages/ent/test/loaders/hdr_loader_test.dart` compares exactly.
-- `worm_glb.mjs`: writes `examples/flutter/assets/worm.glb`, the example viewer's model (a textured tube skinned
+- `worm_glb.mjs`: writes `examples/worm/assets/worm.glb`, the example viewer's model (a textured tube skinned
   to 5 bones with a looping `wiggle` clip); deterministic, no downloads, no three.js.
 
 ## Spec format
