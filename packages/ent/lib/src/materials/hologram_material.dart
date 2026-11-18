@@ -3,9 +3,9 @@ part of '../../ent.dart';
 /// A glowing, see-through surface: brightest at its silhouette, banded by moving scanlines, with an optional
 /// flicker. It does not respond to lights.
 ///
-/// Ent's own material, not one of three.js r187 (which would write it as a `ShaderMaterial`, exception
-/// E-SHADERMATERIAL). It is additive, transparent, double-sided and writes no depth by default, so holograms add up
-/// where they overlap and never hide each other.
+/// Ent's own material, where a custom shader would otherwise be needed (exception E-SHADERMATERIAL). It is additive,
+/// transparent, double-sided and writes no depth by default, so holograms add up where they overlap and never hide
+/// each other.
 ///
 /// Its motion follows [time]: the app advances it each frame, for example from a [Clock].
 class HologramMaterial extends Material {
