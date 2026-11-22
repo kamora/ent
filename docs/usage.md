@@ -86,10 +86,10 @@ EntView(renderer: renderer, scene: scene, camera: camera, composer: composer);
 
 ## HologramMaterial
 
-Ent's own material, not one of three.js r187: a see-through glow, brightest at the silhouette, banded by scanlines
-that move up, with an optional flicker. It ignores lights. By default it blends additively, draws both sides and
-writes no depth, so holograms add up where they overlap. A transparent double-sided object draws its back faces, then
-its front faces, as in three.js, so a closed shape shows both its walls.
+Ent's own material, with no counterpart in the reference: a see-through glow, brightest at the silhouette, banded
+by scanlines that move up, with an optional flicker. It ignores lights. By default it blends additively, draws both
+sides and writes no depth, so holograms add up where they overlap. A transparent double-sided object draws its back
+faces, then its front faces, so a closed shape shows both its walls.
 
 ```dart
 final material = HologramMaterial({'color': Color(0x4fd8ff), 'rim': 1.5, 'flicker': 0.1});
@@ -149,13 +149,13 @@ debugPrint(JsonEncoder.withIndent('\t').convert({'variants': renderer.recorded!.
 ## Checks
 
 ```
-node tool/reference/js/orbit_controls.mjs    # r187 in Node: fixtures/values/orbit_controls.json
+node tool/reference/js/orbit_controls.mjs    # the reference in Node: fixtures/values/orbit_controls.json
 node tool/reference/js/gltf_files.mjs        # writes the test assets in fixtures/gltf/
-node tool/reference/js/gltf_loader.mjs       # r187 in Node: fixtures/values/gltf_loader.json
-node tool/reference/js/effect_composer.mjs   # r187 in Node: fixtures/values/effect_composer.json
+node tool/reference/js/gltf_loader.mjs       # the reference in Node: fixtures/values/gltf_loader.json
+node tool/reference/js/effect_composer.mjs   # the reference in Node: fixtures/values/effect_composer.json
 (cd packages/ent && dart analyze --fatal-infos && dart test)
 ```
 
 The OrbitControls test replays every scenario (rotate, dolly, pan, damping, limits, reset, touch, keys, auto-rotate,
-zoom to cursor, orthographic, a z-up camera, MapControls) step by step against r187's camera, target, angles, state,
-events and `update()` results.
+zoom to cursor, orthographic, a z-up camera, MapControls) step by step against the reference's camera, target, angles,
+state, events and `update()` results.

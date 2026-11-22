@@ -1,16 +1,16 @@
 # Roadmap
 
 Status is measured, never declared: behavioural parity (reference fixtures and ported tests), rendering parity and
-platform parity are reported separately. Where the port differs from three.js r187 on purpose, the row is in
+platform parity are reported separately. Where Ent differs from the reference on purpose, the row is in
 `docs/compatibility-exceptions.md`.
 
 ## Where it stands
 
 - `ent`: math, core, cameras, objects, geometries, materials, lights, textures and animation, with GLTFLoader,
   HDRLoader, OrbitControls and EffectComposer (render, FXAA, vignette, copy, bloom and output passes), checked
-  against values r187 produced (`fixtures/values/`).
-- `ent_flutter`: `FlutterGpuRenderer` and `EntView`. About 160 scenes are compared pixel by pixel with r187 frames
-  from headless Chrome (2/255 per channel, edge pixels within 1 px, at most 0.5% of pixels): shadows, PBR and
+  against values the reference produced (`fixtures/values/`).
+- `ent_flutter`: `FlutterGpuRenderer` and `EntView`. About 160 scenes are compared pixel by pixel with the reference's
+  frames from headless Chrome (2/255 per channel, edge pixels within 1 px, at most 0.5% of pixels): shadows, PBR and
   physical materials, environment maps, skinning, morphs, instancing, render targets, MSAA, post-processing, depth
   textures, viewport and scissor, and ten Khronos glTF sample models.
 - Metal on the M1 matches except for recorded allowances (`test/parity.dart`: `mipmaps`, `ties`); the iPhone 11 has
@@ -30,15 +30,15 @@ pushed or posted without Kai's go-ahead for that step. Small jobs, in this order
    `E-*` rows) linked from the API where they apply.
 2. P2, READMEs and a getting-started example: a README per package (`ent` has none), covering what it is, platforms,
    the Flutter GPU switch and a minimal scene; a small example app beside the viewer; a user-facing summary of what
-   differs from three.js r187.
+   differs from the reference.
 3. P3, licenses and metadata. Licenses done: MIT, © KAMORA Ltd., in the root and both packages; each package's
-   `THIRD_PARTY_NOTICES.md` holds three.js's notice (and earcut's in `ent`); the Khronos models' attribution stays with
-   the models in `fixtures/gltf/khronos/`. Metadata done: descriptions, topics, CHANGELOGs, version `0.1.0-dev.1`, caret
-   ranges, and `ent_flutter` asking for `ent` from pub.dev (the repository resolves it from its path through
-   `pubspec_overrides.yaml`, which pub does not upload). `dart pub publish --dry-run` warns only of uncommitted files.
-   The repository is `github.com/kamora/ent` (public): both pubspecs name it, and the READMEs link into it, so the links
-   work on pub.dev. `ent` must be published before `ent_flutter`. `ent` and `ent_flutter` were free on pub.dev on
-   2026-11-10; a name is held only by its first upload.
+   `THIRD_PARTY_NOTICES.md` holds the reference's notice (and earcut's in `ent`); the Khronos models' attribution
+   stays with the models in `fixtures/gltf/khronos/`. Metadata done: descriptions, topics, CHANGELOGs, version
+   `0.1.0-dev.1`, caret ranges, and `ent_flutter` asking for `ent` from pub.dev (the repository resolves it from its
+   path through `pubspec_overrides.yaml`, which pub does not upload). `dart pub publish --dry-run` warns only of
+   uncommitted files. The repository is `github.com/kamora/ent` (public): both pubspecs name it, and the READMEs link
+   into it, so the links work on pub.dev. `ent` must be published before `ent_flutter`. `ent` and `ent_flutter` were
+   free on pub.dev on 2026-11-10; a name is held only by its first upload.
 4. P4, CI: a workflow running the unit tests, the flutter_tester suite, the Metal parity suite and analyze/format.
    Two probes (2026-11-17) answered the guesses: GitHub's `macos-15` runner gives Flutter GPU Metal, and its 176
    parity frames equal the M1's line for line (after one `flutter build macos --debug`, which the device test needs on
@@ -75,8 +75,8 @@ Performance, for when an app needs more than a few hundred separate draws at 60 
 InstancedMesh holds 60 fps at 2000):
 
 - Uniform members resolved once into int fields (a guess: 4–6% of `render`).
-- Uniform blocks split by per-object, per-material and per-frame members and filled only when they change, as r187
-  does (a guess: up to about 30%).
+- Uniform blocks split by per-object, per-material and per-frame members and filled only when they change, as the
+  reference does (a guess: up to about 30%).
 - GPU time per frame, and the cost of MSAA, are not measured.
 
 Linux (not in this release): flutter_tester on GitHub's `ubuntu-latest` passes every test but crashes (segmentation

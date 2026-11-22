@@ -1,4 +1,4 @@
-# Upstream
+# Upstream: the pinned three.js
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | Tag | `r187` (annotated tag object `456a78fd22f4ce11d929fd62c8579b83be06008a`) |
 | Commit | `7e89746a687bb88271253698fa108b1dd59825d0` (committed 2026-10-30T16:56:52+09:00, "r187") |
 | `package.json` version | `0.187.0` |
-| License | MIT, "Copyright © 2010-2026 three.js authors"; copied to `packages/ent/LICENSE` |
+| License | MIT, "Copyright © 2010-2026 three.js authors"; kept in each package's `THIRD_PARTY_NOTICES.md` |
 | Retrieved | 2026-11-04, `git clone --depth 1 --branch r187 --filter=blob:none --sparse` |
 
 The tag was verified with `git ls-remote --tags` before cloning; no other release was substituted.

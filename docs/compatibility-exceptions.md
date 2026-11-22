@@ -1,10 +1,11 @@
 # Compatibility exceptions
 
-Every place where the Dart port observably differs from three.js r187, why, how it is tested, and what to
-change when porting JavaScript code. Tests live in `packages/ent/test/compatibility/exceptions_test.dart`
+Ent Engine is based on three.js r187, which these docs call the reference, and keeps partial compatibility with
+its API. This is every place where Ent observably differs from it, why, how it is tested, and what to change when
+porting JavaScript code. Tests live in `packages/ent/test/compatibility/exceptions_test.dart`
 unless noted.
 
-| Id | Upstream | Dart | Why |
+| Id | three.js | Dart | Why |
 |---|---|---|---|
 | E-PRIVATE | `_x`, `_onChange()`, `_order` … are reachable from any JS code | Library-private: reachable inside `ent`, not from user code | Dart privacy is per library; the port is one library so upstream's own cross-class use (`Object3D` → `quaternion._onChange`) keeps working |
 | E-NUM | One `number` type | `double` for values, `int` for indices, offsets, counts, hex colors, bit masks | Dart has two numeric types. Integer *literals* are accepted where `double` is expected; `int` *variables* need `.toDouble()` |

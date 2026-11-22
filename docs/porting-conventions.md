@@ -1,13 +1,13 @@
 # Porting conventions
 
-The rules every module port follows. Upstream is three.js **r187** (`docs/upstream.md`); its source in
-`third_party/three.js/src/` is the specification. Deviations a user can observe go to
-`docs/compatibility-exceptions.md`, with a test.
+The rules every module follows. Ent is based on three.js **r187**, called the reference here (pinned in
+`tool/reference/UPSTREAM.md`); its source in `third_party/three.js/src/` is the specification.
+Deviations a user can observe go to `docs/compatibility-exceptions.md`, with a test.
 
 ## Package shape
 
 - `packages/ent` is one Dart library, `lib/ent.dart`, made of `part` files under `lib/src/`.
-  Upstream `_members` (`Quaternion._onChange`, `Euler._order`, ...) are public by convention in JS and used
+  The reference's `_members` (`Quaternion._onChange`, `Euler._order`, ...) are public by convention in JS and used
   across classes (`Object3D` calls `quaternion._onChange`). One library keeps them reachable inside the port
   with the same names; they stay private to users of the package (exception `E-PRIVATE`).
 - File mapping: `src/math/Vector3.js` → `lib/src/math/vector3.dart`;
@@ -19,22 +19,22 @@ The rules every module port follows. Upstream is three.js **r187** (`docs/upstre
 - `tool/format.sh <paths>`: `dart format` at page width 120, keeping its two-space indentation (studio canon 006), then
   the empty line above multi-line comments (canon 003).
 - Curly braces on every control-flow body, K&R, multi-line, even for one statement (canon 001/002).
-  `switch` cases with a single `return` stay on one line, as upstream writes them.
+  `switch` cases with a single `return` stay on one line, as the reference writes them.
 - A multi-line comment (including two or more `///` lines) has an empty line above it (canon 003).
-- Port the upstream JSDoc description as `///` doc comments: the prose, not the `@param {type}` tags; mention
+- Port the reference's JSDoc description as `///` doc comments: the prose, not the `@param {type}` tags; mention
   defaults and units where the JSDoc does.
 
 ## Names and members
 
-- Same class, method, property and constant names as upstream, same parameter order.
-- `this.prototype.isVector3 = true` → `bool get isVector3 => true;`. Subclasses inherit them as upstream does.
+- Same class, method, property and constant names as the reference, same parameter order.
+- `this.prototype.isVector3 = true` → `bool get isVector3 => true;`. Subclasses inherit them as the reference does.
 - Instance properties keep their names and mutability. JS getter/setter pairs stay getter/setter pairs.
 - Module-level `const _v = new Vector3()` scratch objects become library-private top-level finals with a
   per-file prefix: `final _vector3V1 = Vector3();` (one library: names must not collide between files).
 - Module-level helper functions: library-private, prefixed by the file's class (`_box3SatForAxes`).
 - Static class fields/methods → Dart `static`.
 - Object-literal namespaces (`MathUtils`, `ColorManagement`) → `abstract final class` with `static` members,
-  or a class instance where upstream mutates the object at runtime (`ColorManagement.workingColorSpace`).
+  or a class instance where the reference mutates the object at runtime (`ColorManagement.workingColorSpace`).
 
 ## Types and numbers
 
@@ -75,12 +75,12 @@ No method that returns a default, throws `UnimplementedError`, or is missing wit
 
 Each module gets two kinds of tests in `packages/ent/test/`:
 
-1. `math/<name>_test.dart`: the upstream QUnit tests in `third_party/three.js/test/unit/src/math/<Name>.tests.js`
+1. `math/<name>_test.dart`: the reference's QUnit tests in `third_party/three.js/test/unit/src/math/<Name>.tests.js`
    ported one-to-one (same test names; `QUnit.todo` stubs ported as nothing but listed), plus Dart-specific
    edge cases (exceptions log).
-2. Reference fixtures: a spec in `tool/reference/js/specs/<Name>.mjs` drives the pinned three.js
+2. Reference fixtures: a spec in `tool/reference/js/specs/<Name>.mjs` drives the pinned reference
    source in Node to write `fixtures/specs/<Name>.json`; the Dart test
-   `test/fixtures_test.dart` replays every case through `dart:mirrors` (call by upstream method name) and
+   `test/fixtures_test.dart` replays every case through `dart:mirrors` (call by the reference's method name) and
    compares receiver state, argument state and return value. See `tool/reference/js/README.md`.
 
 Tolerance for fixture numbers: exact match first; otherwise `|a − b| ≤ 1e-9 · max(1, |a|, |b|)`. V8 and the

@@ -29,6 +29,9 @@ Build 3D scenes in Dart and show them in your Flutter app. Ent is a pure-Dart en
 animation, model loading) with a renderer on Flutter GPU (Impeller), so the whole scene lives in the same code as the
 rest of your app.
 
+Ent Engine is based on [three.js](https://threejs.org) and keeps partial compatibility with its API; the
+differences are listed in the [compatibility exceptions](docs/compatibility-exceptions.md).
+
 <div align="center">
 
 ![Ent Engine's mascot, an old tree spirit](media/ent-concept.jpg)

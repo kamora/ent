@@ -68,7 +68,8 @@ still work.
 
 ## Design notes
 
-Where Dart or the renderer needs its own shape, the choice is recorded, with its reason and tests, in
+Ent Engine is based on three.js and keeps partial compatibility with its API. Where Dart or the renderer needs its
+own shape, the choice is recorded, with its reason and tests, in
 [the compatibility exceptions][compatibility-exceptions]. The ones a user meets first:
 
 - No shaders at runtime: there is no `ShaderMaterial`, `RawShaderMaterial` or `onBeforeCompile`; a loader reads a

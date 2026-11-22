@@ -1,7 +1,7 @@
 # Flutter GPU backend
 
 How `FlutterGpuRenderer` in `packages/ent_flutter` uses Flutter GPU, what it draws, and how it is checked against
-three.js r187. Every statement is measured on the Flutter installed here unless it is marked as a guess; nothing is
+the reference. Every statement is measured on the Flutter installed here unless it is marked as a guess; nothing is
 assumed from documentation alone.
 
 ## Environment
@@ -87,15 +87,15 @@ top-left pixel (Apple M1).
 ## Conventions the renderer handles
 
 - **Depth range.** Impeller clip space has z in [0, 1]. The renderer sets `camera.coordinateSystem =
-  WebGPUCoordinateSystem` and calls `updateProjectionMatrix()`, exactly what three.js's WebGPURenderer does,
+  WebGPUCoordinateSystem` and calls `updateProjectionMatrix()`, exactly what the reference's WebGPURenderer does,
   so projection matrices and frustum culling use the [0, 1] range. Depth clears to 1 and compares with the
   material's `depthFunc`; with `depthTest: false` depth is neither tested nor written, as in GL.
-- **Winding.** Front faces are counter-clockwise (three.js convention). As `WebGLState.setFlipSided`, the winding
+- **Winding.** Front faces are counter-clockwise (the reference's convention). As `WebGLState.setFlipSided`, the winding
   flips to clockwise for `BackSide` and for a mirrored object (`matrixWorld.determinant() < 0`), and back faces
   are culled unless the side is `DoubleSide`; `gl_FrontFacing` follows.
 - **Orientation.** The rendered texture comes out upright (+y up in NDC is the top row of the image), verified
   by the triangle test. Window y points down, so `dFdy` has the opposite sign of WebGL's; the shaders negate it
-  wherever upstream uses it (`dFdyGL` in `normals.glsl`: flat shading, the tangent frame, bump mapping).
+  wherever the reference uses it (`dFdyGL` in `normals.glsl`: flat shading, the tangent frame, bump mapping).
 - **Bindings persist across draws.** A program with fewer vertex slots inherits the previous draw's buffers;
   the renderer calls `clearBindings()` before each draw. The primitive type persists in a pass too and is set per
   draw.
@@ -136,7 +136,7 @@ parts: `maps.glsl` (map, color, alphaMap, alphaTest, aoMap, lightMap, emissiveMa
 normal maps, bump maps; the tangent frame on its own for the physical material), `lights.glsl`
 (lights_pars_begin and lights_fragment_begin), `envmaps.glsl` (envmap_common_pars_fragment, envmap_fragment's
 cube map combine, envmap_physical_pars_fragment's PMREM irradiance and radiance), `common.glsl`, and
-`output.glsl`, the common tail of r187's fragment shaders (OPAQUE, tone mapping, output color space, fog,
+`output.glsl`, the common tail of the reference's fragment shaders (OPAQUE, tone mapping, output color space, fog,
 PREMULTIPLIED_ALPHA), which includes `offset.glsl` (the polygon offset). MeshStandardMaterial and
 MeshPhysicalMaterial share the kind `physical` (`physical.glsl`, with `transmission.glsl`). Points and sprites
 have their own vertex stages (`PointsVertex`, `SpriteVertex`) and fragment kinds. The fragment stage's `#ifdef`
@@ -184,8 +184,8 @@ flag `polygon_offset` (POLYGON_OFFSET) writes `gl_FragDepth` (factor × depth sl
 float-depth rule); writing the depth disables early depth testing, so only materials with `polygonOffset` use it.
 In the kind `physical`, a layer or a specular map defines PHYSICAL, transmission TRANSMISSION, and each physical
 map sets one bit of PHYSICAL_MAPS, as WebGLPrograms compiles a layer only for a material that uses it; the widest
-variant reads 21 maps, through the texture slots below. Vertex stages are separate bundle entries, so a variant pairs with any vertex
-stage at pipeline creation without more bundle entries.
+variant reads 21 maps, through the texture slots below. Vertex stages are separate bundle entries, so a variant pairs
+with any vertex stage at pipeline creation without more bundle entries.
 
 Texture slots. Impeller gives every texture its own Metal sampler state, and the A13 binds at most 16 per stage.
 So the physical variants bind through texture slots (`shaders/slots.glsl`, included first): 15 generic 2D
@@ -233,7 +233,7 @@ Flutter GPU behaviours that shape the shaders (3.47.6):
   `dFdxFine`.** The bone, morph and instance-morph textures are read with `textureLod` at texel centres (nearest
   filtering) instead of `texelFetch`. Transmission's bicubic filter computes the level size from the target size
   instead (WebGL's `textureSize`), and the PMREM GGX shader computes the Van der Corput sequence with float
-  arithmetic (exact for its 256 samples) instead of upstream's `uint` bit operations. Compiling each bundle entry
+  arithmetic (exact for its 256 samples) instead of the reference's `uint` bit operations. Compiling each bundle entry
   alone with `impellerc --shader-bundle` finds the entry that aborts.
 - **A failing shader fails the run.** A shader that does not compile keeps the previous bundle on disk, but the
   run exits 1 with "Failed to build shader bundle" naming the shader, under flutter_tester and in the macOS app; a
@@ -253,7 +253,7 @@ parts it reads, each optional part under its flag's define), add the kind and it
 
 ### Renderer, lights and basic materials
 
-`FlutterGpuRenderer` (three.js names: `setSize`, `setPixelRatio`, `getSize`, `getDrawingBufferSize`,
+`FlutterGpuRenderer` (the reference's names: `setSize`, `setPixelRatio`, `getSize`, `getDrawingBufferSize`,
 `setClearColor`, `getClearColor`, `setClearAlpha`, `render(scene, camera)`, `compile`, `compileAsync`, `dispose`,
 `info.render`, `info.memory.geometries` and `.textures`, `autoClear`, `sortObjects`, `toneMapping`,
 `toneMappingExposure`, `outputColorSpace`, `shadowMap`, `setRenderTarget`, `readRenderTargetPixels`, viewport and
@@ -267,7 +267,7 @@ material, transparent `DoubleSide` materials in two passes (back faces, then fro
 - **Lights**: AmbientLight, HemisphereLight (sky and ground colors, direction from its position), DirectionalLight
   (from its target, which must be in the scene to move), PointLight (`distance` window, `decay`), SpotLight
   (`angle`, `penumbra`, `distance`, `decay`, target, `map`), LightProbe (spherical harmonics, in world space),
-  RectAreaLight (Standard and Physical only, below), with r187's physically based intensities.
+  RectAreaLight (Standard and Physical only, below), with the reference's physically based intensities.
 - **MeshBasicMaterial**: color, opacity, `vertexColors` (vec3 and vec4), `map` and `alphaMap` with
   offset/repeat/rotation/center, channel `uv` or `uv1`, alphaTest, `aoMap` and `aoMapIntensity`, `lightMap` and
   `lightMapIntensity`, `envMap` (below; `specularMap` scales it), fog (`material.fog`), `toneMapped`,
@@ -292,7 +292,7 @@ material, transparent `DoubleSide` materials in two passes (back faces, then fro
   alphaTest, `displacementMap`. The depth is the clip-space z / w passed from the vertex stage (vHighPrecisionZW):
   with Impeller's [0, 1] range it is the value WebGL computes as 0.5 × z / w + 0.5.
 - **MeshDistanceMaterial**: the distance to a point light between its shadow camera's near and far, with `map`,
-  `alphaMap`, `displacementMap`. Upstream draws it only into point light shadow maps (WebGLShadowMap sets the
+  `alphaMap`, `displacementMap`. The reference draws it only into point light shadow maps (WebGLShadowMap sets the
   light in the material's renderer properties; a plain render throws); a plain render here skips it with a
   warning unless `distanceLight` (visible for testing) names the light.
 - **ShadowMaterial**: under "Shadows".
@@ -309,8 +309,8 @@ material, transparent `DoubleSide` materials in two passes (back faces, then fro
   `outputColorSpace` sRGB or linear, `Color` backgrounds, `Fog` and `FogExp2`.
 - **Images**: `FlutterPlatform.install()` sets `ImageUtils.platform` and `Loader.platform` (exception
   E-PLATFORM): `FlutterImage` decodes data URLs, http(s) and asset keys into straight RGBA, so textures loaded by
-  `ObjectLoader` (r187 serializes a CanvasTexture or image as a PNG data URL and a DataTexture as its data array;
-  `texture.mipmaps` are not serialized upstream) render after `parseAsync`. PNGs are decoded in Dart
+  `ObjectLoader` (the reference serializes a CanvasTexture or image as a PNG data URL and a DataTexture as its data
+  array; `texture.mipmaps` are not serialized by the reference) render after `parseAsync`. PNGs are decoded in Dart
   (`lib/src/png.dart`, on another isolate) to the straight values a browser hands WebGL; other formats go through
   dart:ui, which premultiplies, so a translucent WebP or AVIF texel's color may move by up to 255 / alpha steps and
   a transparent one loses it (E-DECODE). The PNG decoder matches headless Chrome byte for byte on 55 fixtures
@@ -325,7 +325,7 @@ material, transparent `DoubleSide` materials in two passes (back faces, then fro
 color, opacity, `roughness`, `metalness` and their maps (channels G and B), emissive, and every map of the basic
 kinds (normal, bump, displacement, ao with specular occlusion, light, alpha, map), `vertexColors`, `flatShading`
 (also WebGLPrograms' rule: no normal attribute and no normal map), fog and the output path; direct light through
-the GGX BRDF with the DFG LUT (`lib/src/gpu/dfg.dart`, r187's 16 × 16 RG16F table) and multiple-scattering
+the GGX BRDF with the DFG LUT (`lib/src/gpu/dfg.dart`, the reference's 16 × 16 RG16F table) and multiple-scattering
 compensation, indirect light through the split-sum model. Physical: `ior`, `specularIntensity` and `specularColor`
 (+ maps), `clearcoat`, `clearcoatRoughness`, `clearcoatNormalScale` (+ the three maps), `sheen`, `sheenColor`,
 `sheenRoughness` (+ maps), `iridescence`, `iridescenceIOR`, thickness range (+ maps), `anisotropy`,
@@ -335,7 +335,7 @@ compensation, indirect light through the split-sum model. Physical: `ior`, `spec
 
 geometryRoughness differentiates `normalize(vNormal)`. The GPU's derivatives are coarse while WebGL's frames match
 per-pixel differences, so the shader rebuilds the neighbours from `vNormal / w` and `1 / w`, which are linear in the
-window: the neighbour's perspective-correct normal is exact even outside the triangle. Upstream's other derivatives
+window: the neighbour's perspective-correct normal is exact even outside the triangle. The reference's other derivatives
 are of window-linear values (positions, uvs), where coarse and fine agree; texture levels of detail still come from
 the GPU's coarse derivatives.
 
@@ -348,17 +348,17 @@ the GPU's coarse derivatives.
   PMREM of the scene's environment (irradiance only) or their own envMap as a cube map; MeshBasicMaterial its
   envMap as a cube map, reflected in the vertex stage. Cube maps combine with `combine` (Multiply, Mix, Add),
   `reflectivity`, the `specularMap` and `refractionRatio` (CubeRefractionMapping). Sources: CubeTexture (six
-  images or DataTexture faces, uploaded as a cube texture, mirrored in x as upstream), equirectangular textures
+  images or DataTexture faces, uploaded as a cube texture, mirrored in x as the reference), equirectangular textures
   (8-bit, HalfFloat, Float), converted to a cube render target of the image's height
   (fromEquirectangularTexture), and a CubeCamera's target (below).
-- **PMREM**: PMREMGenerator's r187 algorithm on cube render targets: the source at max(256, size) per face
+- **PMREM**: the reference's PMREMGenerator algorithm on cube render targets: the source at max(256, size) per face
   (cube maps with flipEnvMap, equirectangular maps with four subsamples) and its mip levels, then the levels of a
   HalfFloatType cube target, the sharp ones by GGX importance sampling (256 samples, the source level matched to
   each sample's solid angle), the three roughest by integrating the 16 × 16 source level; `roughnessToMip` reads
   them back. Cube faces and mip levels are drawn by `GpuPasses` (`lib/src/gpu/passes.dart`): a fragment pass over
   one level of one face of a target, a triangle covering it, uniform blocks and textures by name, one command buffer
   per pass (submitted in order before the frame's); `shaders/face.glsl` gives the direction through a cube texel
-  from the face and the window position (the GL cube map table), which is what upstream's 5 × 5 × 5 box under a
+  from the face and the window position (the GL cube map table), which is what the reference's 5 × 5 × 5 box under a
   CubeCamera interpolates, without a camera or depth buffer. Render-target mip levels are generated by a pass per
   level, each texel a bilinear sample at the centre of a 2 × 2 block of the level above.
 - **Backgrounds** (WebGLBackground): a texture on a full-frame plane (uv transform, `backgroundIntensity`), a cube
@@ -371,42 +371,42 @@ WebGLRenderer.renderTransmissionPass: before the frame, the background and the o
 tone mapping, in linear color, into a 4× multisampled HalfFloatType target of `transmissionResolutionScale` × the
 drawing buffer (`_TransmissionTarget`: multisampled color and depth, two resolve textures; `_intoTarget`), resolved
 and mipmapped; double-sided transmissive objects then add their back faces (Chrome has no
-WEBGL_multisampled_render_to_texture, so upstream takes this path), resolved into a second texture. Transmissive
+WEBGL_multisampled_render_to_texture, so the reference takes this path), resolved into a second texture. Transmissive
 materials sample it with the mipped bicubic filter. The target's mip chain stops at 2 × 2 (E-MIPMAP), which no scene
-shows. Its size is the frame's, not the viewport's (upstream: the viewport's); transmission inside a viewport is not
-checked.
+shows. Its size is the frame's, not the viewport's (the reference: the viewport's); transmission inside a viewport is
+not checked.
 
 ### RectAreaLight
 
 `RE_Direct_RectArea_Physical` with `LTC_Uv`, `LTC_Evaluate` and the clearcoat term (`physical.glsl`), after the
 other direct lights as lights_fragment_begin orders them; position, halfWidth and halfHeight in view space as
 WebGLLights.setupView sets them (`lights.dart`), at most 2 per frame (`maxRectAreaLights`, warning once beyond).
-The LTC tables are r187's `LTC_HALF_1` and `LTC_HALF_2` (`ltc_data.dart`, generated by `tool/ltc.mjs`, see
-docs/upstream.md): 64 × 64 `r16g16b16a16Float`, LinearFilter magnification, NearestFilter minification, clamped,
-as WebGLLights picks them without OES_texture_float_linear. The reference Chrome (ANGLE Metal on the M1) uses
+The LTC tables are the reference's `LTC_HALF_1` and `LTC_HALF_2` (`ltc_data.dart`, generated by `tool/ltc.mjs`, see
+`tool/reference/UPSTREAM.md`): 64 × 64 `r16g16b16a16Float`, LinearFilter magnification, NearestFilter minification,
+clamped, as WebGLLights picks them without OES_texture_float_linear. The reference Chrome (ANGLE Metal on the M1) uses
 `LTC_FLOAT_1/2`, but the A13 samples float32 textures with nearest filtering, so the half tables are used on every
 platform (on the iPhone 11 the float tables gave 19 and 45 wrong pixels, the half tables 0). They sit in slots 11
 and 12 of the Standard, Physical and Transmission stages, read directly at a constant slot, only while the frame
 has a RectAreaLight; a draw then has two slots fewer for maps, and one that runs out warns as above. Lambert, Phong
-and Toon ignore rect area lights (r187 defines `RE_Direct_RectArea` only for the physical model); no shadows (r187
-has none). Scenes `rect_area_standard` and `rect_area_physical`.
+and Toon ignore rect area lights (the reference defines `RE_Direct_RectArea` only for the physical model); no shadows
+(the reference has none). Scenes `rect_area_standard` and `rect_area_physical`.
 
 ### Shadows
 
 - `renderer.shadowMap` (`ShadowMap`: `enabled`, `type`, `autoUpdate`, `needsUpdate`), WebGLShadowMap.render: per
   shadow-casting light (`castShadow`, in the frame's lights) its shadow camera (switched to the WebGPU coordinate
-  system and its projection updated when the map is created, as upstream does then; `prepareShadow` in
+  system and its projection updated when the map is created, as the reference does then; `prepareShadow` in
   `shadows.dart`), `shadow.updateMatrices`, and the scene's meshes with `castShadow` in the shadow camera's layers
   (or the camera's) and frustum, drawn with a shared MeshDepthMaterial that takes each material's `shadowSide` (or
   the opposite side), `map`, `alphaMap`, `alphaTest` and displacement; `onBeforeShadow`/`onAfterShadow`;
   `shadow.autoUpdate`/`needsUpdate`; `mapSize` (the map is recreated when it changes). Skinned, morphed, instanced
-  and batched casters use the depth program's matching variant. Shadow draws count in `info.render`, as upstream
+  and batched casters use the depth program's matching variant. Shadow draws count in `info.render`, as the reference
   (reset before the shadow pass).
 - The map (`lib/src/gpu/shadows.dart`, exception E-SHADOWMAP) is an `r32Float` color target cleared to 1, with a
   transient depth buffer; MeshDepthMaterial with packing 0 writes `gl_FragCoord.z` (`shaders/depth.glsl`). The
-  receivers (Lambert, Phong, Toon, Standard, Physical, ShadowMaterial; MeshBasicMaterial receives nothing upstream
-  either) apply shadowmap_vertex and getShadow in `shaders/lights.glsl`: the shadow coordinate from the
-  interpolated world position plus the world normal × `normalBias` (the same values as upstream's varying, both
+  receivers (Lambert, Phong, Toon, Standard, Physical, ShadowMaterial; MeshBasicMaterial receives nothing in the
+  reference either) apply shadowmap_vertex and getShadow in `shaders/lights.glsl`: the shadow coordinate from the
+  interpolated world position plus the world normal × `normalBias` (the same values as the reference's varying, both
   being linear), `bias`, the frustum test, `intensity`, `receiveShadow`. The rendered map's first row is at the
   top, so v is mirrored.
 - Shadow maps and spot light maps share one pool of six samplers (`light_texture_0` … `_5`, `maxLightTextures`;
@@ -415,50 +415,51 @@ has none). Scenes `rect_area_standard` and `rect_area_physical`.
   rotated per pixel by interleaved gradient noise of gl_FragCoord in GL's orientation (y from the bottom: the
   target's height minus Impeller's), each a LessEqual comparison of the four nearest texels weighted bilinearly,
   what the hardware does for a `sampler2DShadow` with LinearFilter. PCFSoftShadowMap warns and becomes
-  PCFShadowMap, as in r187.
+  PCFShadowMap, as in the reference.
 - SpotLight: a perspective shadow camera; SpotLightShadow.updateMatrices rebuilds fov (2 × angle × focus), aspect
   and far in the WebGPU system. LightShadow's shadow matrix keeps z for that system, so the stored and compared
   depths are both z / w (both 0.5 × z / w + 0.5 in WebGL): equivalent, rounded differently. `SpotLight.map` is
   projected through the same matrix (`spotLightCoord` in `lights.glsl`, normalBias only for a shadowed light),
   white outside the frustum.
-- PointLight: r187 renders a cube render target with a CubeDepthTexture (the casters drawn with
+- PointLight: the reference renders a cube render target with a CubeDepthTexture (the casters drawn with
   MeshDistanceMaterial, whose color is not sampled) and compares the perspective depth along the face's axis (the
   major component of the light-to-fragment vector) with `textureCube`. Here the six faces lie side by side in one
   r32Float target (6 × mapSize.x wide, one slot of the light texture pool), drawn with the depth material, one
   viewport and scissor per face, the shadow camera turned by WebGLShadowMap's `_cubeDirections` and `_cubeUps` (its
   far the light's `distance` when set); `cubeFace` in `lights.glsl` picks the face and (s, t) by the GL table, and
   texels are read with t mirrored like the 2D maps. BasicShadowMap reads the nearest texel. PCFShadowMap follows
-  r187's `samplerCubeShadow` path (LessEqualCompare, LinearFilter): five Vogel disk samples rotated per pixel by IGN,
-  offset by `radius / mapSize.x` in the tangent plane of the light-to-fragment direction, each compared with the
+  the reference's `samplerCubeShadow` path (LessEqualCompare, LinearFilter): five Vogel disk samples rotated per pixel
+  by IGN, offset by `radius / mapSize.x` in the tangent plane of the light-to-fragment direction, each compared with the
   perspective depth of the point at the fragment's distance in its own direction (`depthA + depthB / max(|d|)`),
   averaged. `pointCompare` compares as the hardware does: the four nearest texels of the face the direction
   selects, weighted bilinearly; a texel past the face's edge is read where the direction of its centre falls
   (`cubeDirection`, then `cubeFace`), on the neighbouring face, as WebGL 2's always seamless cube maps filter (a
-  corner texel lands on one of the two neighbours). Metal matches r187 exactly (`point_shadow_pcf`,
+  corner texel lands on one of the two neighbours). Metal matches the reference exactly (`point_shadow_pcf`,
   `point_shadow_pcf_radius`); SwiftShader differs by 3–9/255 over the penumbras, so only the Metal run checks them.
 - VSMShadowMap (directional and spot lights), WebGLShadowMap's VSM path: the casters and the receivers are drawn
   into the depth map with their own side (not the opposite one), then VSMPass blurs it with `shaders/vsm.frag`
   (ShaderLib vsm; VSM_SAMPLES and HORIZONTAL_PASS are uniforms): vertically from the depth (nearest) into
-  `ShadowTarget.pass` (upstream `shadow.mapPass`), horizontally (LinearFilter) into `ShadowTarget.map` (upstream
-  `shadow.map`), `blurSamples` samples over ± `radius` texels, each storing the mean and standard deviation. Both
-  blur targets are RGBA half floats (Flutter GPU has no RG half-float format; the same precision as upstream's
+  `ShadowTarget.pass` (the reference's `shadow.mapPass`), horizontally (LinearFilter) into `ShadowTarget.map` (the
+  reference's `shadow.map`), `blurSamples` samples over ± `radius` texels, each storing the mean and standard deviation.
+  Both blur targets are RGBA half floats (Flutter GPU has no RG half-float format; the same precision as the reference's
   RG16F); the receivers read `.rg` of `map` with LinearFilter, one light texture slot per light, and getShadow
-  applies Chebyshev's bound with r187's constants (variance ≥ 1e-7, the remap (p − 0.3) / 0.65) and `intensity`.
-  Point lights under VSM warn with r187's message and cast none, as upstream. On Metal `shadow_vsm_directional` and
-  `shadow_vsm_spot` equal r187 (0 wrong, 0 edge pixels). Under SwiftShader they differ (2 wrong, worst 3/255, and
-  44, worst 14/255, all lighter in the penumbra): measured texel by texel against r187's depth texture,
-  `shadow.mapPass` and `shadow.map`, SwiftShader's spot depth pass leaves out 3 texels whose centres lie 0.004 to
-  0.012 texel inside the floating box's silhouette, and every blurred texel that differs lies within the blur's
-  reach of them; the blur passes and the receiver lookup match. Because a measured cap would hide a bug as large as
-  a missing vertical blur (46 wrong), only the Metal run guards VSM. The iPhone 11 differs slightly (see "iPhone 11").
+  applies Chebyshev's bound with the reference's constants (variance ≥ 1e-7, the remap (p − 0.3) / 0.65) and
+  `intensity`. Point lights under VSM warn with the reference's message and cast none, as the reference. On Metal
+  `shadow_vsm_directional` and `shadow_vsm_spot` equal the reference (0 wrong, 0 edge pixels). Under SwiftShader they
+  differ (2 wrong, worst 3/255, and 44, worst 14/255, all lighter in the penumbra): measured texel by texel against the
+  reference's depth texture, `shadow.mapPass` and `shadow.map`, SwiftShader's spot depth pass leaves out 3 texels whose
+  centres lie 0.004 to 0.012 texel inside the floating box's silhouette, and every blurred texel that differs lies
+  within the blur's reach of them; the blur passes and the receiver lookup match. Because a measured cap would hide a
+  bug as large as a missing vertical blur (46 wrong), only the Metal run guards VSM. The iPhone 11 differs slightly (see
+  "iPhone 11").
 - ShadowMaterial: its own program (`shadow.glsl`, ShaderLib.shadow): `color` with alpha
   `opacity × (1 − getShadowMask())`, the product of every shadow-casting directional, spot and point light's shadow
   (1 without `receiveShadow`), then tone mapping, color space, fog and premultiplied alpha without
-  opaque_fragment, as upstream. It includes `lights.glsl` without LIGHT_MATERIAL, which leaves out
+  opaque_fragment, as the reference. It includes `lights.glsl` without LIGHT_MATERIAL, which leaves out
   `directLights` and the lightMap (no MapInfo block); it reads only the six light texture samplers. Scenes cover
   directional (PCF, fog) and spot (BasicShadowMap) lights, not point lights.
 - Not drawn: `customDepthMaterial`, `customDistanceMaterial`, lines, points and sprites as casters (sprites cast
-  none upstream either).
+  none in the reference either).
 
 ### Lines, points and sprites
 
@@ -495,17 +496,18 @@ has none). Scenes `rect_area_standard` and `rect_area_physical`.
   uvTransform, or at the uv attribute (USE_POINTS_UV, WebGLPrograms' pointsUvs), vertex colors, alphaTest, the
   common output with fog). impellerc turns `gl_PointSize` into Metal's `[[point_size]]` and `gl_PointCoord` into
   `[[point_coord]]`, top-left origin as GL's, so no emulation is needed. The alphaMap's own transform is not read,
-  as upstream (points read `uvTransform`, the map's, only). `info.render.points` counts as WebGLInfo. A point covers
-  the pixel centres within size / 2 of its window position on both paths, so the scenes put an even-sized point
+  as the reference (points read `uvTransform`, the map's, only). `info.render.points` counts as WebGLInfo. A point
+  covers the pixel centres within size / 2 of its window position on both paths, so the scenes put an even-sized point
   near a pixel corner and an odd-sized one near a pixel centre (`at()` in `scenes.mjs`).
 - `Sprite` with `SpriteMaterial`: a program of its own, `shaders/sprite.vert` (slots position and uv of the shared
   interleaved quad; ShaderLib sprite's vertex stage: the view-space origin plus the quad scaled by the world
   matrix's column lengths, by −mvPosition.z without sizeAttenuation under a perspective projection, shifted by
   `center` and turned by `rotation`; the map's and the alphaMap's own uv transforms) and `shaders/sprite.glsl`
   (map, alphaMap, alphaTest, the common output with fog). RenderList pushes a sprite with its own position's z
-  after `Frustum.intersectsSprite`; as upstream's frontFaceCW (meshes only) the winding never flips for a sprite,
+  after `Frustum.intersectsSprite`; as the reference's frontFaceCW (meshes only) the winding never flips for a sprite,
   so a negative scale still draws. Sprites count as triangles in `info.render`; `compile` warms them like meshes.
-  r187's `toJSON` drops a sprite's `center` (ObjectLoader reads it), so `page.html` adds it to the sprites' JSON.
+  the reference's `toJSON` drops a sprite's `center` (ObjectLoader reads it), so `page.html` adds it to the sprites'
+  JSON.
 - Not drawn: lit or other materials on lines (they draw with the GPU's line coverage, without the diamond test),
   `wireframe`. A draw range on a LineLoop is honoured, but toJSON does not keep it, so no reference scene covers it.
 
@@ -515,13 +517,13 @@ has none). Scenes `rect_area_standard` and `rect_area_physical`.
   over `MeshSkinVertex` and the layout `skinSlots` (the mesh slots plus `skinIndex` and `skinWeight`, vec4 floats;
   WebGLPrograms' `skinning`). The vertex stage runs skinbase_vertex, skinnormal_vertex (normal and tangent through
   bindMatrixInverse × Σ weight × bone × bindMatrix) and skinning_vertex, and displaces along the skinned normal, as
-  upstream. Every mesh kind has the variant (Basic, Lambert, Phong, Toon, Standard/Physical, Normal, Matcap, Depth,
-  Distance), so skinned meshes also cast skinned shadows; a kind without one (points, sprite programs on a
+  the reference does. Every mesh kind has the variant (Basic, Lambert, Phong, Toon, Standard/Physical, Normal, Matcap,
+  Depth, Distance), so skinned meshes also cast skinned shadows; a kind without one (points, sprite programs on a
   SkinnedMesh) draws unskinned with one warning.
-- Bone matrices reach the vertex stage in upstream's float `boneTexture`: `Skeleton.computeBoneTexture` on first
+- Bone matrices reach the vertex stage in the reference's float `boneTexture`: `Skeleton.computeBoneTexture` on first
   draw (setProgram), RGBA32F, size = ⌈√(bones × 4) / 4⌉ × 4 (at least 4), 4 texels per bone (the matrix columns), so
   a bone's texels share a row; `skeleton.update()` writes `boneMatrices` and marks the texture, which `GpuTextures`
-  uploads again on its new version (counted in `info.memory.textures`, as upstream). The vertex stage reads it with
+  uploads again on its new version (counted in `info.memory.textures`, as the reference). The vertex stage reads it with
   `textureLod` at texel centres and nearest filtering. No bone maximum. Without a skeleton the unbound texture reads
   (0, 0, 0, 1), as WebGL's unbound boneTexture.
 - Textures per draw over both stages: the fragment stage's own (at most 16), plus 1 for the bone texture, 1 for the
@@ -541,14 +543,14 @@ has none). Scenes `rect_area_standard` and `rect_area_physical`.
   sprites draw unmorphed with one warning. The vertex stage runs morphcolor_vertex, morphnormal_vertex (not with
   flat shading) and morphtarget_vertex before the skinning chunks, with `morphTargetBaseInfluence` 1 for
   `morphTargetsRelative`, else 1 − Σ influences (WebGLMorphtargets.update).
-- The targets reach the GPU as upstream's texture (`GpuGeometries.morph`): RGBA float texels, per vertex the
+- The targets reach the GPU as the reference's texture (`GpuGeometries.morph`): RGBA float texels, per vertex the
   position, normal and color of a target (stride 1 to 3, color alpha 1 for vec3 colors), `width` = vertices ×
   stride (wrapped into rows past 16384), the targets stacked in rows of one 2D texture in place of a
-  DataArrayTexture's layers. Like upstream it is built again only when the number of targets changes. The vertex
+  DataArrayTexture's layers. Like the reference it is built again only when the number of targets changes. The vertex
   index is `gl_VertexIndex` plus the first vertex of a non-indexed range (the renderer offsets those vertex
   buffers). At most 64 influences, in `MorphInfo` (992 + 144 + about 300 bytes beside `VertInfo` and `SkinInfo`, of
   impellerc's 6208 per stage). A SkinnedMesh with morph targets draws with `MeshSkinMorphVertex`
-  (`Program.skinnedMorphed`), the targets applied before the bones as upstream. Scenes `morph_basic`, `morph_lit`,
+  (`Program.skinnedMorphed`), the targets applied before the bones as the reference. Scenes `morph_basic`, `morph_lit`,
   `skin_morph`.
 
 ### Instancing
@@ -561,7 +563,7 @@ has none). Scenes `rect_area_standard` and `rect_area_physical`.
   and the layout `instanceSlots`; `Program.instancedMorphed` with `MeshInstanceMorphVertex` for morph targets on
   instances. The vertex stage applies the instance matrix before the object's (project_vertex, worldpos_vertex)
   and to normals and tangents as defaultnormal_vertex (divided by the squared column lengths, no per-instance
-  normal matrix); the displacement still runs along the untransformed normal, as upstream. USE_INSTANCING_COLOR:
+  normal matrix); the displacement still runs along the untransformed normal, as the reference. USE_INSTANCING_COLOR:
   `v_color.rgb *= instanceColor` before morphcolor_vertex; without instanceColor the slot is bound to white, and
   with instanceColor on a material without vertexColors the `color` slot is white.
 - `count` is the draw's instance count; a draw of 0 instances is not counted (WebGLInfo.update), triangles count
@@ -572,17 +574,18 @@ has none). Scenes `rect_area_standard` and `rect_area_physical`.
 - `InstancedMesh.morphTexture` (USE_INSTANCING_MORPH, setMorphAt): with morph attributes and a morphTexture the
   draw uses `Program.instancedMorphTexture` (`MeshInstanceMorphTextureVertex`), whose morphinstance_vertex reads the
   instance's row of the RedFormat float texture (texel 0 morphTargetBaseInfluence, texel i + 1 influence i) with
-  `textureLod` at texel centres, the row `gl_InstanceIndex` (impellerc's Vulkan GLSL; gl_InstanceID upstream).
+  `textureLod` at texel centres, the row `gl_InstanceIndex` (impellerc's Vulkan GLSL; gl_InstanceID in the reference).
   `MorphInfo`'s `instance_width` and `instance_height` give the texture's size (an influence past the width reads
-  0); the mesh's morphTargetInfluences and `base_influence` are not read there, as upstream. Shadow casters take
-  the same variant of the depth and distance programs. The variant binds two vertex textures. toJSON drops the morphTexture, so the scenes keep the influences in
-  `userData.morphs` and `parity_test.dart` calls setMorphAt again. Scenes `instanced_basic`, `instanced_lit`,
-  `instanced_morph`, `instanced_morph_lit` (`edges.mjs` projects each instance).
+  0); the mesh's morphTargetInfluences and `base_influence` are not read there, as the reference. Shadow casters take
+  the same variant of the depth and distance programs. The variant binds two vertex textures. toJSON drops the
+  morphTexture, so the scenes keep the influences in `userData.morphs` and `parity_test.dart` calls setMorphAt again.
+  Scenes `instanced_basic`, `instanced_lit`, `instanced_morph`, `instanced_morph_lit` (`edges.mjs` projects each
+  instance).
 
 ### Batching
 
-- `BatchedMesh`: Flutter GPU has no multi-draw and no `gl_DrawID`, so the renderer does what r187's WebGLRenderer
-  does without WEBGL_multi_draw: one `drawIndexed` per range of the last `onBeforeRender` (core's
+- `BatchedMesh`: Flutter GPU has no multi-draw and no `gl_DrawID`, so the renderer does what the reference's
+  WebGLRenderer does without WEBGL_multi_draw: one `drawIndexed` per range of the last `onBeforeRender` (core's
   `_updateDrawParameters`: per-object frustum culling, sorting, hidden instances dropped; `multiDrawStarts`,
   `multiDrawCounts`, `multiDrawCount`, read through public getters), with the range's index view bound and the
   draw id resolved on the CPU. The instance (`indirectTexture`'s entry, getIndirectIndex( gl_DrawID )) picks its
@@ -610,7 +613,7 @@ has none). Scenes `rect_area_standard` and `rect_area_physical`.
 ## Render targets
 
 `setRenderTarget(target)` makes `render` draw into a plain 2D `RenderTarget` (`WebGLRenderTarget` is the core
-subclass r187 has); `null` returns to the frame, and `getRenderTarget()` reads it back. Internal targets
+subclass the reference has); `null` returns to the frame, and `getRenderTarget()` reads it back. Internal targets
 (transmission, PMREM, shadow maps) are described with their features.
 
 - Storage: `GpuTextures.target` (`lib/src/gpu/textures.dart`) creates a color texture (8-bit RGBA, SRGB8_ALPHA8 for
@@ -621,7 +624,7 @@ subclass r187 has); `null` returns to the frame, and `getRenderTarget()` reads i
   WebGLPrograms for a render target, the transmission pass's `_intoTarget`), the clear color in the working color
   space (WebGLBackground's `getUnlitUniformColorSpace`), the target's viewport and, with `scissorTest`, its scissor
   (given from the bottom left, as GL; converted to Flutter GPU's top-left origin). `setViewport` on the renderer
-  does not apply to a target (upstream it does); targets always use their own. `render` returns the target's
+  does not apply to a target (in the reference it does); targets always use their own. `render` returns the target's
   texture as an image; `renderer.texture` keeps the last frame's.
 - Without `autoClear` the pass loads the target's color and depth (`LoadAction.load`). On Metal that keeps the
   earlier render, with and without `samples` (the LoadAction check in `parity_metal_test.dart`). Under
@@ -647,9 +650,9 @@ subclass r187 has); `null` returns to the frame, and `getRenderTarget()` reads i
   Elsewhere (`_depthTexture`, the replay): the meshes that wrote depth are drawn again in the same order with a
   MeshDepthMaterial of their depthFunc and side (packing 0, the fragment's z / w, which equals WebGL's window depth
   since the cameras project to Impeller's [0, 1] range) against a depth buffer of its own, both cleared to 1 when the
-  pass cleared the target's depth. The texture is sampled as (depth, 0, 0, 1), as Chrome r187 shows a
-  DEPTH_COMPONENT texture (red only), with its rows flipped like the target's texture (`topDown`). Every r187 type
-  and format is 32-bit float here (E-DEPTHTEXTURE). Lines, points and sprites are not in it; `samples` with a
+  pass cleared the target's depth. The texture is sampled as (depth, 0, 0, 1), as the reference in Chrome shows a
+  DEPTH_COMPONENT texture (red only), with its rows flipped like the target's texture (`topDown`). Every depth
+  type and format is 32-bit float here (E-DEPTHTEXTURE). Lines, points and sprites are not in it; `samples` with a
   depthTexture draws without MSAA (one warning). Scenes `depth_texture_view` (UnsignedIntType, DepthFormat) and
   `depth_texture_float` (FloatType, DepthStencilFormat) draw the depth texel for pixel: at 64 × 64 magnified twice,
   two silhouette texels are covered differently (a rasterization tie, not depth). A renderer test checks the depths
@@ -666,7 +669,7 @@ subclass r187 has); `null` returns to the frame, and `getRenderTarget()` reads i
 
 ## Frame viewport
 
-The frame (no render target) as r187 draws the default framebuffer:
+The frame (no render target) as the reference draws the default framebuffer:
 
 - `autoClear: false` across renders (E-FRAME): every render gets a fresh color texture (a texture pool would save
   the allocation). A render that keeps the color draws the previous render's texture into it first
@@ -676,8 +679,8 @@ The frame (no render target) as r187 draws the default framebuffer:
   first. With autoClear on: transient depth, `dontCare` store. The copy is needed on Metal too, since the frame's
   own texture is new each render; on the M1 and the iPhone 11 the frame keeps the first render, with and without
   antialias (the LoadAction check).
-- `setViewport`, `setScissor`, `setScissorTest` and their getters and `getCurrentViewport` as r187 (logical pixels
-  times the pixel ratio, rounded in the setters, floored by `setRenderTarget(null)`; `setSize`/`setPixelRatio`
+- `setViewport`, `setScissor`, `setScissorTest` and their getters and `getCurrentViewport` as the reference (logical
+  pixels times the pixel ratio, rounded in the setters, floored by `setRenderTarget(null)`; `setSize`/`setPixelRatio`
   reset the viewport, not the scissor), flipped to the top-left origin and set on the pass after the copy.
 - gl.clear is scissored, the load action is not: a clear with the scissor test on (and a scissor smaller than the
   frame) loads the color as a kept frame does, `FrameFragment` writes the clear value inside the scissor rectangle
@@ -691,13 +694,13 @@ The frame (no render target) as r187 draws the default framebuffer:
   read multiplied by 0 is folded away by Metal's compiler, which removes the sampler, and binding a texture to it
   ends the macOS app (EXC_BAD_ACCESS in `setFragmentTexture`).
 - Scenes `frame_views` and `frame_inset`: 0 wrong under flutter_tester and on Metal. Not checked: transmission
-  inside a viewport (its target is the frame's size, upstream the viewport's), `setViewport` while a render target
-  is set (upstream applies it to the target; here targets always use their own), the iPhone.
+  inside a viewport (its target is the frame's size, the reference's is the viewport's), `setViewport` while a render
+  target is set (the reference applies it to the target; here targets always use their own), the iPhone.
 
 ## CubeCamera
 
-`CubeCamera.update(renderer, scene)` draws the six faces into a `WebGLCubeRenderTarget` (core, r187's constructor;
-E-CUBECAMERA): `setRenderTarget(target, face)` makes `render` draw into that slice of a cube color texture
+`CubeCamera.update(renderer, scene)` draws the six faces into a `WebGLCubeRenderTarget` (core, the reference's
+constructor; E-CUBECAMERA): `setRenderTarget(target, face)` makes `render` draw into that slice of a cube color texture
 (`GpuTextures.target`, one 2D depth buffer for all faces).
 
 - Orientation: the renderer reports WebGPUCoordinateSystem, so the cube camera turns its cameras as for WebGPU and
@@ -712,7 +715,7 @@ E-CUBECAMERA): `setRenderTarget(target, face)` makes `render` draw into that sli
 - Uniforms: each face is a render of its own, with its own host memory ("Host buffers"); a shared Flutter GPU
   `HostBuffer` would draw earlier faces with later faces' cameras.
 - Scenes `cube_camera_basic` (a 32² target at a Basic sphere in a room whose corners have distinct vertex colors;
-  the sphere hidden during update, as the application does upstream) and `cube_camera_standard` (metalness 1,
+  the sphere hidden during update, as the application does in the reference) and `cube_camera_standard` (metalness 1,
   roughness 0.4, through the PMREM, on a front-facing quad whose normals turn toward +x). The JSON carries the pass
   (`cube`: size, options, near, far, position; scenes.mjs, page.html). A reflecting sphere keeps 1–6 rim pixels
   3–8/255 off, and sharp-edged quads in the room differ by up to 9/255 at their reflected edges (texels about a
@@ -747,8 +750,8 @@ full-target quads, so the GPU is still drawing one render when the next writes, 
   recording mode it is skipped with a warning).
 - At most 15 distinct 2D textures per physical draw (texture slots; maps with the same texture share one); a draw that
   needs more throws a `StateError`.
-- Not drawn, with a one-time warning: `wireframe`, VSM on point lights (as upstream), texture channels above 1, video,
-  compressed and 3D textures. ent has no `ShaderMaterial` or `RawShaderMaterial` (E-SHADERMATERIAL).
+- Not drawn, with a one-time warning: `wireframe`, VSM on point lights (as the reference), texture channels above 1,
+  video, compressed and 3D textures. ent has no `ShaderMaterial` or `RawShaderMaterial` (E-SHADERMATERIAL).
 - A PMREM supplied by the application (`texture.isPMREMTexture`, PMREMGenerator's own output) is not read:
   PMREMGenerator is not part of the core port; scene and material maps are prefiltered by the renderer.
 - Not ported: dithering, alphaHash, alphaToCoverage, clipping planes, stencil, logarithmic depth, light probe
@@ -777,8 +780,8 @@ full-target quads, so the GPU is still drawing one render when the next writes, 
 - Parity: `test/parity.dart` holds the scenes and the comparison (`declare`, given a file reader);
   `test/parity_test.dart` runs it under flutter_tester and `examples/worm/integration_test/parity_metal_test.dart`
   in the example app on Metal ("Parity on Metal"). It compares every scene in `fixtures/rendering/reference/` (162
-  scene files; animated scenes compare several frames each) with the frame r187's `WebGLRenderer` drew in headless
-  Chrome (`tool/reference/render/`; `meta.json`: Chrome 157.0.8103.39, ANGLE on Metal, Apple M1, macOS 26.5.2).
+  scene files; animated scenes compare several frames each) with the frame the reference's `WebGLRenderer` drew in
+  headless Chrome (`tool/reference/render/`; `meta.json`: Chrome 157.0.8103.39, ANGLE on Metal, Apple M1, macOS 26.5.2).
   Chrome updates itself; a redraw on a new version is compared with the existing set before `meta.json` changes
   (the JSONs differ only by their random uuids). The reference PNG holds the drawing buffer's raw bytes
   (`readPixels`): `toDataURL` un-premultiplies a premultiplied-alpha canvas and loses colors where alpha is below 1.
@@ -787,7 +790,7 @@ full-target quads, so the GPU is still drawing one render when the next writes, 
 - Rule: 2/255 per channel; a pixel off by more is accepted only as an edge pixel (our color appears within one
   pixel in the reference), at most 0.5% of the frame, and at most the scene's `edges` where `scenes.mjs` sets it
   (saved in the JSON): the edge rule hides a missing or extra one-pixel feature, whose neighbours hold its color.
-  Recorded allowances in `parity.dart`: `ties` (exact ties in r187's own arithmetic: `composer_fxaa` under
+  Recorded allowances in `parity.dart`: `ties` (exact ties in the reference's own arithmetic: `composer_fxaa` under
   flutter_tester, 3 wrong, worst 42), `ios` (iPhone 11, replacing `ties`), `mipmaps` (E-MIPFILTER), `antialiased`
   (per-scene tolerance, edge cap and blended count). `swiftShader` lists the scenes only `parity_test.dart` skips
   (they match on Metal); `skipped` those both skip (`khronos_box_textured`).
@@ -821,8 +824,8 @@ full-target quads, so the GPU is still drawing one render when the next writes, 
   - Steep highlights at low roughness (not reference scenes, not run on Metal): the grid at roughness 0.15, 0.25 and
     0.35 (directional and point light) has 11 wrong pixels, up to 7/255; a clearcoat of roughness 0.2 over normal
     maps on front-facing quads has 1, off by 3/255. The cause is not the derivatives: with geometryRoughness set to
-    0 on both paths (r187's chunk patched in the page) the rim pixels go away, but 10 highlight pixels stay, up to
-    12/255. Writing `fract(normal * 64)` on both paths shows the interpolated normal itself differs, by 5e-4
+    0 on both paths (the reference's chunk patched in the page) the rim pixels go away, but 10 highlight pixels stay, up
+    to 12/255. Writing `fract(normal * 64)` on both paths shows the interpolated normal itself differs, by 5e-4
     (median of the wrong pixels) up to about 1e-3, smoothly within each triangle and changing from triangle to
     triangle; under a highlight of roughness 0.15 that is 2 to 4/255 per 1e-3. No constant sample shift (±0.01,
     0.02 pixel in x or y) nor one growing across the frame reduces it, nor rounding the normal to half precision
@@ -864,7 +867,7 @@ every build of the example; entitlements unchanged). A failing frame is saved to
 temporary directory. `flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu` runs the
 144 scenes it had when timed in about 11 s (flutter_tester: about 5 min).
 
-On the M1 every frame equals r187's Chrome frame exactly (0 wrong, 0 edge pixels) except these (wrong / edge
+On the M1 every frame equals the reference's Chrome frame exactly (0 wrong, 0 edge pixels) except these (wrong / edge
 pixels; worst channel difference in brackets):
 
 | Frame | Metal (M1) | SwiftShader |
@@ -902,10 +905,10 @@ and its own time is not separated (at most the CPU's, an inference). Runs of the
 |---|---|---|
 | RenderPass, OutputPass (12 quads) | 0.31, 0.34, 0.32 | 0.31–0.34 |
 | with TuningPass, copying the read buffer (flutter_tester's path) | 1.08, 1.02 | 1.17 |
-| with TuningPass, r187's blend (Metal's path) | 1.00, 0.99 | 1.21–1.23 |
+| with TuningPass, the reference's blend (Metal's path) | 1.00, 0.99 | 1.21–1.23 |
 
 So the bloom copy costs less than the noise; on Metal the pass skips it, which saves its target
-(`TuningPass.base`, 7 MiB of HalfFloat at this size) and keeps r187's call order.
+(`TuningPass.base`, 7 MiB of HalfFloat at this size) and keeps the reference's call order.
 
 Depth textures, 200 Lambert boxes into a target, three runs each in one build: no depth texture 3.52–3.63 ms CPU
 (awaited 5.18–5.33), the depth copy (Metal) 3.52–3.63 (5.33–5.48), the replay (flutter_tester's path) 5.25–5.77
@@ -927,7 +930,7 @@ scenes, except three, recorded as `ios` allowances in `parity.dart` (they replac
 | `shadow_vsm_spot` | 27 (6) / 32 |
 
 - `composer_fxaa`: all 22 pixels lie on one slanted edge from (86, 25) to (5, 55), one pixel per stair step (every
-  2 to 5 pixels), and all are the same color, (207, 197, 115) where r187 has (215, 205, 120): FXAA blends those
+  2 to 5 pixels), and all are the same color, (207, 197, 115) where the reference has (215, 205, 120): FXAA blends those
   pixels a little more. A guess, not checked: the same kind of tie as SwiftShader's (the end search stopping where
   `abs(delta)` equals `gradient * 0.25`), decided the other way by the A13's arithmetic or bilinear weights.
   `composer_output` and `composer_effect`, which share its passes except FXAA, are 0 / 0.
@@ -944,7 +947,7 @@ scenes, except three, recorded as `ios` allowances in `parity.dart` (they replac
 - The failure frames stay in the app's temporary directory on the phone: `devicectl` does not reach iOS 16.3.1
   (CoreDevice: "does not support acquiring a usage assertion"); a temporary print in `compare` lists pixels.
 
-- Khronos models (2026-11-15, 162 tests in 36 s): the same five frames as the M1 differ from r187, within their
+- Khronos models (2026-11-15, 162 tests in 36 s): the same five frames as the M1 differ from the reference, within their
   allowances and within 1 pixel of the M1's counts (`khronos_clearcoat` 18 (13), `khronos_normal_tangent_mirror`
   201 (18), `khronos_transmission` 2 (119); `khronos_alpha_blend_mode` and `khronos_box_textured` equal).
 - Shader variants: no Metal function of the example's bundle binds more than 16 textures (counted from the
@@ -967,7 +970,7 @@ the returned `ui.Image`. Checked by `test/ent_view_test.dart` (widget tests with
   tick, so none follows. A new `renderer` or `camera` in `didUpdateWidget` is sized on the next layout; a new
   `scene` is drawn from the next tick.
 - Resize: on a layout change, and only then, it calls `setPixelRatio` and `setSize` with the logical size, and for
-  a `PerspectiveCamera` sets `aspect` and calls `updateProjectionMatrix` once, as r187's examples do in their
+  a `PerspectiveCamera` sets `aspect` and calls `updateProjectionMatrix` once, as the reference's examples do in their
   resize handler. An `OrthographicCamera` (or any other camera) is left to the app, as in the examples, where
   its frustum is the app's choice. An empty or unbounded layout renders nothing. A rotation is a resize.
 - Device pixel ratio: read with `MediaQuery.devicePixelRatioOf`, so a change (a window moved to another screen)
@@ -978,7 +981,7 @@ the returned `ui.Image`. Checked by `test/ent_view_test.dart` (widget tests with
   that uses `TickerMode`) or while the app is hidden or paused (`SchedulerBinding.framesEnabled`; an app gets no
   frames then anyway, the check makes it explicit and testable). It resumes on the next frame.
 - Elapsed time: `onFrame` gets the `Ticker`'s elapsed time, which, as in Flutter, keeps running while muted or in
-  the background; an animation driven by it jumps ahead on resume, as one driven by r187's `Clock` does after a
+  the background; an animation driven by it jumps ahead on resume, as one driven by the reference's `Clock` does after a
   hidden browser tab. An app that wants to freeze can accumulate its own deltas.
 - Frames: each tick creates one image; setting the next disposes it (`RawImage` holds a clone, which it disposes).
   Over 300 frames the open image handles stay at 2 and `info.memory` stays the same. `render` is synchronous
@@ -989,35 +992,35 @@ the returned `ui.Image`. Checked by `test/ent_view_test.dart` (widget tests with
 
 `EntView` takes `onPointerDown`, `onPointerMove`, `onPointerUp` and `onPointerHover`, each called with the
 Flutter `PointerEvent` and its normalized device coordinates as a new `Vector2`, ready for
-`raycaster.setFromCamera(ndc, camera)` and `intersectObjects(scene.children)`, the r187 idiom. A `Listener`
+`raycaster.setFromCamera(ndc, camera)` and `intersectObjects(scene.children)`, the reference's idiom. A `Listener`
 around the view delivers them; hover comes only from a mouse (or stylus) without a button, as on desktop.
 
-- NDC: `EntView.ndc(local, size)` is r187's `( x / width ) * 2 - 1, - ( y / height ) * 2 + 1` on the event's
-  local position and the view's layout size, both in logical pixels as r187 uses CSS pixels, so the device pixel
-  ratio never enters it. It is public for apps with their own gesture detectors. No callback runs while the
+- NDC: `EntView.ndc(local, size)` is the reference's `( x / width ) * 2 - 1, - ( y / height ) * 2 + 1` on the event's
+  local position and the view's layout size, both in logical pixels as the reference uses CSS pixels, so the device
+  pixel ratio never enters it. It is public for apps with their own gesture detectors. No callback runs while the
   layout is empty.
 - Why callbacks and not a gesture recognizer: a `Listener` gets raw pointer events without entering the gesture
   arena, so the view does not compete with an app's own detectors (such as `OrbitControlsListener`); taps, drags
-  and hover thresholds stay the app's choice, as with r187's `pointerdown`/`pointermove`/`pointerup` listeners.
+  and hover thresholds stay the app's choice, as with the reference's `pointerdown`/`pointermove`/`pointerup` listeners.
 - Checked by `test/picking_test.dart` (widget tests with a real renderer): a tap at the projected screen position
   of a known point passes that point's NDC (1e-9) and picks the box before the sphere behind it, with the distance
   of a direct core `Raycaster` cast (1e-9), the box's front face and its uv (0.7, 0.7); empty space picks nothing;
   a mouse hover passes its NDC. The same pick holds after the ratio doubles at the same logical size and after a
   resize to a square at ratio 1.5 (new aspect, new screen position). An `InstancedMesh` gives `instanceId`, a
-  `BatchedMesh` `batchId` (r187 raycasts each instance's geometry). A `SkinnedMesh` is picked in the pose of the
-  last frame: r187's `getVertexPosition` applies the bones' current `matrixWorld`, which the render updates, so
-  after a mixer moves the upper bone 1.5 to the right the hit is there and the bind-pose place is empty.
-- r187 keeps a skinned mesh's `boundingSphere` once computed (its first raycast or frustum test); a pose that
-  moves far beyond it misses the sphere test until the app calls `computeBoundingSphere()`, as in r187.
+  `BatchedMesh` `batchId` (the reference raycasts each instance's geometry). A `SkinnedMesh` is picked in the pose of
+  the last frame: the reference's `getVertexPosition` applies the bones' current `matrixWorld`, which the render
+  updates, so after a mixer moves the upper bone 1.5 to the right the hit is there and the bind-pose place is empty.
+- The reference keeps a skinned mesh's `boundingSphere` once computed (its first raycast or frustum test); a pose that
+  moves far beyond it misses the sphere test until the app calls `computeBoundingSphere()`, as in the reference.
 
 ## OrbitControls
 
 `OrbitControlsListener` (ent_flutter) wraps a `EntView` and feeds every pointer to an `OrbitControls`
-or `MapControls` from `package:ent` as the browser feeds r187's listeners, so r187's own pointer
-bookkeeping decides the gesture; the core is checked against r187 in Node (`orbit_controls.mjs`: 17 scenarios,
+or `MapControls` from `package:ent` as the browser feeds the reference's listeners, so the reference's own pointer
+bookkeeping decides the gesture; the core is checked against the reference in Node (`orbit_controls.mjs`: 17 scenarios,
 161 steps, max relative deviation 3.6e-15).
 
-| Input | Event given to the controls | r187 action (OrbitControls defaults) |
+| Input | Event given to the controls | Reference action (OrbitControls defaults) |
 |---|---|---|
 | one finger drag | `touch` pointer down/move/up | rotate (`touches.ONE`) |
 | two fingers, spread or pinch | two `touch` pointers | dolly by (d0 / d1) ^ zoomSpeed (`touches.TWO`, DOLLY_PAN) |
@@ -1034,17 +1037,17 @@ bookkeeping decides the gesture; the core is checked against r187 in Node (`orbi
 - The listener is a plain `Listener` (no gesture arena), like `EntView`'s own, so picking callbacks still
   fire under it. Keyboard input is not wired: call `controls.listenToKeyEvents(element)` and `onKeyDown` from a
   `Focus` if an app wants arrow keys.
-- Damping and auto-rotation need `controls.update()` every frame, as in r187: call it from `EntView.onFrame`
+- Damping and auto-rotation need `controls.update()` every frame, as in the reference: call it from `EntView.onFrame`
   (the example app does, with damping on).
-- Checked by `test/orbit_controls_test.dart` (6 widget tests): a touch drag rotates by r187's angle (1e-12), left
-  drag rotates and right drag and shift + left pan by r187's pan distance, a pinch changes the distance by
+- Checked by `test/orbit_controls_test.dart` (6 widget tests): a touch drag rotates by the reference's angle (1e-12),
+  left drag rotates and right drag and shift + left pan by the reference's pan distance, a pinch changes the distance by
   (80/120)^1.5 and matches the core fed the same events exactly, a two-finger drag pans, the wheel dollies by 0.95^1
   and 0.95^-2.5 with start/end events, and with damping the azimuth keeps moving over `update()` ticks after release
-  by r187's geometric series.
+  by the reference's geometric series.
 
 ## EffectComposer
 
-ent ports r187's `EffectComposer`, `RenderPass`, `OutputPass`, `FXAAPass` and `TuningPass`, with
+ent ports the reference's `EffectComposer`, `RenderPass`, `OutputPass`, `FXAAPass` and `TuningPass`, with
 `EffectPass` (`CopyPass`, `VignettePass`) in place of `ShaderPass`; the renderer implements their
 `EffectComposerRenderer`. Each effect is an `EffectMaterial` with typed settings and no shader code, and its shader is
 the renderer's (exception E-POSTPROCESSING):
@@ -1065,38 +1068,39 @@ the renderer's (exception E-POSTPROCESSING):
   holds. Adding an effect means adding its material to ent, writing its fragment stage in the bundle and
   registering it.
 - Checked by `composer_output` (RenderPass + OutputPass, ACES and sRGB) and `composer_effect` (RenderPass,
-  VignettePass, CopyPass, OutputPass under Neutral), and by r187's call log in Node
+  VignettePass, CopyPass, OutputPass under Neutral), and by the reference's call log in Node
   (`test/postprocessing/effect_composer_test.dart` in ent, which writes each effect material as the reference's shader
   material: its defines and its uniforms by their names).
-- FXAA: `FXAAPass` is an `EffectPass` of `FXAAMaterial` (r187's ShaderPass of `FXAAShader`), whose `setSize` sets
-  `resolution` to 1 / width,
+- FXAA: `FXAAPass` is an `EffectPass` of `FXAAMaterial` (the reference's ShaderPass of `FXAAShader`), whose `setSize`
+  sets `resolution` to 1 / width,
   1 / height. `fxaa.frag` keeps the shader's arithmetic in WebGL's vUv and flips t only inside `Sample`, so every
-  offset reaches the texel it reaches in r187 (one sampler; the edge-step table is a const array read, never
+  offset reaches the texel it reaches in the reference (one sampler; the edge-step table is a const array read, never
   stored). `composer_fxaa` shows a 128 × 128 nearest-filtered DataTexture texel for pixel (hard edges at several
-  slopes, two one-texel lines): the frame without the FXAAPass equals r187's. With it, the M1 app matches r187;
-  flutter_tester gives 3 wrong pixels (worst 42/255) and 4 edge pixels, all on the red line over the blue wedge,
-  where a float64 run of the shader shows the search ending where `abs(delta)` equals `gradient * 0.25` exactly (a
-  stair corner's bilinear sample), so rounding picks the end (`ties`). Why the app and flutter_tester differ is not
+  slopes, two one-texel lines): the frame without the FXAAPass equals the reference's. With it, the M1 app matches the
+  reference; flutter_tester gives 3 wrong pixels (worst 42/255) and 4 edge pixels, all on the red line over the blue
+  wedge, where a float64 run of the shader shows the search ending where `abs(delta)` equals `gradient * 0.25` exactly
+  (a stair corner's bilinear sample), so rounding picks the end (`ties`). Why the app and flutter_tester differ is not
   known. The iPhone 11 differs in 22 pixels (worst 8; "iPhone 11").
 - `examples/worm/integration_test/composer_test.dart` draws three chains (RenderPass + OutputPass under ACES with
   sRGB; + VignettePass + CopyPass under Neutral; + FXAAPass on composer_fxaa's pattern) and compares them with
   the frames the macOS app drew (`integration_test/composer/*.png`). On the iPhone 11: output 0 pixels over 2/255
   (worst 0), vignette 0 (worst 1), FXAA 22 pixels (worst 8, at the yellow edge's stair corners, 8/255 darker; cause
   unknown), recorded in the test (at most 24 pixels, 10/255).
-- Bloom: `TuningPass` is r187's, with typed materials: `HighPassMaterial` (r187's `LuminosityHighPassShader`;
-  `luminosity_high_pass.frag`, WebGLProgram's `luminance()` with Rec. 709 coefficients), the separable blur
-  (`BlurMaterial`, `bloom_blur.frag`: one program for the five kernel radii; the number of tap pairs is a uniform
-  bounding a loop of at most 11, the offsets and weights packed four to a vec4; t flipped at every sample point)
-  and the composite (`BloomMaterial`, `bloom_composite.frag`, five samplers). The mip targets are HalfFloatType (linearly filtered on the A13 too).
-  Where `loadKeepsColor` is true (Metal) the final additive blend loads the read buffer as r187 does; where it is
-  false (flutter_tester, flutter/flutter#196199) the pass copies the read buffer into its own target and draws that
-  copy and the bloom in one scene render (E-POSTPROCESSING; "Cost of the workarounds"). `composer_bloom` (the
-  example's 1.5, 0.4, 0.85) and `composer_bloom_wide` (0.8, 1, 0.2), small quads above 1 on black under ACES, match
-  r187 on both runners and on the iPhone 11. The `renderToScreen` path is checked by the port's call log only.
+- Bloom: `TuningPass` is the reference's, with typed materials: `HighPassMaterial` (the reference's
+  `LuminosityHighPassShader`; `luminosity_high_pass.frag`, WebGLProgram's `luminance()` with Rec. 709 coefficients), the
+  separable blur (`BlurMaterial`, `bloom_blur.frag`: one program for the five kernel radii; the number of tap pairs is a
+  uniform bounding a loop of at most 11, the offsets and weights packed four to a vec4; t flipped at every sample point)
+  and the composite (`BloomMaterial`, `bloom_composite.frag`, five samplers). The mip targets are HalfFloatType
+  (linearly filtered on the A13 too). Where `loadKeepsColor` is true (Metal) the final additive blend loads the read
+  buffer as the reference does; where it is false (flutter_tester, flutter/flutter#196199) the pass copies the read
+  buffer into its own target and draws that copy and the bloom in one scene render (E-POSTPROCESSING; "Cost of the
+  workarounds"). `composer_bloom` (the example's 1.5, 0.4, 0.85) and `composer_bloom_wide` (0.8, 1, 0.2), small quads
+  above 1 on black under ACES, match the reference on both runners and on the iPhone 11. The `renderToScreen` path is
+  checked by the port's call log only.
 
 ## Antialias
 
-`FlutterGpuRenderer.create(antialias: true)` is WebGLRenderer's `antialias` (default false, as r187); exception
+`FlutterGpuRenderer.create(antialias: true)` is WebGLRenderer's `antialias` (default false, as the reference); exception
 E-ANTIALIAS.
 
 - The main frame draws into a 4× multisampled color texture (the frame's format) and a 4× depth texture, both
@@ -1129,7 +1133,7 @@ E-ANTIALIAS.
 
 ## Render targets with samples
 
-`WebGLRenderTarget(w, h, {'samples': n})` with `n > 0` is drawn with 4× MSAA, as r187 draws into a multisampled
+`WebGLRenderTarget(w, h, {'samples': n})` with `n > 0` is drawn with 4× MSAA, as the reference draws into a multisampled
 renderbuffer and blits it into the target's texture after each render (`updateMultisampleRenderTarget`); exception
 E-ANTIALIAS.
 
@@ -1154,21 +1158,21 @@ E-ANTIALIAS.
   two samples of difference against a dark color reach about 190/255. No wrong pixels outside the edges; counts
   under "Parity on Metal" (the blended count equals `aa_basic`'s: the same pattern; Chrome 598 each). A renderer
   test reads a multisampled target back (edges blended, a second render resolved again).
-- `composer_samples` clears to black on purpose: r187's RenderPass calls `renderer.clear()` into the target, which
-  uses the clear value WebGLBackground last set, in sRGB because `setClearColor` ran without a target; the port
+- `composer_samples` clears to black on purpose: the reference's RenderPass calls `renderer.clear()` into the target,
+  which uses the clear value WebGLBackground last set, in sRGB because `setClearColor` ran without a target; the port
   clears a target in linear color. With aa_basic's 0x101018 Chrome's background comes out about 0x4a4a55. Not
   ported.
 
 ## HDR environments
 
-ent ports r187's `HDRLoader` (RGBE `.hdr`, HalfFloatType by default or FloatType through
+ent ports the reference's `HDRLoader` (RGBE `.hdr`, HalfFloatType by default or FloatType through
 `setDataType`) and `RGBELoader`, its deprecated alias. The loaded DataTexture, with
 `EquirectangularReflectionMapping`, works as `scene.environment` and `scene.background` through the renderer's
 existing paths: `environments.dart` converts it to a cube render target (background) and a PMREM (environment), and
 `textures.dart` uploads the half floats with `flipY` (float32 data as half floats where `filtersFloat` is false).
 
 - `fixtures/hdr/sky.hdr` is written by `tool/reference/js/hdr_files.mjs` (no download); the
-  reference page loads it with r187's HDRLoader (scenes.mjs `hdr`), the Dart test with the port.
+  reference page loads it with the reference's HDRLoader (scenes.mjs `hdr`), the Dart test with the port.
 - `hdr_environment` (HalfFloatType, no tone mapping) and `hdr_environment_aces` (FloatType, ACES, exposure 0.7):
   four front-facing MeshStandardMaterial quads (mirror to rough); 0 wrong pixels under flutter_tester and on Metal
   (M1 and iPhone 11).
@@ -1178,13 +1182,13 @@ existing paths: `environments.dart` converts it to a cube render target (backgro
 - Lit spheres under SwiftShader: silhouette centres 0.003 to 0.007 pixel from the edge (edges.mjs) are covered by
   the sphere on one path and by the background on the other (up to 153/255), with the file or with the in-memory
   `sky()` alike; spheres of roughness 0 to 0.25 also differ at a few rim pixels by up to 11/255 there. On Metal every
-  variant equals r187 (0 wrong, 0 edge pixels), so it is no HDR, PMREM or shader gap.
+  variant equals the reference (0 wrong, 0 edge pixels), so it is no HDR, PMREM or shader gap.
 
 ## Animation
 
 `AnimationMixer` and the keyframe tracks are the core's port; the renderer draws what they set (bones, morph
-influences, material properties, transforms). Checked against r187 at fixed times: the harness's `animate` option
-(tool/reference/render/README.md) draws one frame per time with `mixer.setTime`, and `parity_test.dart` plays the
+influences, material properties, transforms). Checked against the reference at fixed times: the harness's `animate`
+option (tool/reference/render/README.md) draws one frame per time with `mixer.setTime`, and `parity_test.dart` plays the
 clips it reads through ObjectLoader (`AnimationClip.toJSON` in the objects' `animations`, interpolation kept) the
 same way, so nothing in the check depends on timing.
 
@@ -1200,7 +1204,7 @@ same way, so nothing in the check depends on timing.
 - The Khronos models AnimatedMorphCube and CesiumMan ("Khronos sample models").
 
 The loop (`examples/worm/lib/animation.dart`, which builds `anim_skinned` in Dart): `onFrame` updates a `Timer`
-and advances the mixer by its delta, as in r187, where `Clock` is deprecated since r183:
+and advances the mixer by its delta, as in the reference, where `Clock` is deprecated:
 
 ```dart
 onFrame: (elapsed) {
@@ -1210,11 +1214,12 @@ onFrame: (elapsed) {
 ```
 
 - Pausing: a muted `EntView` (TickerMode) or a backgrounded app calls no `onFrame`, so the mixer stands still.
-  On resume the first delta spans the whole pause and the animation jumps ahead by it: the same as r187's `Clock`
-  (and a `Timer` not connected to a document) after a hidden browser tab. r187's `Timer.connect(document)` makes
-  that delta 0 in a browser; here an app that wants to freeze clamps the delta or connects a `TimerDocument`
-  adapter. `test/animation_loop_test.dart` (core time source on the test's fake clock) checks that the mixer
-  advances by each ticker delta, stands still while muted for 30 frames, and catches up by the pause on resume.
+  On resume the first delta spans the whole pause and the animation jumps ahead by it: the same as the reference's
+  `Clock` (and a `Timer` not connected to a document) after a hidden browser tab. The reference's
+  `Timer.connect(document)` makes that delta 0 in a browser; here an app that wants to freeze clamps the delta or
+  connects a `TimerDocument` adapter. `test/animation_loop_test.dart` (core time source on the test's fake clock) checks
+  that the mixer advances by each ticker delta, stands still while muted for 30 frames, and catches up by the pause on
+  resume.
 - iPhone 11 (iOS 16.3.1, profile build, `flutter drive`): `anim_skinned` in a full-screen EntView,
   `compileAsync` first (271 ms), 390 frames, the first 60 dropped. `onFrame` (timer and mixer) 0.16 ms mean,
   0.24 ms p95; the UI thread's build phase (onFrame, render and the view's build and layout; FrameTiming)
@@ -1257,7 +1262,7 @@ uses, which looks like nondeterministic rendering. In apps the first draw of a n
 milliseconds once (a first-frame hitch), then about 1 ms.
 
 To pay that during loading, call `renderer.compile(scene, camera)` or `await renderer.compileAsync(scene, camera)`
-(upstream signatures, with the optional `targetScene`): they draw every material state of the scene, its shadow
+(the reference's signatures, with the optional `targetScene`): they draw every material state of the scene, its shadow
 casters, background and transmission pass into a 1×1 offscreen frame, without changing what the next render shows
 or counts; `compileAsync` completes when the GPU has run it. A renderer test checks with a debug set of draw states
 that the next frame meets no state compile did not draw.
@@ -1380,7 +1385,7 @@ Remaining ideas, gains guessed:
 - Resolve each block's members once into int fields or an index table instead of the map read per write: most of
   the lookup's 6–7% of `render`.
 - Split the blocks by how often their inputs change and refill material and frame uniforms only when the program
-  or material changes, as r187's `setProgram` does (`refreshMaterial`). Today the blocks mix per-object,
+  or material changes, as the reference's `setProgram` does (`refreshMaterial`). Today the blocks mix per-object,
   per-material and per-frame members: `VertInfo` has the matrices next to the maps' uv transforms, `FragInfo` the
   line projection next to the colours, `LightInfo` is written per object (`_lights.write` takes the object). Per
   object are `VertInfo`'s `model_view_matrix`, `model_matrix`, `normal_matrix`, `flip_sided` and `use_tangent`
@@ -1435,8 +1440,8 @@ camera), wrong pixels (worst) SwiftShader / Metal (M1):
   against an independent decoder; the meshes carry tangents, so the derivative tangent frame is not involved.
 - `khronos_transmission` (`KHR_materials_transmission`, plain, textured, masked, rough and metallic shapes over a
   textured backdrop): the 3 pixels (and 2 edge pixels) are texels at the alpha-masked cutout edges of the green
-  shapes, kept by us and discarded by r187. The transmission target's mip chain stopping at 2×2 (E-MIPMAP) does not
-  show: the rough and metallic transmissive shapes match.
+  shapes, kept by us and discarded by the reference. The transmission target's mip chain stopping at 2×2 (E-MIPMAP) does
+  not show: the rough and metallic transmissive shapes match.
 - AnimatedMorphCube (two morph targets weighted by one LINEAR `weights` channel, 127 keys over 4.2 s) at 0, 0.85,
   2.1 and 3.5 s, and CesiumMan (a skinned, JPEG-textured walk: 57 LINEAR channels on 19 joints, keys every 1/24 s
   from 1/24 to 2 s) at 0, 0.55, 1.1 and 1.75 s (t = 0 clamps to the first key), each played through `animate`
@@ -1446,7 +1451,7 @@ camera), wrong pixels (worst) SwiftShader / Metal (M1):
 ### Mip levels against ANGLE
 
 Flutter GPU has no generateMipmap, so `textures.dart` builds the levels of uploaded textures on the CPU: each level
-a 2×2 box of the one above, rounded half up, averaged in linear light for sRGB textures. r187 calls
+a 2×2 box of the one above, rounded half up, averaged in linear light for sRGB textures. The reference calls
 `gl.generateMipmap`, which ANGLE on Metal runs on the GPU; the GL specification leaves its filter to the
 implementation (E-MIPFILTER). Probes in headless Chrome (ANGLE Metal, M1) read every level back through a
 framebuffer and compared it with the same filter ported to JS, on noise:
@@ -1464,9 +1469,9 @@ framebuffer and compared it with the same filter ported to JS, on noise:
   repeated edge texel).
 
 In the scenes, measured by swapping the levels in Chrome (a temporary probe that overwrote each map's levels 1+
-after three.js uploaded it):
+after the reference uploaded it):
 
-- With our CPU levels, r187's frame moves away from its own reference by what we differ by, and onto our Metal
+- With our CPU levels, the reference's frame moves away from its own reference by what we differ by, and onto our Metal
   frame: `khronos_normal_tangent_mirror` 217 pixels over 2/255 (max 18) from the reference, 0 over 1/255 from ours;
   `khronos_alpha_blend_mode` 9 over 2/255 (max 89), 0 over 1/255 from ours. So both scenes' Metal gaps are the mip
   levels (the glossy gold highlights amplify ±1 in the 2048² metallic-roughness and normal maps).
@@ -1483,14 +1488,14 @@ SwiftShader and the iPhone too, and is exact only at level 1. Kai chose to recor
 ### Causes of the Khronos model gaps
 
 Temporary probes changed both sides the same way (page.html after GLTFLoader, parity.dart after the Dart
-GLTFLoader, a debug output in our shader and an `onBeforeCompile` in r187's), drew both on Metal and compared.
+GLTFLoader, a debug output in our shader and an `onBeforeCompile` in the reference's), drew both on Metal and compared.
 
 - `khronos_transmission` (verified): the green shapes' mask (a 256² palette PNG with 78 alpha levels, antialiased
-  edges) is sampled through its mip levels. The alpha before the test, written out on both sides, is 0.4988 in r187
-  and 0.5047 here at (51, 52), 0.4990 and 0.5025 at (47, 74): a tie at the 0.5 cutoff, which r187 discards and we
-  keep. Over the green shapes our alpha is 1/255 higher on 288 of 1250 pixels and lower on 6, a bias of our half-up
-  box filter (E-MIPFILTER). With the mask's minFilter LinearFilter on both sides (base level only), the alpha
-  differs on 3 of 1250 pixels by at most 2/255, and the full frame matches: 0 wrong, worst 0. Every view of the
+  edges) is sampled through its mip levels. The alpha before the test, written out on both sides, is 0.4988 in the
+  reference and 0.5047 here at (51, 52), 0.4990 and 0.5025 at (47, 74): a tie at the 0.5 cutoff, which the reference
+  discards and we keep. Over the green shapes our alpha is 1/255 higher on 288 of 1250 pixels and lower on 6, a bias of
+  our half-up box filter (E-MIPFILTER). With the mask's minFilter LinearFilter on both sides (base level only), the
+  alpha differs on 3 of 1250 pixels by at most 2/255, and the full frame matches: 0 wrong, worst 0. Every view of the
   scene, close-up or far, still minifies the mask.
 - `khronos_clearcoat` (verified that mipmapping is needed for the gap; our levels and the level of detail are not
   separated): with every map of the model on LinearFilter on both sides, the coat-normal and shared-normal rows
