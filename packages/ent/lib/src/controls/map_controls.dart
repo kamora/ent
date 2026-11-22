@@ -13,6 +13,7 @@ final _mapControlsPanCurrent = Vector3();
 /// - Zoom: middle mouse, or mousewheel / touch: two-finger spread or squish.
 /// - Pan: left mouse, or arrow keys / touch: one-finger move.
 class MapControls extends OrbitControls {
+  /// Constructs new map controls for the given camera, listening on the given element (optional).
   MapControls(super.object, [super.domElement]) {
     screenSpacePanning = false; // pan orthogonal to world-space direction camera.up
 

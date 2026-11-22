@@ -7,6 +7,7 @@ part of '../../ent.dart';
 
 /// The element the controls listen on: its size and position in logical (CSS) pixels.
 class ControlsElement {
+  /// Constructs a new element of the given position and size (default `0`).
   ControlsElement({this.left = 0, this.top = 0, this.clientWidth = 0, this.clientHeight = 0});
 
   /// The element's left edge in client coordinates.
@@ -34,6 +35,7 @@ class ControlsElement {
 
 /// A pointer event: the fields of a DOM `PointerEvent` the controls read.
 class ControlsPointerEvent {
+  /// Constructs a new pointer event with the given fields.
   ControlsPointerEvent({
     required this.pointerId,
     this.pointerType = 'mouse',
@@ -81,6 +83,7 @@ class ControlsPointerEvent {
 
 /// A wheel event: the fields of a DOM `WheelEvent` the controls read.
 class ControlsWheelEvent {
+  /// Constructs a new wheel event with the given fields.
   ControlsWheelEvent({
     required this.clientX,
     required this.clientY,
@@ -115,6 +118,7 @@ class ControlsWheelEvent {
 
 /// A keyboard event: the fields of a DOM `KeyboardEvent` the controls read.
 class ControlsKeyEvent {
+  /// Constructs a new key event with the given fields (default: no key, no modifiers).
   ControlsKeyEvent({this.code = '', this.key = '', this.ctrlKey = false, this.metaKey = false, this.shiftKey = false});
 
   /// The physical key, as DOM `code` names it ('ArrowLeft').

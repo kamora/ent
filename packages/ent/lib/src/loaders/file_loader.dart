@@ -19,6 +19,7 @@ final RegExp _fileLoaderInt = RegExp(r'^\s*([+-]?\d+)');
 
 /// The error a request with an HTTP status other than 200 or 0 fails with.
 class HttpError extends EntError {
+  /// Constructs a new error with the given message and the response that failed.
   HttpError(super.message, this.response);
 
   /// The response that failed.

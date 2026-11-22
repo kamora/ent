@@ -3,6 +3,7 @@ part of '../../ent.dart';
 /// An entry of the render list a [BatchedMesh] sorts before drawing: the reference's `{ start, count, z, index }`
 /// object (exception E-OBJECT). A custom sort ([BatchedMesh.setCustomSort]) receives a list of these.
 class MultiDrawRenderItem {
+  /// Constructs a new entry with the given draw range, depth and instance index.
   MultiDrawRenderItem(this.start, this.count, this.z, this.index);
 
   /// The start of the draw range: an index offset for indexed geometry, a vertex offset otherwise.

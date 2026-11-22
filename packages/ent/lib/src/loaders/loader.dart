@@ -13,6 +13,7 @@ typedef LoaderErrorCallback = void Function(Object error);
 
 /// The progress of a download, the reference's DOM `ProgressEvent`.
 class ProgressEvent {
+  /// Constructs a new event of the given type and progress (default: nothing loaded, length not computable).
   ProgressEvent(this.type, {this.lengthComputable = false, this.loaded = 0, this.total = 0});
 
   /// The event type, `'progress'`.
@@ -30,6 +31,7 @@ class ProgressEvent {
 
 /// The error an aborted request fails with, the DOM `AbortError`.
 class AbortError extends EntError {
+  /// Constructs a new abort error with the given message (default: the DOM's message for an abort without a reason).
   AbortError([super.message = 'signal is aborted without reason']);
 
   /// The DOM exception name, `'AbortError'`.
@@ -110,6 +112,7 @@ class AbortController {
 
 /// What [LoaderPlatform.fetch] is asked to load: the reference's `Request`.
 class LoaderRequest {
+  /// Constructs a new request for [url] with the given options.
   LoaderRequest({
     required this.url,
     Map<String, String>? headers,
@@ -141,6 +144,7 @@ class LoaderRequest {
 
 /// The answer to a [LoaderRequest]: the reference's `Response`.
 class LoaderResponse {
+  /// Constructs a new response with the given status and body.
   LoaderResponse({
     required this.status,
     this.statusText = '',

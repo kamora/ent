@@ -73,6 +73,7 @@ class FlutterImage implements LoaderImage {
   @override
   bool get complete => _done;
 
+  /// The CORS setting the loader set; unused, as CORS applies only in browsers.
   @override
   String? crossOrigin;
 

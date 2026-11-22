@@ -10,6 +10,7 @@ final _perspectiveCameraMaxTarget = Vector2();
 /// The reference stores a plain object `{ enabled, fullWidth, fullHeight, offsetX, offsetY, width, height }`; the port
 /// uses this class with the same fields (E-OBJECT).
 class CameraView {
+  /// Constructs a new view; the defaults are an enabled full view of 1 × 1.
   CameraView({
     this.enabled = true,
     this.fullWidth = 1,

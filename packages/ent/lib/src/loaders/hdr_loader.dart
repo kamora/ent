@@ -335,6 +335,7 @@ class HDRLoader extends DataTextureLoader {
 /// The deprecated name of [HDRLoader].
 @Deprecated('Use HDRLoader instead.')
 class RGBELoader extends HDRLoader {
+  /// Constructs a new loader with the given manager, with a deprecation warning.
   RGBELoader([super.manager]) {
     warn('RGBELoader has been deprecated. Please use HDRLoader instead.');
   }

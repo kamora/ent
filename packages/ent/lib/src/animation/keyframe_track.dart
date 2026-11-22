@@ -492,6 +492,8 @@ void _keyframeScaleTangentTimes(List<double> tangents, double timeScale) {
 /// this subclass interpolates the value *indices* and copies the selected values into [objectResult] after each
 /// [evaluate]; that is where the mixer's buffer goes (exception E-OBJTRACK).
 class KeyframeObjectInterpolant extends DiscreteInterpolant {
+  /// Constructs a new interpolant over [objectValues] at the given positions, with the sample size and an optional
+  /// result list.
   KeyframeObjectInterpolant(
     List<double> parameterPositions,
     this.objectValues,

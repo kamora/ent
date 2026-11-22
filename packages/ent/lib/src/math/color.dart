@@ -38,6 +38,7 @@ final Map<String, int> _colorKeywords = {
 
 /// An HSL triple, the `{ h, s, l }` object the reference's [Color.getHSL] fills; each component is in `[0, 1]`.
 class HSL {
+  /// Constructs a new triple of the given hue, saturation and lightness (default `0`).
   HSL({this.h = 0, this.s = 0, this.l = 0});
 
   /// Hue.

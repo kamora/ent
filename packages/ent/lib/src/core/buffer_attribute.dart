@@ -91,6 +91,7 @@ abstract interface class BufferAttributeLike {
 /// A range of the data array to upload, as added by `addUpdateRange( start, count )`. The reference pushes
 /// `{ start, count }` object literals; renderers read the two fields (exception E-OBJECT).
 class UpdateRange {
+  /// Constructs a new range of [count] values from [start].
   UpdateRange(this.start, this.count);
 
   /// The index of the first value to upload.

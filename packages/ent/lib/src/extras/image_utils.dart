@@ -9,6 +9,7 @@ part of '../../ent.dart';
 ///
 /// A field left `null` is a missing or `undefined` key in the reference; readers treat it as `0` (`width || 0`).
 class DataImage {
+  /// Constructs a new image of the given data and size; a field left out stays `null`.
   DataImage({this.data, this.width, this.height, this.depth});
 
   /// The pixel data: a typed list (`Uint8List`, `Float32List`, ...) or `null`.

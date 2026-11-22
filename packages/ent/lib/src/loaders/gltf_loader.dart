@@ -9,6 +9,7 @@ part of '../../ent.dart';
 
 /// The result of [GLTFLoader.parse].
 class GLTF {
+  /// Constructs a new result with the given scenes, animations, cameras, asset and parser.
   GLTF({
     required this.scene,
     required this.scenes,
@@ -1747,6 +1748,7 @@ double _gltfGetNormalizedComponentScale(int componentType) {
 
 /// The options [GLTFLoader.parse] hands its [GLTFParser].
 class GLTFParserOptions {
+  /// Constructs new options with the given values; see each field for its default.
   GLTFParserOptions({
     this.path = '',
     this.crossOrigin = 'anonymous',
@@ -1792,6 +1794,7 @@ class GLTFParserOptions {
 /// The parser behind [GLTFLoader]: it turns the glTF definitions into ent objects, caching each dependency. Plugins
 /// hook into it through [GLTFLoaderPlugin].
 class GLTFParser extends GLTFLoaderPlugin {
+  /// Constructs a new parser of the given glTF JSON (default empty) with the given options (default [GLTFParserOptions]).
   GLTFParser([Map<String, Object?>? json, GLTFParserOptions? options])
     : json = json ?? {},
       options = options ?? GLTFParserOptions() {

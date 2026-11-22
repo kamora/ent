@@ -5,6 +5,7 @@ part of '../ent.dart';
 
 /// The error the engine throws, as the reference's `new Error( message )`.
 class EntError extends Error {
+  /// Constructs a new error with the given message.
   EntError(this.message);
 
   /// The message text, unchanged from the reference.

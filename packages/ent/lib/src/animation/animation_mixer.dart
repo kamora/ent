@@ -19,6 +19,7 @@ class _AnimationActionsForClip {
 /// A `{ total, inUse }` entry of [AnimationMixer.stats] and [AnimationObjectGroup.stats], computed on read as the
 /// reference's getters are.
 class AnimationStatsEntry {
+  /// Constructs a new entry whose [total] and [inUse] call the given functions on every read.
   AnimationStatsEntry(this._total, this._inUse);
 
   final int Function() _total;

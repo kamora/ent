@@ -313,6 +313,7 @@ abstract interface class PropertyBindingLike {
 /// A binding to the same property path on every object of an [AnimationObjectGroup]; the reference's
 /// `PropertyBinding.Composite`.
 class PropertyBindingComposite implements PropertyBindingLike {
+  /// Constructs a new binding to [path] on every object of [targetGroup], with an optional pre-parsed path.
   PropertyBindingComposite(AnimationObjectGroup targetGroup, String path, [Map<String, Object?>? optionalParsedPath])
     : _targetGroup = targetGroup,
       _bindings = targetGroup.subscribe_(path, optionalParsedPath ?? PropertyBinding.parseTrackName(path));

@@ -20,6 +20,7 @@ final _bufferGeometryVector = Vector3();
 ///
 /// The reference stores plain objects `{ start, count, materialIndex }` in `geometry.groups` (exception E-OBJECT).
 class GeometryGroup {
+  /// Constructs a new group of [count] vertices or indices from [start], drawn with the material at [materialIndex].
   GeometryGroup({required this.start, required this.count, this.materialIndex = 0});
 
   /// The first vertex for non-indexed geometry, otherwise the first triangle index.
@@ -35,6 +36,7 @@ class GeometryGroup {
 /// The part of a [BufferGeometry] to render: the reference's `{ start, count }`, with `count` defaulting to infinity
 /// (exception E-OBJECT).
 class DrawRange {
+  /// Constructs a new range from [start] (default `0`) of [count] (default: all).
   DrawRange({this.start = 0, this.count = double.infinity});
 
   /// The first vertex for non-indexed geometry, otherwise the first index.
