@@ -74,6 +74,7 @@ GPU and list the shader variants your materials need.
 | Package | What it is |
 | --- | --- |
 | [`ent`](packages/ent) | The engine in pure Dart: scenes, loaders, controls and post-processing. No Flutter needed. |
+| [`ent_shaders`](packages/ent_shaders) | The shaders every renderer shares, compiled when the app is built. |
 | [`ent_flutter`](packages/ent_flutter) | The Flutter GPU renderer, `EntView` and the platform adapters. Exports all of `ent`. |
 
 A Flutter app depends on `ent_flutter` only.
@@ -98,6 +99,7 @@ A Flutter app depends on `ent_flutter` only.
 
 ```sh
 (cd packages/ent && dart test)
+(cd packages/ent_shaders && flutter test)
 (cd packages/ent_flutter && flutter test --enable-impeller --enable-flutter-gpu)
 (cd examples/worm && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
 ```
@@ -106,6 +108,7 @@ The device tests and what they need are in the [example's README](examples/worm/
 
 ## License
 
-[MIT](LICENSE), © 2026 KAMORA Ltd. Third-party notices are in [`ent`](packages/ent/THIRD_PARTY_NOTICES.md) and
+[MIT](LICENSE), © 2026 KAMORA Ltd. Third-party notices are in [`ent`](packages/ent/THIRD_PARTY_NOTICES.md),
+[`ent_shaders`](packages/ent_shaders/THIRD_PARTY_NOTICES.md) and
 [`ent_flutter`](packages/ent_flutter/THIRD_PARTY_NOTICES.md). The test models in `fixtures/gltf/khronos/` are Khronos
 glTF samples under their own licenses (see their `ATTRIBUTION.md`).

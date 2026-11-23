@@ -459,7 +459,7 @@ class Program {
 
   final gpu.Shader _vertex;
 
-  /// The fragment stage's entry point; a kind drawn through variants names its kind (lib/src/gpu/variants.dart)
+  /// The fragment stage's entry point; a kind drawn through variants names its kind (ent_shaders' kinds)
   /// instead, and only its variants draw.
   final String fragment;
 

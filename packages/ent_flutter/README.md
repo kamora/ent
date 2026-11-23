@@ -45,7 +45,7 @@ on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "
    ```yaml
    hooks:
      user_defines:
-       ent_flutter:
+       ent_shaders:
          shaders: ent_shaders.json
    ```
 

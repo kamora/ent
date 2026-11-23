@@ -10,6 +10,7 @@
 @Timeout(Duration(minutes: 2))
 library;
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
@@ -18,8 +19,8 @@ import 'dart:ui' as ui;
 import 'package:flutter_gpu/gpu.dart' as gpu;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ent_flutter/ent_flutter.dart';
-import 'package:ent_flutter/src/gpu/bundles.dart';
 import 'package:ent_flutter/src/gpu/programs.dart';
+import 'package:ent_shaders/ent_shaders.dart';
 
 const int tolerance = 2;
 
@@ -104,7 +105,7 @@ void main() {
   }
 
   test('a shader missing from the bundle is named, not reported as a missing bundle', () async {
-    final library = (await gpu.ShaderLibrary.fromAsset('build/shaderbundles/ent.shaderbundle'))!;
+    final library = (await gpu.ShaderLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle'))!;
     expect(shaderOf(library, 'FaceVertex'), isNotNull);
     expect(
       () => shaderOf(library, 'NoSuchVertex'),
@@ -113,7 +114,13 @@ void main() {
   });
 
   test('the hook keeps only the target backends, and a stripped bundle reads as the engine expects', () async {
-    final bytes = File('build/shaderbundles/ent.shaderbundle').readAsBytesSync();
+    // ent_shaders' root, where pub resolved it: its hook writes the bundle there.
+    final config = json.decode(File('.dart_tool/package_config.json').readAsStringSync()) as Map<String, Object?>;
+    final package = (config['packages']! as List<Object?>).cast<Map<String, Object?>>().firstWhere(
+      (p) => p['name'] == 'ent_shaders',
+    );
+    final root = Directory.current.uri.resolve('.dart_tool/').resolve('${package['rootUri']}/');
+    final bytes = File.fromUri(root.resolve('build/shaderbundles/ent.shaderbundle')).readAsBytesSync();
     final vulkan = (await gpu.ShaderLibrary.fromBytes(ByteData.sublistView(strip(bytes, {'vulkan'}))))!;
 
     // macOS keeps Metal and Vulkan: the bundle's OpenGL slots are empty, so keeping only them leaves the names. Linux
@@ -130,7 +137,7 @@ void main() {
   });
 
   test('the bundle holds the variants the registry lists', () async {
-    final library = (await gpu.ShaderLibrary.fromAsset('build/shaderbundles/ent.shaderbundle'))!;
+    final library = (await gpu.ShaderLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle'))!;
     expect(shaderOf(library, 'basic'), isNotNull);
     expect(shaderOf(library, 'basic map polygon_offset'), isNotNull);
     expect(() => shaderOf(library, 'basic light_map'), throwsStateError);

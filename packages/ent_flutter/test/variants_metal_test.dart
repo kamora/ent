@@ -7,13 +7,20 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:ent_flutter/src/gpu/variants.dart';
+import 'package:ent_shaders/ent_shaders.dart';
 import 'package:flutter_gpu_shaders/environment.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('every registered variant uses each uniform block and sampler it declares (Metal)', () async {
     final impellerc = (await findImpellerC()).toFilePath();
+
+    // ent_shaders' root, where pub resolved it: the variants include its shaders/.
+    final config = json.decode(File('.dart_tool/package_config.json').readAsStringSync()) as Map<String, Object?>;
+    final package = (config['packages']! as List<Object?>).cast<Map<String, Object?>>().firstWhere(
+      (p) => p['name'] == 'ent_shaders',
+    );
+    final root = Directory.current.uri.resolve('.dart_tool/').resolve('${package['rootUri']}/');
     final temp = Directory.systemTemp.createTempSync('ent_variants');
     final keys = readRegistry(File('test/ent_shaders.json').readAsStringSync());
     final problems = <String>[];
@@ -32,7 +39,7 @@ void main() {
                 '--sl=$name.metal',
                 '--spirv=$name.spv',
                 '--reflection-json=$name.json',
-                '--include=${Directory.current.path}',
+                '--include=${root.toFilePath()}',
                 '--include=${File(impellerc).parent.path}/shader_lib',
               ]);
 

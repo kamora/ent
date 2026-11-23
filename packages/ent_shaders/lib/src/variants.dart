@@ -1,5 +1,5 @@
 // Shader variants: a material kind with a set of flags, compiled at build time into the bundle under its key. Pure
-// Dart, so the build hook shares it with the renderer.
+// Dart, so the build hook shares it with the renderers.
 
 import 'dart:convert';
 
@@ -83,24 +83,24 @@ String keyOf(String kind, Iterable<String> flags) => [kind, ...flags.toList()..s
   final accepted = kinds[kind]?.flags;
 
   if (accepted == null) {
-    throw FormatException('ent_flutter: unknown shader kind "$kind" in "$key"; known: ${kinds.keys.join(', ')}.');
+    throw FormatException('ent_shaders: unknown shader kind "$kind" in "$key"; known: ${kinds.keys.join(', ')}.');
   }
 
   for (final flag in flags) {
     if (!accepted.containsKey(flag)) {
-      throw FormatException('ent_flutter: "$kind" has no flag "$flag" in "$key"; known: ${accepted.keys.join(', ')}.');
+      throw FormatException('ent_shaders: "$kind" has no flag "$flag" in "$key"; known: ${accepted.keys.join(', ')}.');
     }
   }
 
   // A normal map takes precedence over a bump map, so with both the bump map's code and sampler would be dead.
   if (flags.contains('bump_map') && flags.any(const {'normal_map', 'object_normal_map'}.contains)) {
-    throw FormatException('ent_flutter: "$key" has a normal map, which takes precedence over bump_map; leave it out.');
+    throw FormatException('ent_shaders: "$key" has a normal map, which takes precedence over bump_map; leave it out.');
   }
 
   // Without transmission its code is left out, and these would declare samplers nothing reads.
   if (!flags.contains('transmission') &&
       flags.any(const {'dispersion', 'transmission_map', 'thickness_map'}.contains)) {
-    throw FormatException('ent_flutter: "$key" has dispersion or a transmission map without transmission.');
+    throw FormatException('ent_shaders: "$key" has dispersion or a transmission map without transmission.');
   }
 
   return (kind: kind, flags: flags);
@@ -110,14 +110,14 @@ String keyOf(String kind, Iterable<String> flags) => [kind, ...flags.toList()..s
 List<String> readRegistry(String text) {
   final variants = switch (json.decode(text)) {
     {'variants': List<Object?> list} => list,
-    _ => throw const FormatException('ent_flutter: a shader registry is {"variants": ["basic map", ...]}.'),
+    _ => throw const FormatException('ent_shaders: a shader registry is {"variants": ["basic map", ...]}.'),
   };
 
   final keys = <String>{};
 
   for (final key in variants) {
     if (key is! String) {
-      throw FormatException('ent_flutter: a shader variant is a string, not $key.');
+      throw FormatException('ent_shaders: a shader variant is a string, not $key.');
     }
 
     final (:kind, :flags) = parseKey(key);

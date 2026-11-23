@@ -1,13 +1,12 @@
-// Compiles the renderer's shaders into build/shaderbundles/ent.shaderbundle with impellerc: the fixed ones in
-// ent.shaderbundle.json, plus the variants the app's registry lists (hooks: user_defines: ent_flutter: shaders:);
+// Compiles Ent Engine's shaders into build/shaderbundles/ent.shaderbundle with impellerc: the fixed ones in
+// ent.shaderbundle.json, plus the variants the app's registry lists (hooks: user_defines: ent_shaders: shaders:);
 // then keeps only the GPU backends the target runs.
 
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:code_assets/code_assets.dart';
-import 'package:ent_flutter/src/gpu/bundles.dart';
-import 'package:ent_flutter/src/gpu/variants.dart';
+import 'package:ent_shaders/ent_shaders.dart';
 import 'package:flutter_gpu_shaders/build.dart';
 import 'package:hooks/hooks.dart';
 

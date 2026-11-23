@@ -121,7 +121,7 @@ pubspec names:
 ```yaml
 hooks:
   user_defines:
-    ent_flutter:
+    ent_shaders:
       shaders: ent_shaders.json
 ```
 

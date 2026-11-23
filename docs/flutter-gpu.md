@@ -1,8 +1,8 @@
 # Flutter GPU backend
 
-How `FlutterGpuRenderer` in `packages/ent_flutter` uses Flutter GPU, what it draws, and how it is checked against
-the reference. Every statement is measured on the Flutter installed here unless it is marked as a guess; nothing is
-assumed from documentation alone.
+How `FlutterGpuRenderer` in `packages/ent_flutter` uses Flutter GPU, what it draws, and how it is checked against the
+reference. Its shaders are in `packages/ent_shaders`: paths `shaders/…` below are there. Every statement is measured on
+the Flutter installed here unless it is marked as a guess; nothing is assumed from documentation alone.
 
 ## Environment
 
@@ -33,7 +33,7 @@ assumed from documentation alone.
   `true` in `examples/worm/macos/Runner/Info.plist` and `examples/worm/ios/Runner/Info.plist`.
 - Android reads the `io.flutter.embedding.android.EnableFlutterGPU` metadata key in `AndroidManifest.xml` (named
   by Flutter's own error message; not tried on a device where Impeller uses Vulkan).
-- The bundle is an asset `ent_flutter` declares (`build/shaderbundles/ent.shaderbundle`), written by its build hook.
+- The bundle is an asset `ent_shaders` declares (`build/shaderbundles/ent.shaderbundle`), written by its build hook.
   `flutter build`, `flutter run` and `flutter test` on the host run the hook before they collect assets; `flutter
   test integration_test -d <device>` collects them first, so with no bundle yet (a fresh checkout, `flutter clean`)
   it stops with "No file or variants found for asset" (Flutter 3.47.6, macOS, 2026-11-17; the app's own build then
@@ -112,7 +112,7 @@ top-left pixel (Apple M1).
 
 ## Programs and uniforms
 
-A material kind's fragment stage is a build-time variant the app registers (`lib/src/gpu/variants.dart`,
+A material kind's fragment stage is a build-time variant the app registers (`ent_shaders`' `lib/src/variants.dart`,
 `docs/shader-variants.md`, exception E-SHADERS); the mesh kinds share the vertex stage `shaders/mesh.glsl`, compiled
 as:
 
@@ -174,18 +174,18 @@ does not use are bound to a 1×1 opaque black texture (a 1×1 black cube texture
 what an unloaded texture reads as (WebGL samples an unbound texture as (0, 0, 0, 1)). Attributes are converted to
 float32 streams per slot (interleaved attributes read through `getX`...).
 
-Variants. The build hook (`hook/build.dart`) writes one source per registered key into `build/variants/`: the
-key's defines, then its kind's GLSL (`sourceOf`), named `variant__<flags>.frag` (`fileOf`; impellerc names the entry
-point after the file, and the engine registers shaders by it, so a stem must not repeat a fixed shader's). It
-compiles them with the fixed shaders of `ent.shaderbundle.json` into one bundle, keyed by the variant key. Per
-draw, `_variantOf` builds the key from the material (its maps, physical layers, depth packing, `polygonOffset`;
-only the flags the kind accepts) and draws that bundle entry, with the samplers its flags add (`samplersOf`). The
-flag `polygon_offset` (POLYGON_OFFSET) writes `gl_FragDepth` (factor × depth slope + units × 2^(exponent − 23), the
-float-depth rule); writing the depth disables early depth testing, so only materials with `polygonOffset` use it.
-In the kind `physical`, a layer or a specular map defines PHYSICAL, transmission TRANSMISSION, and each physical
-map sets one bit of PHYSICAL_MAPS, as WebGLPrograms compiles a layer only for a material that uses it; the widest
-variant reads 21 maps, through the texture slots below. Vertex stages are separate bundle entries, so a variant pairs
-with any vertex stage at pipeline creation without more bundle entries.
+Variants. The build hook (`ent_shaders`' `hook/build.dart`) writes one source per registered key into `build/variants/`:
+the key's defines, then its kind's GLSL (`sourceOf`), named `variant__<flags>.frag` (`fileOf`; impellerc names the entry
+point after the file, and the engine registers shaders by it, so a stem must not repeat a fixed shader's). It compiles
+them with the fixed shaders of `ent.shaderbundle.json` into one bundle, keyed by the variant key. Per draw, `_variantOf`
+builds the key from the material (its maps, physical layers, depth packing, `polygonOffset`; only the flags the kind
+accepts) and draws that bundle entry, with the samplers its flags add (`samplersOf`). The flag `polygon_offset`
+(POLYGON_OFFSET) writes `gl_FragDepth` (factor × depth slope + units × 2^(exponent − 23), the float-depth rule); writing
+the depth disables early depth testing, so only materials with `polygonOffset` use it. In the kind `physical`, a layer
+or a specular map defines PHYSICAL, transmission TRANSMISSION, and each physical map sets one bit of PHYSICAL_MAPS, as
+WebGLPrograms compiles a layer only for a material that uses it; the widest variant reads 21 maps, through the texture
+slots below. Vertex stages are separate bundle entries, so a variant pairs with any vertex stage at pipeline creation
+without more bundle entries.
 
 Texture slots. Impeller gives every texture its own Metal sampler state, and the A13 binds at most 16 per stage.
 So the physical variants bind through texture slots (`shaders/slots.glsl`, included first): 15 generic 2D
@@ -242,12 +242,12 @@ Flutter GPU behaviours that shape the shaders (3.47.6):
   rebuilt the bundle (its mtime and size changed), while an older note says included files are not watched;
   touching `ent.shaderbundle.json` forces a rebuild either way.
 
-To add a material kind: write `shaders/<kind>.glsl` (include `output.glsl` or `offset.glsl` and the shared
-parts it reads, each optional part under its flag's define), add the kind and its flags to `kinds`
-(`lib/src/gpu/variants.dart`), a `Program` with its sampler list in `FlutterGpuRenderer`, a case in `_programOf`,
+To add a material kind: write `shaders/<kind>.glsl` (include `output.glsl` or `offset.glsl` and the shared parts it
+reads, each optional part under its flag's define), add the kind and its flags to `kinds` (`ent_shaders`'
+`lib/src/variants.dart`), a `Program` with its sampler list in `FlutterGpuRenderer`, a case in `_programOf`,
 `_materialUniforms` and `_Surface.of`, and its keys to the test registry (`test/ent_shaders.json`). Extra attributes
-(skin, morph, instance, batch) get their own vertex layouts, a program per layout (`Program.skinned`,
-`Program.morphed`, `Program.instanced`, `Program.batched` and their combinations).
+(skin, morph, instance, batch) get their own vertex layouts, a program per layout (`Program.skinned`, `Program.morphed`,
+`Program.instanced`, `Program.batched` and their combinations).
 
 ## What the renderer draws
 

@@ -1,4 +1,4 @@
-// Strips a shader bundle to the GPU backends a target runs. Pure Dart, for the build hook.
+// Strips a shader bundle to the GPU backends a target runs.
 
 import 'dart:typed_data';
 
@@ -90,6 +90,6 @@ int? _read(Builder builder, BufferContext context, int offset, int field, Object
       null => null,
       final tables => builder.writeList([for (final table in tables) _copy(builder, context, table, schema, kept)]),
     },
-    _ => throw StateError('ent_flutter: unknown shader bundle field kind $kind.'),
+    _ => throw StateError('ent_shaders: unknown shader bundle field kind $kind.'),
   };
 }

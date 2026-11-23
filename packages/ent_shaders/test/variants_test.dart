@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:ent_flutter/src/gpu/variants.dart';
+import 'package:ent_shaders/ent_shaders.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -83,8 +83,17 @@ void main() {
     final fixed = (json.decode(File('ent.shaderbundle.json').readAsStringSync()) as Map<String, Object?>).values;
     final names = {for (final shader in fixed) entry((shader as Map)['file'] as String)};
 
-    for (final key in readRegistry(File('test/ent_shaders.json').readAsStringSync())) {
-      expect(names.add(entry(fileOf(key))), isTrue, reason: '"$key" shares its entry point');
+    // Each kind alone and with each flag it accepts on its own (transmission's own flags need transmission).
+    for (final MapEntry(key: kind, value: (:flags, source: _)) in kinds.entries) {
+      for (final key in [
+        kind,
+        for (final flag in flags.keys)
+          const {'dispersion', 'transmission_map', 'thickness_map'}.contains(flag)
+              ? keyOf(kind, [flag, 'transmission'])
+              : keyOf(kind, [flag]),
+      ]) {
+        expect(names.add(entry(fileOf(key))), isTrue, reason: '"$key" shares its entry point');
+      }
     }
   });
 }

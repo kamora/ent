@@ -2,7 +2,8 @@
 
 Design note, implemented for every material that draws meshes, lines, points and sprites (ShadowMaterial keeps its
 fixed shader). Each material kind's fragment stage is a variant an app registers and the build compiles (E-SHADERS);
-nothing compiles on the device.
+nothing compiles on the device. The shaders, the registry code and the build hook are in `packages/ent_shaders`, shared
+by every renderer.
 
 ## Goal
 
@@ -27,17 +28,17 @@ A **variant** is one material kind with a set of flags, built as a fragment shad
 **key** is the kind and the sorted flags, for example `lambert map normal_map`. The bundle names its shader after the
 key.
 
-The renderer computes a draw's flags from the material, keeps those its kind accepts (`lib/src/gpu/variants.dart`),
-then looks the key up in the bundle.
+The renderer computes a draw's flags from the material, keeps those its kind accepts (`ent_shaders`'
+`lib/src/variants.dart`), then looks the key up in the bundle.
 
 ## Registry
 
-The app lists its variants in a JSON file and points `ent_flutter`'s build hook at it from its `pubspec.yaml`:
+The app lists its variants in a JSON file and points `ent_shaders`' build hook at it from its `pubspec.yaml`:
 
 ```yaml
 hooks:
   user_defines:
-    ent_flutter:
+    ent_shaders:
       shaders: ent_shaders.json
 ```
 
@@ -72,7 +73,7 @@ release behave the same.
 3. Compile them into the bundle with impellerc.
 4. Strip the bundle to the target's backends: Metal iOS, Metal desktop plus Vulkan (macOS, since `flutter test` runs
    Vulkan), or Vulkan (Android); another target keeps all five. impellerc ignores platform flags in bundle mode, so
-   `lib/src/gpu/bundles.dart` rewrites its FlatBuffer output (`flat_buffers`), with the target OS from the hook's code
+   `lib/src/bundles.dart` rewrites its FlatBuffer output (`flat_buffers`), with the target OS from the hook's code
    config. Measured: 14.9 MB becomes 3.1 MB (iOS), 5.6 MB (macOS), 2.5 MB (Vulkan only).
 5. Write `build/shaderbundles/ent.shaderbundle.owner` (the target OS and the registry) and declare it an input of
    the hook: every build writes the same bundle, so one for another target or registry replaces it and rewrites the
@@ -117,7 +118,7 @@ The test suite registers its own list: every key the parity scenes need, recorde
 ## Jobs
 
 1. MeshBasicMaterial end to end: flags, generated sources, registry, lookup, the missing-variant error, parity. Done
-   for its maps, vertex colors and polygon offset (`lib/src/gpu/variants.dart`, `hook/build.dart`).
+   for its maps, vertex colors and polygon offset (`ent_shaders`' `lib/src/variants.dart` and `hook/build.dart`).
 2. Backend stripping in the hook. Done.
 3. The other materials, one per job. Done: Normal (`normals.glsl`, with `flags.glsl` shared by every chunk),
    Lambert, Phong and Toon (their maps and Toon's gradient map; their lights still switch by uniforms), Matcap,

@@ -9,6 +9,8 @@ platform parity are reported separately. Where Ent differs from the reference on
 - `ent`: math, core, cameras, objects, geometries, materials, lights, textures and animation, with GLTFLoader,
   HDRLoader, OrbitControls and EffectComposer (render, FXAA, vignette, copy, bloom and output passes), checked
   against values the reference produced (`fixtures/values/`).
+- `ent_shaders`: the GLSL every renderer shares, the variant registry and the build hook that compiles them into one
+  shader bundle; nothing compiles at runtime.
 - `ent_flutter`: `FlutterGpuRenderer` and `EntView`. About 160 scenes are compared pixel by pixel with the reference's
   frames from headless Chrome (2/255 per channel, edge pixels within 1 px, at most 0.5% of pixels): shadows, PBR and
   physical materials, environment maps, skinning, morphs, instancing, render targets, MSAA, post-processing, depth
@@ -31,14 +33,15 @@ pushed or posted without Kai's go-ahead for that step. Small jobs, in this order
 2. P2, READMEs and a getting-started example: a README per package (`ent` has none), covering what it is, platforms,
    the Flutter GPU switch and a minimal scene; a small example app beside the viewer; a user-facing summary of what
    differs from the reference.
-3. P3, licenses and metadata. Licenses done: MIT, © KAMORA Ltd., in the root and both packages; each package's
-   `THIRD_PARTY_NOTICES.md` holds the reference's notice (and earcut's in `ent`); the Khronos models' attribution
-   stays with the models in `fixtures/gltf/khronos/`. Metadata done: descriptions, topics, CHANGELOGs, version
-   `0.1.0-dev.1`, caret ranges, and `ent_flutter` asking for `ent` from pub.dev (the repository resolves it from its
-   path through `pubspec_overrides.yaml`, which pub does not upload). `dart pub publish --dry-run` warns only of
-   uncommitted files. The repository is `github.com/kamora/ent` (public): both pubspecs name it, and the READMEs link
-   into it, so the links work on pub.dev. `ent` must be published before `ent_flutter`. `ent` and `ent_flutter` were
-   free on pub.dev on 2026-11-10; a name is held only by its first upload.
+3. P3, licenses and metadata. Licenses done: MIT, © KAMORA Ltd., in the root and every package; each package's
+   `THIRD_PARTY_NOTICES.md` holds the reference's notice (and earcut's in `ent`); the Khronos models' attribution stays
+   with the models in `fixtures/gltf/khronos/`. Metadata done: descriptions, topics, CHANGELOGs, version `0.1.0-dev.1`,
+   caret ranges, and `ent_flutter` asking for `ent` and `ent_shaders` from pub.dev (the repository resolves them from
+   their path through `pubspec_overrides.yaml`, which pub does not upload). `dart pub publish --dry-run` warns only of
+   uncommitted files. The repository is `github.com/kamora/ent` (public): every pubspec names it, and the READMEs link
+   into it, so the links work on pub.dev. `ent` and `ent_shaders` must be published before `ent_flutter` (`ent_shaders`
+   was free on 2026-11-23). `ent` and `ent_flutter` were free on pub.dev on 2026-11-10; a name is held only by its first
+   upload.
 4. P4, CI: a workflow running the unit tests, the flutter_tester suite, the Metal parity suite and analyze/format.
    Two probes (2026-11-17) answered the guesses: GitHub's `macos-15` runner gives Flutter GPU Metal, and its 176
    parity frames equal the M1's line for line (after one `flutter build macos --debug`, which the device test needs on

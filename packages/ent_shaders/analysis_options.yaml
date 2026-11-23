@@ -1,0 +1,13 @@
+# Self-contained, as pub.dev reads it: a published package has no parent directory to include from.
+include: package:flutter_lints/flutter.yaml
+
+formatter:
+  page_width: 120
+
+analyzer:
+  exclude:
+    - build/**
+
+linter:
+  rules:
+    curly_braces_in_flow_control_structures: true

@@ -14,6 +14,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter_gpu/gpu.dart' as gpu;
 import 'package:ent/ent.dart';
+import 'package:ent_shaders/ent_shaders.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
 import 'gpu/check.dart';
@@ -27,7 +28,6 @@ import 'gpu/passes.dart';
 import 'gpu/programs.dart';
 import 'gpu/shadows.dart';
 import 'gpu/textures.dart';
-import 'gpu/variants.dart';
 import 'render_list.dart';
 
 /// Draw statistics of the last frame, named as the reference's `renderer.info.render`.
@@ -253,9 +253,8 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
     };
   }
 
-  /// Loads the shader bundle and creates a renderer. Inside an app the bundle is the package asset
-  /// `packages/ent_flutter/build/shaderbundles/ent.shaderbundle`; this package's own tests see it
-  /// without the `packages/` prefix. Throws a [StateError] when the app has not enabled Flutter GPU, or when
+  /// Loads the shader bundle and creates a renderer. The bundle is `ent_shaders`' asset
+  /// `packages/ent_shaders/build/shaderbundles/ent.shaderbundle`, which its build hook writes. Throws a [StateError] when the app has not enabled Flutter GPU, or when
   /// Flutter GPU cannot render on this device (Android's OpenGL ES fallback).
   ///
   /// [antialias] is the reference renderer's constructor parameter: the frame is drawn with 4× MSAA and resolved, where
@@ -281,37 +280,30 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
 
     final samples = antialias && gpu.gpuContext.doesSupportOffscreenMSAA ? 4 : 1;
 
-    final errors = <Object>[];
+    gpu.ShaderLibrary? library;
+    Object? error;
 
-    for (final key in const [
-      'packages/ent_flutter/build/shaderbundles/ent.shaderbundle',
-      'build/shaderbundles/ent.shaderbundle',
-    ]) {
-      gpu.ShaderLibrary? library;
-
-      try {
-        library = await gpu.ShaderLibrary.fromAsset(key);
-      } catch (e) {
-        // Not this key, or a bundle with nothing for this GPU; try the next one.
-        errors.add(e);
-      }
-
-      // Outside the try: a shader missing from a found bundle throws its own error, naming the shader.
-      if (library != null) {
-        final renderer = FlutterGpuRenderer._(library)
-          .._samples = samples
-          .._loads = loads;
-        renderer._textures
-          ..filtersFloat = await checkFloatFilter(renderer._passes)
-          ..readsDepth = await checkDepthRead(renderer._passes);
-        return renderer;
-      }
+    try {
+      library = await gpu.ShaderLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle');
+    } catch (e) {
+      error = e;
     }
 
-    throw StateError(
-      'ent_flutter: no shader bundle for this GPU; is the package\'s build hook enabled? A bundle built for another '
-      'target keeps only that target\'s backends: rebuild for this one. ${errors.join(' ')}',
-    );
+    if (library == null) {
+      throw StateError(
+        'ent_flutter: no shader bundle for this GPU; is the build hook of ent_shaders enabled? A bundle built for '
+        'another target keeps only that target\'s backends: rebuild for this one. ${error ?? ''}',
+      );
+    }
+
+    // Outside the try: a shader missing from the bundle throws its own error, naming the shader.
+    final renderer = FlutterGpuRenderer._(library)
+      .._samples = samples
+      .._loads = loads;
+    renderer._textures
+      ..filtersFloat = await checkFloatFilter(renderer._passes)
+      ..readsDepth = await checkDepthRead(renderer._passes);
+    return renderer;
   }
 
   // One program per material kind (exception E-SHADERS); a new kind adds its shader pair to
@@ -1886,7 +1878,7 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
     };
   }
 
-  // The registered variant of [kind] (a kind of lib/src/gpu/variants.dart, named by its fragment) that [material]
+  // The registered variant of [kind] (a kind of ent_shaders' variants, named by its fragment) that [material]
   // needs on [object]: of its maps, vertex colors (or instance or batch colors) and polygon offset, the flags the
   // kind accepts. A StateError names a variant the shader registry lacks; while [recorded], null instead.
   Program? _variantOf(Program kind, Material material, Object3D object) {
@@ -1936,7 +1928,7 @@ class FlutterGpuRenderer implements EffectComposerRenderer {
     if (!_variants.containsKey(key) && _library[key] == null) {
       final message =
           'ent_flutter: the shader variant "$key" is not registered; add it to the "variants" of the registry that '
-          'pubspec.yaml names in hooks: user_defines: ent_flutter: shaders:, then rebuild.';
+          'pubspec.yaml names in hooks: user_defines: ent_shaders: shaders:, then rebuild.';
 
       if (recorded == null) {
         throw StateError(message);
