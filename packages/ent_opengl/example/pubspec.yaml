@@ -1,0 +1,48 @@
+name: ent_opengl_example
+description: Shows a scene drawn by ent_opengl's OpenGlRenderer in a macOS window.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+  ent: ^0.1.0-dev.1
+  ent_opengl:
+    path: ..
+  ent_renderer: ^0.1.0-dev.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  ent_flutter: ^0.1.0-dev.1
+  vector_math: ^2.4.4
+
+flutter:
+  # The reference frames and the files their scenes load, for the parity scenes (integration_test/fixtures links to
+  # the repository's fixtures directory).
+  assets:
+    - integration_test/fixtures/rendering/reference/
+    - integration_test/fixtures/gltf/
+    - integration_test/fixtures/gltf/khronos/AlphaBlendModeTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/AnimatedMorphCube/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/BoxTextured/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/CesiumMan/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/ClearCoatTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/NormalTangentMirrorTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/TextureCoordinateTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/TextureTransformTest/glTF/
+    - integration_test/fixtures/gltf/khronos/TransmissionTest/glTF-Binary/
+    - integration_test/fixtures/gltf/khronos/VertexColorTest/glTF-Binary/
+    - integration_test/fixtures/hdr/
+
+# The shader variants the scene draws with: the parity scenes' registry of ent_flutter.
+hooks:
+  user_defines:
+    ent_shaders:
+      shaders: ../../ent_flutter/test/ent_shaders.json

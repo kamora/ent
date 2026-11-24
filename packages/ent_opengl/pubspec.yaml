@@ -1,0 +1,50 @@
+name: ent_opengl
+description: >-
+  The OpenGL ES renderer of Ent Engine: the shared renderer core drawing through OpenGL ES 3, on ANGLE (Metal) on
+  macOS and on the system's OpenGL ES on Android.
+version: 0.1.0-dev.1
+repository: https://github.com/kamora/ent/tree/master/packages/ent_opengl
+issue_tracker: https://github.com/kamora/ent/issues
+publish_to: none
+platforms:
+  android:
+  macos:
+topics:
+  - graphics
+  - rendering
+  - opengl
+
+environment:
+  sdk: ^3.13.5
+  flutter: ">=3.47.6"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  angle: ^0.1.0-dev.1
+  ent: ^0.1.0-dev.1
+  ent_renderer: ^0.1.0-dev.1
+  ent_shaders: ^0.1.0-dev.1
+  ffi: ^2.1.0
+  vector_math: ^2.4.4
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: vn.kamora.ent_opengl
+        pluginClass: EntOpenGlPlugin
+      macos:
+        pluginClass: EntOpenGlPlugin
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  ent_flutter: ^0.1.0-dev.1
+  flutter_lints: ^6.0.0
+
+# The shader variants this package's tests draw with: the parity scenes' registry of ent_flutter.
+hooks:
+  user_defines:
+    ent_shaders:
+      shaders: ../ent_flutter/test/ent_shaders.json

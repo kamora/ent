@@ -1,0 +1,13 @@
+# Resolves ent, ent_flutter, ent_renderer and ent_shaders from this repository, and angle from its own checkout beside it, while
+# developing; pub ignores this file when publishing.
+dependency_overrides:
+  angle:
+    path: ../../../packages/angle
+  ent:
+    path: ../ent
+  ent_flutter:
+    path: ../ent_flutter
+  ent_renderer:
+    path: ../ent_renderer
+  ent_shaders:
+    path: ../ent_shaders

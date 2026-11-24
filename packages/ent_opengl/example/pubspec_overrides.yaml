@@ -1,0 +1,12 @@
+# Resolves the packages of this repository from their paths, and angle from its checkout beside the repository.
+dependency_overrides:
+  angle:
+    path: ../../../../packages/angle
+  ent:
+    path: ../../ent
+  ent_flutter:
+    path: ../../ent_flutter
+  ent_renderer:
+    path: ../../ent_renderer
+  ent_shaders:
+    path: ../../ent_shaders

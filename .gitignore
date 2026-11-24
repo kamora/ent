@@ -14,3 +14,7 @@ node_modules/
 
 # macOS folder metadata.
 .DS_Store
+
+# Swift Package Manager builds of the plugins.
+.build/
+.swiftpm/
