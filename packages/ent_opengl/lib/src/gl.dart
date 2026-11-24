@@ -1,4 +1,4 @@
-/// The EGL and OpenGL ES 3 functions the renderer calls, looked up at run time: in ANGLE's library (the `angle`
+/// The EGL and OpenGL ES 3 functions the renderer calls, looked up at run time: in ANGLE's library (the `wrangle`
 /// package) on macOS, where EGL is exported as `EGL_GetDisplay` for `eglGetDisplay`, and in the system's libEGL and
 /// libGLESv3 on Android.
 library;
@@ -6,7 +6,7 @@ library;
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:angle/angle.dart';
+import 'package:wrangle/wrangle.dart';
 import 'package:ffi/ffi.dart';
 
 final DynamicLibrary _egl = Platform.isAndroid ? DynamicLibrary.open('libEGL.so') : angle;

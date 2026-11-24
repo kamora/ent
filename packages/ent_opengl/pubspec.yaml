@@ -21,12 +21,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  angle: ^0.1.0-dev.1
   ent: ^0.1.0-dev.1
   ent_renderer: ^0.1.0-dev.1
   ent_shaders: ^0.1.0-dev.1
   ffi: ^2.1.0
   vector_math: ^2.4.4
+  wrangle: ^0.1.0-dev.1
 
 flutter:
   plugin:

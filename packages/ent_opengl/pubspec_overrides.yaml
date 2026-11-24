@@ -1,7 +1,7 @@
-# Resolves ent, ent_flutter, ent_renderer and ent_shaders from this repository, and angle from its own checkout beside it, while
-# developing; pub ignores this file when publishing.
+# Resolves ent, ent_flutter, ent_renderer and ent_shaders from this repository, and wrangle from its own checkout
+# beside it, while developing; pub ignores this file when publishing.
 dependency_overrides:
-  angle:
+  wrangle:
     path: ../../../packages/angle
   ent:
     path: ../ent
