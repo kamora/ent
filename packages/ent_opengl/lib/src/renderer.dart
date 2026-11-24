@@ -22,9 +22,9 @@ class OpenGlRenderer extends GpuRenderer {
     super.readsDepth,
   });
 
-  /// Loads the shader bundle (ent_shaders' asset, whose build hook keeps the `opengl_es` backend on macOS) and creates
-  /// a renderer on the process's [GlContext]. [antialias] is the reference renderer's constructor parameter: the frame
-  /// is drawn with 4× MSAA and resolved.
+  /// Loads the shader bundle (ent_shaders' asset, whose build hook keeps the `opengl_es` backend on macOS and Android)
+  /// and creates a renderer on the process's [GlContext]. [antialias] is the reference renderer's constructor
+  /// parameter: the frame is drawn with 4× MSAA and resolved.
   static Future<OpenGlRenderer> create({bool antialias = false}) async {
     final context = GlContext.shared;
 

@@ -5,7 +5,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ent/ent.dart' as ent;
-import 'package:ent_opengl/ent_opengl.dart';
+import 'package:ent_opengl/ent_opengl.dart' hide Texture;
 import 'package:flutter/widgets.dart';
 import 'package:ent_renderer/gpu.dart' as gpu;
 import 'package:flutter_test/flutter_test.dart';

@@ -1,7 +1,6 @@
 // A turning cube drawn by OpenGlRenderer (OpenGL ES on ANGLE) in an EntView.
-import 'package:ent/ent.dart' as ent;
 import 'package:ent_opengl/ent_opengl.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Color, Texture;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,11 +14,11 @@ class Example extends StatelessWidget {
 
   final OpenGlRenderer renderer;
 
-  final scene = ent.Scene()..background = ent.Color(0x203040);
+  final scene = Scene()..background = Color(0x203040);
 
-  final camera = ent.PerspectiveCamera(50, 1, 0.1, 100)..position.z = 3;
+  final camera = PerspectiveCamera(50, 1, 0.1, 100)..position.z = 3;
 
-  final cube = ent.Mesh(ent.BoxGeometry(1, 1, 1), ent.MeshNormalMaterial());
+  final cube = Mesh(BoxGeometry(1, 1, 1), MeshNormalMaterial());
 
   @override
   Widget build(BuildContext context) {

@@ -15,6 +15,7 @@ export 'src/gpu_renderer.dart';
 export 'src/host_buffers.dart';
 export 'src/lights.dart';
 export 'src/ltc_data.dart';
+export 'src/orbit_controls_listener.dart';
 export 'src/passes.dart';
 export 'src/png.dart';
 export 'src/programs.dart';
