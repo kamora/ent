@@ -1,6 +1,6 @@
-# Checks every push to master and every pull request on macOS, the only desktop this release supports. Two jobs run
-# side by side: the host checks (format, analysis, ent's and ent_shaders' tests, ent_flutter's flutter_tester suite)
-# and the Metal suites inside the example app, on the runner's GPU.
+# Checks every push to master and every pull request on macOS, the only desktop this release supports. Three jobs run
+# side by side: the host checks (format, analysis, ent's and ent_shaders' tests, ent_flutter's flutter_tester suite),
+# the Metal suites inside the example app, on the runner's GPU, and ent_opengl's checks, on ANGLE over that GPU.
 
 name: ci
 
@@ -92,3 +92,47 @@ jobs:
         run: flutter test integration_test/getting_started_test.dart -d macos --enable-flutter-gpu
       - name: Viewer
         run: flutter test integration_test/viewer_test.dart -d macos --enable-flutter-gpu
+
+  opengl:
+    runs-on: macos-15
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: packages/ent_opengl
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.6
+          channel: stable
+          cache: true
+      - name: Resolve
+        run: |
+          flutter pub get
+          (cd example && flutter pub get)
+      - name: Format
+        run: dart format --output=none --set-exit-if-changed .
+
+      # The tests draw each scene on ANGLE and compare it with the reference frames; some of them also draw with
+      # Flutter GPU, which runs on Vulkan through SwiftShader here.
+      - name: ent_opengl tests
+        run: flutter test --enable-impeller --enable-flutter-gpu
+      - name: Analyze ent_opengl
+        run: flutter analyze --fatal-infos
+      - name: Analyze the example
+        working-directory: packages/ent_opengl/example
+        run: flutter analyze --fatal-infos
+
+      # Device tests look for the shader bundle before the build hook makes it, so one build comes first.
+      - name: Build the example once
+        working-directory: packages/ent_opengl/example
+        run: flutter build macos --debug
+      - name: Backend in the app
+        working-directory: packages/ent_opengl/example
+        run: flutter test integration_test/backend_test.dart -d macos
+      - name: Surface in the app
+        working-directory: packages/ent_opengl/example
+        run: flutter test integration_test/surface_test.dart -d macos
+      - name: Parity in the app
+        working-directory: packages/ent_opengl/example
+        run: flutter test integration_test/parity_test.dart -d macos

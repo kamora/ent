@@ -316,9 +316,10 @@ packages:
   wrangle:
     dependency: "direct main"
     description:
-      path: "../../../packages/angle"
-      relative: true
-    source: path
+      name: wrangle
+      sha256: "808f04c05561e616228f4257522469cf63b63bb52f7050956307daece9ea6ecf"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0-dev.1"
   yaml:
     dependency: transitive

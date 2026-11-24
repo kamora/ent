@@ -1,7 +1,5 @@
-# Resolves the packages of this repository from their paths, and wrangle from its checkout beside the repository.
+# Resolves the packages of this repository from their paths.
 dependency_overrides:
-  wrangle:
-    path: ../../../../packages/angle
   ent:
     path: ../../ent
   ent_flutter:
