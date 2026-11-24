@@ -71,10 +71,14 @@ release behave the same.
    Bundle entries cannot carry defines of their own (`impeller/compiler/shader_bundle.cc` accepts only `file`, `type`,
    `language` and `entry_point`), so the defines live in these generated files.
 3. Compile them into the bundle with impellerc.
-4. Strip the bundle to the target's backends: Metal iOS, Metal desktop plus Vulkan (macOS, since `flutter test` runs
-   Vulkan), or Vulkan (Android); another target keeps all five. impellerc ignores platform flags in bundle mode, so
+4. Strip the bundle to the target's backends: Metal iOS; Metal desktop, Vulkan (`flutter test` runs Vulkan) and
+   OpenGL ES (macOS); Vulkan and OpenGL ES (Android); another target keeps all five. The OpenGL ES backend is GLSL ES
+   3.00 (`--gles-language-version=300`), for the GL renderer. impellerc ignores platform flags in bundle mode, so
    `lib/src/bundles.dart` rewrites its FlatBuffer output (`flat_buffers`), with the target OS from the hook's code
-   config. Measured: 14.9 MB becomes 3.1 MB (iOS), 5.6 MB (macOS), 2.5 MB (Vulkan only).
+   config. Measured before OpenGL ES was kept: 14.9 MB becomes 3.1 MB (iOS), 5.6 MB (macOS), 2.5 MB (Vulkan only).
+   Keeping OpenGL ES took the test registry's macOS bundle from 21.2 MB to 33.3 MB (2026-11-23); an app should keep
+   only the backends of the renderers it uses (not done yet). `readBundle` reads one backend's shaders, with their
+   inputs, uniform blocks and textures, for a renderer that loads the bundle itself.
 5. Write `build/shaderbundles/ent.shaderbundle.owner` (the target OS and the registry) and declare it an input of
    the hook: every build writes the same bundle, so one for another target or registry replaces it and rewrites the
    stamp, and the next build for this one reruns the hook (checked: iOS, then macOS, then iOS). The stamp is dated

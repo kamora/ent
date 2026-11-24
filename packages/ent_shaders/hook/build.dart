@@ -53,16 +53,20 @@ void main(List<String> args) async {
           buildOutput: output,
           manifestFileName: 'build/variants/ent.shaderbundle.json',
           includeDirectories: [root],
+
+          // The OpenGL ES backend as GLSL ES 3.00, the version the GL renderer asks for.
+          glesLanguageVersion: 300,
         )).outputFile,
       );
 
-      // macOS keeps Vulkan for flutter test (flutter_tester runs Impeller on Vulkan); a target not listed (Linux,
-      // Windows) keeps all: neither is supported, and on Linux flutter_tester still reads Vulkan.
+      // macOS keeps Vulkan for flutter test (flutter_tester runs Impeller on Vulkan); macOS and Android keep OpenGL ES
+      // for the GL renderer. A target not listed (Linux, Windows) keeps all: neither is supported, and on Linux
+      // flutter_tester still reads Vulkan.
       final target = input.config.buildCodeAssets ? input.config.code.targetOS : null;
       final kept = switch (target) {
         OS.iOS => {'metal_ios'},
-        OS.macOS => {'metal_desktop', 'vulkan'},
-        OS.android => {'vulkan'},
+        OS.macOS => {'metal_desktop', 'vulkan', 'opengl_es'},
+        OS.android => {'vulkan', 'opengl_es'},
         _ => null,
       };
 

@@ -93,3 +93,74 @@ int? _read(Builder builder, BufferContext context, int offset, int field, Object
     _ => throw StateError('ent_shaders: unknown shader bundle field kind $kind.'),
   };
 }
+
+/// A shader of a bundle, for one backend: what a renderer needs to build it and bind its resources.
+typedef BundledShader = ({
+  /// `vertex` or `fragment`.
+  String stage,
+
+  /// The backend's source (GLSL, MSL) or binary (SPIR-V).
+  Uint8List code,
+
+  /// The vertex inputs by name, each with its location.
+  Map<String, int> inputs,
+
+  /// The uniform blocks by name, each with its binding, its size in bytes (padding included) and its members' offsets.
+  Map<String, ({int binding, int size, Map<String, int> members})> blocks,
+
+  /// The sampled textures by name, each with its binding.
+  Map<String, int> textures,
+});
+
+/// The shaders of [bundle] that have a [backend] (one of [backends]), by name.
+Map<String, BundledShader> readBundle(Uint8List bundle, String backend) {
+  final context = BufferContext.fromBytes(bundle);
+  final field = 4 + 2 * (backends.indexOf(backend) + 1);
+
+  if (field < 6) {
+    throw ArgumentError.value(backend, 'backend', 'not one of ${backends.join(', ')}');
+  }
+
+  // A field of the table at [offset]: its index in the table's schema, read with [reader].
+  T? at<T>(int offset, int index, Reader<T> reader) => reader.vTableGetNullable(context, offset, 4 + 2 * index);
+  const tables = ListReader(_Table(), lazy: false);
+  final shaders = <String, BundledShader>{};
+
+  for (final shader in at(const _Table().read(context, 0), 0, tables) ?? const <int>[]) {
+    final code = const _Table().vTableGetNullable(context, shader, field);
+
+    if (code == null) {
+      continue;
+    }
+
+    shaders[at(shader, 0, const StringReader())!] = (
+      stage: switch (at(code, 0, const Int8Reader()) ?? 0) {
+        0 => 'vertex',
+        1 => 'fragment',
+        final stage => 'stage $stage',
+      },
+      code: Uint8List.fromList(at(code, 5, const Uint8ListReader(lazy: false)) ?? const []),
+      inputs: {
+        for (final input in at(code, 2, tables) ?? const <int>[])
+          at(input, 0, const StringReader())!: at(input, 1, const Uint64Reader()) ?? 0,
+      },
+      blocks: {
+        for (final block in at(code, 3, tables) ?? const <int>[])
+          at(block, 0, const StringReader())!: (
+            binding: at(block, 3, const Uint64Reader()) ?? 0,
+            size: at(block, 4, const Uint64Reader()) ?? 0,
+            members: {
+              for (final field in at(block, 5, tables) ?? const <int>[])
+                at(field, 0, const StringReader())!: at(field, 2, const Uint64Reader()) ?? 0,
+            },
+          ),
+      },
+      textures: {
+        for (final texture in at(code, 4, tables) ?? const <int>[])
+          at(texture, 0, const StringReader())!: at(texture, 3, const Uint64Reader()) ?? 0,
+      },
+    );
+  }
+
+  return shaders;
+}
