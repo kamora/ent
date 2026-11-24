@@ -27,7 +27,8 @@ on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "
 
 - On Android, a device where Impeller runs on Vulkan. Flutter falls back to OpenGL ES on emulators, Huawei, MediaTek
   below vendor API 32, Exynos 9825 and older, Adreno 650 and older, older PowerVR and the first Samsung Xclipse; there
-  Flutter GPU draws nothing (flutter/flutter#196045), and `create()` throws a `StateError` that says so.
+  Flutter GPU draws nothing (flutter/flutter#196045), and `create()` throws a `StateError` that says so. On those
+  devices, use [`ent_opengl`][ent_opengl], the OpenGL ES renderer, with the same scene code.
 
 | Platform | Status |
 |---|---|
@@ -146,6 +147,7 @@ MIT, © 2026 KAMORA Ltd.; see `LICENSE`.
 The notices of the third-party code it builds on are in `THIRD_PARTY_NOTICES.md`.
 
 [ent]: https://github.com/kamora/ent/tree/master/packages/ent
+[ent_opengl]: https://github.com/kamora/ent/tree/master/packages/ent_opengl
 [flutter-gpu]: https://github.com/kamora/ent/blob/master/docs/flutter-gpu.md
 [usage]: https://github.com/kamora/ent/blob/master/docs/usage.md
 [getting_started]: https://github.com/kamora/ent/blob/master/examples/worm/lib/getting_started.dart

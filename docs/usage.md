@@ -1,7 +1,8 @@
 # Usage
 
 How to use the parts of `ent` that need a platform or a renderer: camera controls, GLTFLoader and
-post-processing. In Flutter, `package:ent_flutter/ent_flutter.dart` exports all of `ent`.
+post-processing. In Flutter, each renderer package (`package:ent_flutter/ent_flutter.dart` for Flutter GPU,
+`package:ent_opengl/ent_opengl.dart` for OpenGL ES) exports all of `ent`, and the code below is the same for both.
 
 ## Controls without a DOM
 
@@ -62,7 +63,7 @@ final model = await GLTFLoader().parseAsync(bytes.buffer, 'assets/models/');
 
 ## Post-processing
 
-The passes call an `EffectComposerRenderer`, which ent_flutter's `FlutterGpuRenderer` implements. Each effect is an
+The passes call an `EffectComposerRenderer`, which both renderers implement. Each effect is an
 `EffectMaterial` with typed settings and no shader code: the renderer recognises it by its class and draws it with its
 own shader (exception E-POSTPROCESSING, `docs/compatibility-exceptions.md`). An `EffectPass` draws one over the whole
 target:

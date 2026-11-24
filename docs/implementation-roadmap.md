@@ -11,15 +11,21 @@ platform parity are reported separately. Where Ent differs from the reference on
   against values the reference produced (`fixtures/values/`).
 - `ent_shaders`: the GLSL every renderer shares, the variant registry and the build hook that compiles them into one
   shader bundle; nothing compiles at runtime.
-- `ent_flutter`: `FlutterGpuRenderer` and `EntView`. About 160 scenes are compared pixel by pixel with the reference's
+- `ent_renderer`: the renderer core both renderers share (render lists, programs, lights, shadows, textures,
+  environment maps, passes, `EntView`), written against the small GPU interface of `package:ent_renderer/gpu.dart`.
+- `ent_flutter`: `FlutterGpuRenderer` on Flutter GPU. About 160 scenes are compared pixel by pixel with the reference's
   frames from headless Chrome (2/255 per channel, edge pixels within 1 px, at most 0.5% of pixels): shadows, PBR and
   physical materials, environment maps, skinning, morphs, instancing, render targets, MSAA, post-processing, depth
   textures, viewport and scissor, and ten Khronos glTF sample models.
 - Metal on the M1 matches except for recorded allowances (`test/parity.dart`: `mipmaps`, `ties`); the iPhone 11 has
   three more (`ios`). Under flutter_tester (Impeller on Vulkan through SwiftShader) scenes that SwiftShader filters or
   rasterizes differently run on Metal only (`swiftShader`).
-- Android needs a device where Impeller runs on Vulkan; Flutter GPU draws nothing on its OpenGL ES fallback
-  (flutter/flutter#196045). No such device has been tested.
+- `ent_opengl`: `OpenGlRenderer` on OpenGL ES 3, on ANGLE (the `wrangle` package, on pub.dev) on macOS and the
+  system's OpenGL ES on Android (`docs/opengl.md`). It passes the same scenes on the M1 with no `mipmaps` allowances,
+  and on a Galaxy S10 differs from the M1 only where Chrome on that phone differs alike.
+- Android: `ent_opengl` draws on OpenGL ES devices (checked on the Galaxy S10). Flutter GPU needs a device where
+  Impeller runs on Vulkan and draws nothing on its OpenGL ES fallback (flutter/flutter#196045); no such device has
+  been tested.
 
 ## Next milestone: ready for others
 
@@ -51,15 +57,20 @@ pushed or posted without Kai's go-ahead for that step. Small jobs, in this order
    support (known gaps). The workflow is `.github/workflows/ci.yml`: a host job (format, analyze, `ent`'s tests, the
    flutter_tester suite, the disabled-GPU test) and a Metal job (one build, the parity suite, getting started), both
    on `macos-15`, for pushes to master and pull requests. Its first full run passed on 2026-11-17 (`051c5d4`): host
-   about 30 min, Metal about 8 min. macOS arm64 runners were short that day: two attempts timed out in the queue.
+   about 30 min, Metal about 8 min. macOS arm64 runners were short that day: two attempts timed out in the queue. A
+   third job, `opengl`, runs `ent_opengl`'s tests and its example's backend, surface and parity tests on ANGLE; its
+   first run passed on 2026-11-24 (`1db439f`, about 21 min).
 
 ## Known gaps
 
 Rendering:
 
 - Multiple render targets (`count > 1`) are ignored with a warning.
-- Mip levels are built on the CPU; ANGLE builds them on the GPU, which is behind the `mipmaps` allowances
-  (E-MIPFILTER). A GPU build matches its first level, not the deeper ones.
+- On Flutter GPU, mip levels are built on the CPU; ANGLE builds them on the GPU, which is behind the `mipmaps`
+  allowances (E-MIPFILTER). A GPU build matches its first level, not the deeper ones. `ent_opengl` builds them on the
+  GPU and needs no allowance.
+- `ent_opengl`: no readback of non-8-bit textures, no anisotropic filtering, a transmissive object inside a
+  `CubeCamera` face unchecked; iOS, Windows and Linux not yet (`docs/opengl.md`, Limits).
 - BoxTextured is skipped: 2 pixels at 3/255, the GPU's level of detail, cause unknown.
 - Shadows: PCF on point lights is checked on Metal only (filtering across cube seams under SwiftShader); no point
   scene with a non-zero bias, no ShadowMaterial scene with a point light; `customDistanceMaterial` not checked.
@@ -70,9 +81,9 @@ Rendering:
 
 Devices:
 
-- Android has run nothing; a Vulkan device is needed. Both test phones fall back to OpenGL ES (Galaxy A22, MediaTek;
-  Galaxy S10, Exynos 9820), and Flutter never picks Vulkan on an emulator. A second backend for OpenGL ES devices is
-  kept in mind.
+- Flutter GPU on Android has run nothing by default; a Vulkan device is needed. Both test phones fall back to
+  OpenGL ES (Galaxy A22, MediaTek; Galaxy S10, Exynos 9820), and Flutter never picks Vulkan on an emulator. They run
+  `ent_opengl` instead; the A22 has not run it yet.
 
 Performance, for when an app needs more than a few hundred separate draws at 60 fps on the iPhone 11 (one
 InstancedMesh holds 60 fps at 2000):

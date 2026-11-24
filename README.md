@@ -26,8 +26,8 @@
 ---
 
 Build 3D scenes in Dart and show them in your Flutter app. Ent is a pure-Dart engine (scenes, materials, lights,
-animation, model loading) with a renderer on Flutter GPU (Impeller), so the whole scene lives in the same code as the
-rest of your app.
+animation, model loading) with two renderers, one on Flutter GPU (Impeller) and one on OpenGL ES, so the whole scene
+lives in the same code as the rest of your app.
 
 Ent Engine is based on [three.js](https://threejs.org) and keeps partial compatibility with its API; the
 differences are listed in the [compatibility exceptions](docs/compatibility-exceptions.md).
@@ -75,24 +75,28 @@ GPU and list the shader variants your materials need.
 | --- | --- |
 | [`ent`](packages/ent) | The engine in pure Dart: scenes, loaders, controls and post-processing. No Flutter needed. |
 | [`ent_shaders`](packages/ent_shaders) | The shaders every renderer shares, compiled when the app is built. |
-| [`ent_flutter`](packages/ent_flutter) | The Flutter GPU renderer, `EntView` and the platform adapters. Exports all of `ent`. |
+| [`ent_renderer`](packages/ent_renderer) | The renderer core both renderers share, and `EntView`. |
+| [`ent_flutter`](packages/ent_flutter) | The Flutter GPU renderer. Exports all of `ent` and `EntView`. |
+| [`ent_opengl`](packages/ent_opengl) | The OpenGL ES renderer, on ANGLE on macOS. Exports all of `ent` and `EntView`. |
 
-A Flutter app depends on `ent_flutter` only.
+A Flutter app depends on one renderer package: `ent_flutter` where Flutter GPU runs, `ent_opengl` on Android phones
+where it does not (see Platforms). The scene code is the same for both.
 
 ## Platforms
 
-| Platform | Status |
-| --- | --- |
-| macOS | Verified on an M1 (Metal) |
-| iOS | Verified on an iPhone 11 and the simulator |
-| Android | Needs a device where Impeller runs on Vulkan; not verified by default |
-| Web, Windows, Linux | Not supported in this release |
+| Platform | `ent_flutter` (Flutter GPU) | `ent_opengl` (OpenGL ES) |
+| --- | --- | --- |
+| macOS | Verified on an M1 (Metal) | Verified on an M1 (ANGLE on Metal) |
+| iOS | Verified on an iPhone 11 and the simulator | Not yet |
+| Android | Needs a device where Impeller runs on Vulkan; not verified by default | Verified on a Galaxy S10 |
+| Web, Windows, Linux | Not supported in this release | Not supported in this release |
 
 ## Learn more
 
 - [Usage](docs/usage.md): controls, model loading and post-processing
 - [Shader variants](docs/shader-variants.md): how material shaders are built with your app
-- [Renderer notes](docs/flutter-gpu.md): what Flutter GPU draws, and its limits
+- [Flutter GPU renderer](docs/flutter-gpu.md): what it draws, and its limits
+- [OpenGL ES renderer](docs/opengl.md): how it draws, its platforms and limits
 - [Roadmap](docs/implementation-roadmap.md)
 
 ## Tests
@@ -102,6 +106,7 @@ A Flutter app depends on `ent_flutter` only.
 (cd packages/ent_shaders && flutter test)
 (cd packages/ent_flutter && flutter test --enable-impeller --enable-flutter-gpu)
 (cd examples/worm && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
+(cd packages/ent_opengl && flutter test --enable-impeller --enable-flutter-gpu)
 ```
 
 The device tests and what they need are in the [example's README](examples/worm/README.md).
