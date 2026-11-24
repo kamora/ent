@@ -6,6 +6,11 @@
 //
 // Usage: node tool/reference/render/render.mjs [name ...]
 // Chrome: $CHROME, or /Applications/Google Chrome.app.
+//
+// Another device's Chrome, to compare GPUs: $REMOTE is the DevTools URL of a running Chrome (an Android phone's, by
+// `adb forward tcp:9222 localabstract:chrome_devtools_remote`, then REMOTE=http://127.0.0.1:9222), which loads the
+// page from $PORT on its own localhost (`adb reverse tcp:$PORT tcp:$PORT`); the frames go to $OUT, never to the
+// references, and meta.json records that browser and GPU.
 
 import { createServer } from 'node:http';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
@@ -16,7 +21,14 @@ import { extname, normalize, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = fileURLToPath( new URL( '../../../', import.meta.url ) );
-const out = join( root, 'fixtures/rendering/reference' );
+const remote = process.env.REMOTE;
+const out = process.env.OUT ?? join( root, 'fixtures/rendering/reference' );
+
+if ( remote && ! process.env.OUT ) {
+
+	throw new Error( 'REMOTE needs OUT: a remote device\'s frames are not the references.' );
+
+}
 const git = ( args ) => execSync( 'git ' + args, { cwd: join( root, 'third_party/three.js' ) } ).toString().trim();
 const pin = { tag: git( 'describe --tags --exact-match' ), commit: git( 'rev-parse HEAD' ) };
 
@@ -116,9 +128,9 @@ const server = createServer( ( request, response ) => {
 
 } );
 
-await new Promise( ( resolve ) => server.listen( 0, '127.0.0.1', resolve ) );
+await new Promise( ( resolve ) => server.listen( Number( process.env.PORT ?? 0 ), '127.0.0.1', resolve ) );
 
-const browser = await puppeteer.launch( {
+const browser = remote ? await puppeteer.connect( { browserURL: remote, defaultViewport: null } ) : await puppeteer.launch( {
 	executablePath: process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
 	headless: true,
 	args: [ '--use-angle=metal', '--enable-gpu', '--ignore-gpu-blocklist' ],
@@ -192,19 +204,34 @@ try {
 
 	}
 
+	if ( remote ) {
+
+		await page.close();
+
+	}
+
 	const meta = {
 		three: pin,
 		browser: await browser.version(),
 		gpu,
 		renderer: 'WebGLRenderer, antialias false unless the scene sets it, pixel ratio 1, preserveDrawingBuffer true; PNG of readPixels bytes',
-		os: execSync( 'sw_vers -productVersion' ).toString().trim(),
+		os: remote ? await browser.userAgent() : execSync( 'sw_vers -productVersion' ).toString().trim(),
 	};
 	writeFileSync( join( out, 'meta.json' ), JSON.stringify( meta, null, '\t' ) + '\n' );
 	console.log( JSON.stringify( meta ) );
 
 } finally {
 
-	await browser.close();
+	if ( remote ) {
+
+		await browser.disconnect();
+
+	} else {
+
+		await browser.close();
+
+	}
+
 	server.close();
 
 }
