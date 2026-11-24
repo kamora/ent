@@ -2334,7 +2334,10 @@ export default {
 		const colored = plain( new THREE.PlaneGeometry( 1.031, 0.97 ) );
 		colored.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.9, 0.4, 0.3, 0.3, 0.8, 0.4, 0.4, 0.5, 0.9, 0.8, 0.8, 0.3 ], 3 ) );
 		const bumped = new THREE.Mesh( colored, new THREE.MeshStandardMaterial( { vertexColors: true, roughness: 0.5, metalness: 0.3, bumpMap: field( 16, ( u, v ) => [ 40 + 175 * height( u, v ), 128, 128, 255 ] ), bumpScale: 3 } ) );
-		const ring = field( 8, ( u, v ) => [ 128, 255 * Math.min( 1, Math.hypot( u - 0.5, v - 0.5 ) * 2.2 ), 128, 255 ], { wrapS: THREE.ClampToEdgeWrapping, wrapT: THREE.ClampToEdgeWrapping } );
+		// The alpha map is 0 or 1 per texel, sampled nearest: alphaTest then never meets a value near 0.5. A filtered
+		// gradient crossed 0.5 at some pixel, and there GPUs that round texture filtering differently by 1/255 (Mali
+		// against Apple) disagreed on whether to discard it.
+		const ring = field( 8, ( u, v ) => [ 128, Math.hypot( u - 0.5, v - 0.5 ) * 2.2 < 0.5 ? 0 : 255, 128, 255 ], { magFilter: THREE.NearestFilter, minFilter: THREE.NearestFilter, wrapS: THREE.ClampToEdgeWrapping, wrapT: THREE.ClampToEdgeWrapping } );
 
 		quads( scene, [
 			new THREE.MeshStandardMaterial( { color: 0xd8b070, roughness: 1, metalness: 1, roughnessMap: orm, metalnessMap: orm, aoMap: orm, aoMapIntensity: 0.8 } ),

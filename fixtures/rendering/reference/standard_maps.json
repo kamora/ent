@@ -7,7 +7,7 @@
 		},
 		"geometries": [
 			{
-				"uuid": "770c083c-aa2c-4663-8fb7-79738372eb61",
+				"uuid": "16d4228c-1131-4212-88cc-469e4a1a9513",
 				"type": "PlaneGeometry",
 				"name": "",
 				"width": 1.031,
@@ -16,7 +16,7 @@
 				"heightSegments": 1
 			},
 			{
-				"uuid": "6a432494-d428-4807-b439-9fae731d931c",
+				"uuid": "c3929411-fef1-4680-9d81-a90c1980898d",
 				"type": "PlaneGeometry",
 				"name": "",
 				"width": 1.031,
@@ -25,7 +25,7 @@
 				"heightSegments": 1
 			},
 			{
-				"uuid": "7b6ccd17-3e5c-473e-a1f3-056d92e70d59",
+				"uuid": "62aabf16-bc6e-4993-b3eb-ec335bef4741",
 				"type": "BufferGeometry",
 				"name": "",
 				"data": {
@@ -137,7 +137,7 @@
 				}
 			},
 			{
-				"uuid": "b93cf760-f991-4eca-85d2-c202a94ca231",
+				"uuid": "5580b149-83a9-4f9d-ac44-371e58a431c3",
 				"type": "PlaneGeometry",
 				"name": "",
 				"width": 1.031,
@@ -148,7 +148,7 @@
 		],
 		"materials": [
 			{
-				"uuid": "fa25ce7f-5079-40a5-bd58-35dd73735ccf",
+				"uuid": "35bec30f-6c88-4b6d-bf0d-e8672f2459b4",
 				"type": "MeshStandardMaterial",
 				"blending": 1,
 				"side": 0,
@@ -196,10 +196,10 @@
 				"metalness": 1,
 				"emissive": 0,
 				"emissiveIntensity": 1,
-				"aoMap": "e9e55fa0-d6d8-41a8-b180-35fd5c79e6e6",
+				"aoMap": "eb510ee4-df5d-4d7a-b6f3-079d642540f2",
 				"aoMapIntensity": 0.8,
-				"roughnessMap": "e9e55fa0-d6d8-41a8-b180-35fd5c79e6e6",
-				"metalnessMap": "e9e55fa0-d6d8-41a8-b180-35fd5c79e6e6",
+				"roughnessMap": "eb510ee4-df5d-4d7a-b6f3-079d642540f2",
+				"metalnessMap": "eb510ee4-df5d-4d7a-b6f3-079d642540f2",
 				"envMapRotation": [
 					0,
 					0,
@@ -215,7 +215,7 @@
 				"fog": true
 			},
 			{
-				"uuid": "480c8a32-c6b0-4929-a7d8-771d5d6b794f",
+				"uuid": "e4418987-6f77-46a4-816f-6f20d8d12b42",
 				"type": "MeshStandardMaterial",
 				"blending": 1,
 				"side": 0,
@@ -263,13 +263,13 @@
 				"metalness": 0.2,
 				"emissive": 16777215,
 				"emissiveIntensity": 0.3,
-				"normalMap": "c98775d0-ca46-44c7-9ebc-8a02b5da0ed0",
+				"normalMap": "9a8b7c0c-8193-4f30-b27d-b5f650bd9b07",
 				"normalMapType": 0,
 				"normalScale": [
 					1,
 					1
 				],
-				"emissiveMap": "9915f193-5f94-45da-b8a1-bb72b66b3d88",
+				"emissiveMap": "771744ea-4aab-4538-b5b0-f80aaa031503",
 				"envMapRotation": [
 					0,
 					0,
@@ -285,7 +285,7 @@
 				"fog": true
 			},
 			{
-				"uuid": "38ad5096-b5b6-42cf-8834-25ddb8917378",
+				"uuid": "b828bcd6-45c9-4dc6-bbee-668d0ae577fd",
 				"type": "MeshStandardMaterial",
 				"blending": 1,
 				"side": 0,
@@ -333,7 +333,7 @@
 				"metalness": 0.3,
 				"emissive": 0,
 				"emissiveIntensity": 1,
-				"bumpMap": "b0a00e5d-856d-41cc-87d7-c927579738a8",
+				"bumpMap": "ce322473-c534-42a0-9243-44850cae8c89",
 				"bumpScale": 3,
 				"envMapRotation": [
 					0,
@@ -350,7 +350,7 @@
 				"fog": true
 			},
 			{
-				"uuid": "072509f3-9a90-4925-9e7a-9fbe65fbcdcd",
+				"uuid": "0596c3d8-2425-4907-934a-1330d74260f6",
 				"type": "MeshStandardMaterial",
 				"blending": 1,
 				"side": 0,
@@ -398,9 +398,9 @@
 				"metalness": 0,
 				"emissive": 0,
 				"emissiveIntensity": 1,
-				"map": "81b32d9e-b577-41df-878b-7982f9117ac8",
-				"alphaMap": "1eaaaf27-42f9-4e08-b8c9-1af0c7ce2e86",
-				"lightMap": "ed88e2fb-e1ea-4803-9ba6-bb9a69da1306",
+				"map": "70c660dc-abab-448b-b653-808d7bdcfe37",
+				"alphaMap": "7f65ebde-9174-4b93-b3b9-2cf597d45eae",
+				"lightMap": "adf66ac9-806d-40d1-a16d-0f2134a23d12",
 				"lightMapIntensity": 1.5,
 				"envMapRotation": [
 					0,
@@ -419,9 +419,9 @@
 		],
 		"textures": [
 			{
-				"uuid": "e9e55fa0-d6d8-41a8-b180-35fd5c79e6e6",
+				"uuid": "eb510ee4-df5d-4d7a-b6f3-079d642540f2",
 				"name": "",
-				"image": "18be19fe-28e0-4b69-bd87-ef66632e9bc7",
+				"image": "9df4ec98-d79f-4238-a2c5-24ce7682df69",
 				"mapping": 300,
 				"channel": 0,
 				"repeat": [
@@ -456,9 +456,9 @@
 				"unpackAlignment": 1
 			},
 			{
-				"uuid": "c98775d0-ca46-44c7-9ebc-8a02b5da0ed0",
+				"uuid": "9a8b7c0c-8193-4f30-b27d-b5f650bd9b07",
 				"name": "",
-				"image": "d295585e-706e-4ef3-b1c2-18be2970da0d",
+				"image": "8a671347-c9e5-4527-87b8-e629f94ea465",
 				"mapping": 300,
 				"channel": 0,
 				"repeat": [
@@ -493,9 +493,9 @@
 				"unpackAlignment": 1
 			},
 			{
-				"uuid": "9915f193-5f94-45da-b8a1-bb72b66b3d88",
+				"uuid": "771744ea-4aab-4538-b5b0-f80aaa031503",
 				"name": "",
-				"image": "5c8a8d87-6b9e-4933-8771-749d5a53deae",
+				"image": "09d6b66d-d2a2-46b5-bdd5-9842b882ccf5",
 				"mapping": 300,
 				"channel": 0,
 				"repeat": [
@@ -530,9 +530,9 @@
 				"unpackAlignment": 1
 			},
 			{
-				"uuid": "b0a00e5d-856d-41cc-87d7-c927579738a8",
+				"uuid": "ce322473-c534-42a0-9243-44850cae8c89",
 				"name": "",
-				"image": "05e25c2c-4fc5-45d0-b936-8ba27602e379",
+				"image": "6029946e-ee27-4beb-8519-8acd385f89ed",
 				"mapping": 300,
 				"channel": 0,
 				"repeat": [
@@ -567,9 +567,9 @@
 				"unpackAlignment": 1
 			},
 			{
-				"uuid": "81b32d9e-b577-41df-878b-7982f9117ac8",
+				"uuid": "70c660dc-abab-448b-b653-808d7bdcfe37",
 				"name": "",
-				"image": "8bbfd8b1-722d-4de4-91ed-9978554650dd",
+				"image": "a8682c0f-d320-4d18-98f5-9f3f91e6e33c",
 				"mapping": 300,
 				"channel": 0,
 				"repeat": [
@@ -604,9 +604,9 @@
 				"unpackAlignment": 1
 			},
 			{
-				"uuid": "1eaaaf27-42f9-4e08-b8c9-1af0c7ce2e86",
+				"uuid": "7f65ebde-9174-4b93-b3b9-2cf597d45eae",
 				"name": "",
-				"image": "3694cad9-2de4-4137-9e96-6641cd0feff2",
+				"image": "2d532df3-eccf-4ff0-9a5f-9e549024ce59",
 				"mapping": 300,
 				"channel": 0,
 				"repeat": [
@@ -631,8 +631,8 @@
 				"type": 1009,
 				"normalized": false,
 				"colorSpace": "",
-				"minFilter": 1006,
-				"magFilter": 1006,
+				"minFilter": 1003,
+				"magFilter": 1003,
 				"anisotropy": 1,
 				"flipY": false,
 				"generateMipmaps": false,
@@ -641,9 +641,9 @@
 				"unpackAlignment": 1
 			},
 			{
-				"uuid": "ed88e2fb-e1ea-4803-9ba6-bb9a69da1306",
+				"uuid": "adf66ac9-806d-40d1-a16d-0f2134a23d12",
 				"name": "",
-				"image": "c45a1459-242b-4468-ba02-93ac2ccc1993",
+				"image": "35afd4c1-5b82-4c89-b7e8-0f22f9277bc6",
 				"mapping": 300,
 				"channel": 0,
 				"repeat": [
@@ -680,7 +680,7 @@
 		],
 		"images": [
 			{
-				"uuid": "18be19fe-28e0-4b69-bd87-ef66632e9bc7",
+				"uuid": "9df4ec98-d79f-4238-a2c5-24ce7682df69",
 				"url": {
 					"data": [
 						212,
@@ -1714,7 +1714,7 @@
 				}
 			},
 			{
-				"uuid": "d295585e-706e-4ef3-b1c2-18be2970da0d",
+				"uuid": "8a671347-c9e5-4527-87b8-e629f94ea465",
 				"url": {
 					"data": [
 						95,
@@ -2748,7 +2748,7 @@
 				}
 			},
 			{
-				"uuid": "5c8a8d87-6b9e-4933-8771-749d5a53deae",
+				"uuid": "09d6b66d-d2a2-46b5-bdd5-9842b882ccf5",
 				"url": {
 					"data": [
 						16,
@@ -3014,7 +3014,7 @@
 				}
 			},
 			{
-				"uuid": "05e25c2c-4fc5-45d0-b936-8ba27602e379",
+				"uuid": "6029946e-ee27-4beb-8519-8acd385f89ed",
 				"url": {
 					"data": [
 						142,
@@ -4048,7 +4048,7 @@
 				}
 			},
 			{
-				"uuid": "8bbfd8b1-722d-4de4-91ed-9978554650dd",
+				"uuid": "a8682c0f-d320-4d18-98f5-9f3f91e6e33c",
 				"url": {
 					"data": [
 						255,
@@ -4122,7 +4122,7 @@
 				}
 			},
 			{
-				"uuid": "3694cad9-2de4-4137-9e96-6641cd0feff2",
+				"uuid": "2d532df3-eccf-4ff0-9a5f-9e549024ce59",
 				"url": {
 					"data": [
 						128,
@@ -4138,11 +4138,11 @@
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
@@ -4162,27 +4162,27 @@
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
@@ -4194,27 +4194,27 @@
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
-						149,
+						255,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						149,
+						255,
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
@@ -4222,67 +4222,67 @@
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						50,
+						0,
 						128,
 						255,
 						128,
-						50,
+						0,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						50,
+						0,
 						128,
 						255,
 						128,
-						50,
+						0,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
@@ -4290,27 +4290,27 @@
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
-						149,
+						255,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						111,
+						0,
 						128,
 						255,
 						128,
-						149,
+						255,
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
@@ -4322,27 +4322,27 @@
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						179,
+						255,
 						128,
 						255,
 						128,
-						204,
+						255,
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
@@ -4362,11 +4362,11 @@
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
-						248,
+						255,
 						128,
 						255,
 						128,
@@ -4388,7 +4388,7 @@
 				}
 			},
 			{
-				"uuid": "c45a1459-242b-4468-ba02-93ac2ccc1993",
+				"uuid": "35afd4c1-5b82-4c89-b7e8-0f22f9277bc6",
 				"url": {
 					"data": [
 						86,
@@ -4655,7 +4655,7 @@
 			}
 		],
 		"object": {
-			"uuid": "d8bab713-0dbd-4851-a6b7-9ab18a4f19db",
+			"uuid": "1bcfbabd-e41c-4b41-bdec-40f284fd2e23",
 			"type": "Scene",
 			"name": "",
 			"castShadow": false,
@@ -4691,7 +4691,7 @@
 			],
 			"children": [
 				{
-					"uuid": "5879fcb5-a9a8-45a1-9c0a-91fed0a57006",
+					"uuid": "53765090-3c94-462b-ad89-3f717a0a6e25",
 					"type": "AmbientLight",
 					"name": "",
 					"castShadow": false,
@@ -4729,7 +4729,7 @@
 					"intensity": 0.5
 				},
 				{
-					"uuid": "06bd2437-56d3-4db7-b9f8-4bed2d8bf39e",
+					"uuid": "eb0b5eab-3e87-44be-b07e-dd1d79b5f283",
 					"type": "DirectionalLight",
 					"name": "",
 					"castShadow": false,
@@ -4777,7 +4777,7 @@
 						],
 						"mapType": 1009,
 						"camera": {
-							"uuid": "b43d916b-85be-4992-9437-69418f6c3cf2",
+							"uuid": "60a077fb-e324-4388-b04a-d45b52564869",
 							"type": "OrthographicCamera",
 							"name": "",
 							"castShadow": false,
@@ -4802,10 +4802,10 @@
 							"far": 500
 						}
 					},
-					"target": "4b325f16-dd60-48d4-9f43-aa2fc91a98cb"
+					"target": "4e07d24d-f807-4289-8fa8-c3a18b1e4735"
 				},
 				{
-					"uuid": "24f27617-754a-4aeb-9ce7-a3c89ccee91f",
+					"uuid": "7af8e525-40c3-4ad3-ade9-01da28c810a6",
 					"type": "PointLight",
 					"name": "",
 					"castShadow": false,
@@ -4855,7 +4855,7 @@
 						],
 						"mapType": 1009,
 						"camera": {
-							"uuid": "81b7d668-dd32-449a-8860-a1f2103659ef",
+							"uuid": "5dcd72c0-554b-402e-8f31-d61ca0bcea58",
 							"type": "PerspectiveCamera",
 							"name": "",
 							"castShadow": false,
@@ -4883,7 +4883,7 @@
 					}
 				},
 				{
-					"uuid": "f1b531c6-0bb9-4aae-9a11-15e916e60ea1",
+					"uuid": "a0340e9a-c7aa-4ca8-bd75-e2dffc9dcc92",
 					"type": "Mesh",
 					"name": "",
 					"castShadow": false,
@@ -4917,11 +4917,11 @@
 						1,
 						0
 					],
-					"geometry": "770c083c-aa2c-4663-8fb7-79738372eb61",
-					"material": "fa25ce7f-5079-40a5-bd58-35dd73735ccf"
+					"geometry": "16d4228c-1131-4212-88cc-469e4a1a9513",
+					"material": "35bec30f-6c88-4b6d-bf0d-e8672f2459b4"
 				},
 				{
-					"uuid": "d28b7dc7-a49c-4762-a1a4-3781b65f3e71",
+					"uuid": "25272dd0-253c-4955-a217-1018c7c5a0d0",
 					"type": "Mesh",
 					"name": "",
 					"castShadow": false,
@@ -4955,11 +4955,11 @@
 						1,
 						0
 					],
-					"geometry": "6a432494-d428-4807-b439-9fae731d931c",
-					"material": "480c8a32-c6b0-4929-a7d8-771d5d6b794f"
+					"geometry": "c3929411-fef1-4680-9d81-a90c1980898d",
+					"material": "e4418987-6f77-46a4-816f-6f20d8d12b42"
 				},
 				{
-					"uuid": "a07387b7-22eb-4193-a798-842c0de65928",
+					"uuid": "06b83832-4975-40aa-a070-b17fb9226e30",
 					"type": "Mesh",
 					"name": "",
 					"castShadow": false,
@@ -4993,11 +4993,11 @@
 						1,
 						0
 					],
-					"geometry": "7b6ccd17-3e5c-473e-a1f3-056d92e70d59",
-					"material": "38ad5096-b5b6-42cf-8834-25ddb8917378"
+					"geometry": "62aabf16-bc6e-4993-b3eb-ec335bef4741",
+					"material": "b828bcd6-45c9-4dc6-bbee-668d0ae577fd"
 				},
 				{
-					"uuid": "d2360010-00cf-4029-9168-3e3b2b77d196",
+					"uuid": "01f4f32e-e9b3-48e0-a432-e0b006711eba",
 					"type": "Mesh",
 					"name": "",
 					"castShadow": false,
@@ -5031,8 +5031,8 @@
 						1,
 						0
 					],
-					"geometry": "b93cf760-f991-4eca-85d2-c202a94ca231",
-					"material": "072509f3-9a90-4925-9e7a-9fbe65fbcdcd"
+					"geometry": "5580b149-83a9-4f9d-ac44-371e58a431c3",
+					"material": "0596c3d8-2425-4907-934a-1330d74260f6"
 				}
 			],
 			"backgroundBlurriness": 0,
@@ -5059,7 +5059,7 @@
 			"generator": "Object3D.toJSON"
 		},
 		"object": {
-			"uuid": "3f4dbde0-21e7-48ef-940e-7e6e607a18d0",
+			"uuid": "d541d2a6-ad39-4961-9468-8c91ad4eef1a",
 			"type": "PerspectiveCamera",
 			"name": "",
 			"castShadow": false,
