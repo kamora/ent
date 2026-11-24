@@ -28,7 +28,7 @@ void main() {
 	// diamond (GL's diamond-exit rule, ANGLE's Bresenham line emulation); line.xy is the target's size.
 	if (frag_info.line.z > 0.5) {
 		vec4 clip = frag_info.line_projection * vec4(-v_view_position, 1.0);
-		vec2 ba = abs((clip.xy / clip.w * vec2(0.5, -0.5) + 0.5) * frag_info.line.xy - gl_FragCoord.xy);
+		vec2 ba = abs((clip.xy / clip.w * vec2(0.5, 0.5 * output_info.rows) + 0.5) * frag_info.line.xy - gl_FragCoord.xy);
 		vec2 ba2 = 2.0 * ba * ba;
 		vec2 bp = ba2 + ba2.yx - ba;
 

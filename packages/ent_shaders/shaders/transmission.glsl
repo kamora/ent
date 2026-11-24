@@ -2,8 +2,8 @@
 // rendered into a mipmapped target first (lib/src/gpu/transmission.dart), sampled along the refracted ray with
 // mipped bicubic filtering (N8's), then attenuated by Beer's law. Based on the glTF Sample Viewer.
 //
-// The target is drawn the way the frame is, its first row at the top, while WebGL's has its first row at the
-// bottom, so the projected v is mirrored before sampling. Include in shaders/physical.glsl after the BRDFs.
+// Where 2D targets are drawn with their first row at the top (output_info.target_rows -1), WebGL's having it at the
+// bottom, the projected v is mirrored before sampling. Include in shaders/physical.glsl after the BRDFs.
 float w0(float a) {
 	return (1.0 / 6.0) * (a * (a * (-a + 3.0) - 3.0) + 1.0);
 }
@@ -91,7 +91,7 @@ float applyIorToRoughness(float roughness, float ior) {
 
 vec4 getTransmissionSample(vec2 fragCoord, float roughness, float ior) {
 	float lod = log2(frag_info.transmission_size.x) * applyIorToRoughness(roughness, ior);
-	return textureBicubic(vec2(fragCoord.x, 1.0 - fragCoord.y), lod);
+	return textureBicubic(vec2(fragCoord.x, output_info.target_rows < 0.0 ? 1.0 - fragCoord.y : fragCoord.y), lod);
 }
 
 vec3 volumeAttenuation(float transmissionDistance, vec3 attenuationColor, float attenuationDistance) {

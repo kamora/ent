@@ -47,6 +47,10 @@ final class FlutterGpuContext implements ent.GpuContext {
   @override
   int get minimumUniformByteAlignment => context.minimumUniformByteAlignment;
 
+  // Flutter GPU draws every target with its first row at the top.
+  @override
+  bool get rowsUp => false;
+
   // Flutter GPU stops one level short of 1 × 1 and counts from the smaller side (flutter/flutter#186176).
   @override
   int maxMipLevelCount(int width, int height) => gpu.Texture.fullMipCount(width, height);

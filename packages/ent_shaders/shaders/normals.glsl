@@ -2,8 +2,9 @@
 // flipped on back faces of double-sided materials, then perturbed by a tangent-space or object-space
 // normalMap (with geometry tangents or derivatives, getTangentFrame) or by a bumpMap (perturbNormalArb).
 //
-// Window y points down here and up in WebGL, so dFdy has the opposite sign; dFdyGL restores WebGL's.
-#define dFdyGL(a) (-dFdy(a))
+// Window y points down where rows run down (output_info.rows -1) and up in WebGL, so dFdy has the opposite sign
+// there; dFdyGL gives WebGL's.
+#define dFdyGL(a) (output_info.rows * dFdy(a))
 
 // A variant defines the normal map flag it uses: USE_NORMALMAP_TANGENTSPACE, USE_NORMALMAP_OBJECTSPACE or
 // USE_BUMPMAP.

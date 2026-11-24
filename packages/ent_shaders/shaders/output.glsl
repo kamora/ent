@@ -22,6 +22,12 @@ uniform OutputInfo {
 
 	// 1 for an sRGB output color space, 0 for linear.
 	float output_srgb;
+
+	// How rows run, 1 up (first row at the bottom, as in WebGL) or -1 down: in this draw's target (window y, dFdy,
+	// gl_FragCoord) and in 2D render targets the draw samples (shadow maps, the transmission target). Flutter GPU
+	// draws every target with its first row at the top; OpenGL ES draws 2D targets and the frame as WebGL does.
+	float rows;
+	float target_rows;
 } output_info;
 
 vec4 sRGBTransferOETF(vec4 value) {

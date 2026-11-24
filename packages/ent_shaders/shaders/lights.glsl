@@ -218,11 +218,23 @@ vec2 vogelDiskSample(int sampleIndex, int samplesCount, float phi) {
 	return vec2(cos(theta), sin(theta)) * sqrt((float(sampleIndex) + 0.5) / float(samplesCount));
 }
 
+// A shadow map's (s, t) for [uv] in its GL orientation (v up): v is mirrored where rendered maps have their first
+// row at the top (output_info.target_rows -1).
+vec2 shadowUv(vec2 uv) {
+	return vec2(uv.x, output_info.target_rows < 0.0 ? 1.0 - uv.y : uv.y);
+}
+
+// The pixel's window position as WebGL counts it, from the bottom: gl_FragCoord's y is mirrored where rows run down
+// (light_info.shadow_info.z is the target's height).
+vec2 windowGL() {
+	return vec2(gl_FragCoord.x, output_info.rows < 0.0 ? light_info.shadow_info.z - gl_FragCoord.y : gl_FragCoord.y);
+}
+
 // A sampler2DShadow lookup with LessEqualCompare and LinearFilter: the four nearest texels compared with
 // [depth], weighted bilinearly, as the hardware filters comparisons. [uv] is in the map's GL orientation (v up);
-// rendered maps have their first row at the top, so v is mirrored.
+// where rendered maps have their first row at the top (output_info.target_rows -1), v is mirrored.
 float shadowCompare(int shadowMap, vec2 shadowMapSize, vec2 uv, float depth) {
-	vec2 p = vec2(uv.x, 1.0 - uv.y) * shadowMapSize - 0.5;
+	vec2 p = shadowUv(uv) * shadowMapSize - 0.5;
 	vec2 f = fract(p);
 	vec2 c = (floor(p) + 0.5) / shadowMapSize;
 	vec2 t = 1.0 / shadowMapSize;
@@ -248,7 +260,7 @@ float getShadow(int shadowMap, vec2 shadowMapSize, float shadowIntensity, float 
 
 			// SHADOWMAP_TYPE_VSM: the blurred mean and standard deviation (LinearFilter), Chebyshev's upper bound
 			// on the lit fraction, light bleeding reduced by remapping [0.3, 0.95] to [0, 1].
-			vec2 distribution = lightTexture(shadowMap, vec2(shadowCoord.x, 1.0 - shadowCoord.y)).rg;
+			vec2 distribution = lightTexture(shadowMap, shadowUv(shadowCoord.xy)).rg;
 			float mean = distribution.x;
 			float variance = distribution.y * distribution.y;
 			float hard_shadow = step(shadowCoord.z, mean);
@@ -266,7 +278,7 @@ float getShadow(int shadowMap, vec2 shadowMapSize, float shadowIntensity, float 
 
 			// Hardware PCF with LinearFilter: 4 taps per sample, 5 samples on a Vogel disk rotated per pixel by IGN.
 			vec2 radius = shadowRadius / shadowMapSize;
-			float phi = interleavedGradientNoise(vec2(gl_FragCoord.x, light_info.shadow_info.z - gl_FragCoord.y)) * PI2;
+			float phi = interleavedGradientNoise(windowGL()) * PI2;
 
 			shadow = (
 				shadowCompare(shadowMap, shadowMapSize, shadowCoord.xy + vogelDiskSample(0, 5, phi) * radius, shadowCoord.z)
@@ -276,7 +288,7 @@ float getShadow(int shadowMap, vec2 shadowMapSize, float shadowIntensity, float 
 					+ shadowCompare(shadowMap, shadowMapSize, shadowCoord.xy + vogelDiskSample(4, 5, phi) * radius, shadowCoord.z)
 			) * 0.2;
 		} else {
-			shadow = step(shadowCoord.z, lightTexture(shadowMap, vec2(shadowCoord.x, 1.0 - shadowCoord.y)).r);
+			shadow = step(shadowCoord.z, lightTexture(shadowMap, shadowUv(shadowCoord.xy)).r);
 		}
 	}
 
@@ -342,10 +354,12 @@ vec3 cubeFace(vec3 d) {
 }
 
 // The depth stored at [texel] (t up, clamped to the face's edge) of face [face] of the point shadow map in light
-// texture [slot]: the faces lie side by side, each [size] texels square with its first row (t = 0) at the bottom.
+// texture [slot]: the faces lie side by side, each [size] texels square, its row t the map's row t where rows run up
+// (output_info.target_rows 1) and the mirrored one where they run down.
 float pointDepth(int slot, float size, float face, vec2 texel) {
 	vec2 c = clamp(texel, 0.0, size - 1.0);
-	return lightTexture(slot, vec2(face * size + c.x + 0.5, size - c.y - 0.5) / vec2(6.0 * size, size)).r;
+	float row = output_info.target_rows < 0.0 ? size - c.y - 0.5 : c.y + 0.5;
+	return lightTexture(slot, vec2(face * size + c.x + 0.5, row) / vec2(6.0 * size, size)).r;
 }
 
 // The direction of the cube map point at (s, t) of face [face] (cubeFace's inverse; s and t may lie outside [0, 1],
@@ -430,7 +444,7 @@ float getPointShadow(int i) {
 			vec3 absDir = abs(bd3D);
 			vec3 tangent = normalize(cross(bd3D, absDir.x > absDir.z ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0)));
 			vec3 bitangent = cross(bd3D, tangent);
-			float phi = interleavedGradientNoise(vec2(gl_FragCoord.x, light_info.shadow_info.z - gl_FragCoord.y)) * PI2;
+			float phi = interleavedGradientNoise(windowGL()) * PI2;
 			result = 0.0;
 
 			for (int k = 0; k < 5; k++) {

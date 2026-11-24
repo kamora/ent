@@ -24,8 +24,9 @@ class FlutterGpuRenderer extends GpuRenderer {
   });
 
   /// Loads the shader bundle and creates a renderer. The bundle is `ent_shaders`' asset
-  /// `packages/ent_shaders/build/shaderbundles/ent.shaderbundle`, which its build hook writes. Throws a [StateError] when the app has not enabled Flutter GPU, or when
-  /// Flutter GPU cannot render on this device (Android's OpenGL ES fallback).
+  /// `packages/ent_shaders/build/shaderbundles/ent.shaderbundle`, which its build hook writes. Throws a [StateError]
+  /// when the app has not enabled Flutter GPU, or when Flutter GPU cannot render on this device (Android's OpenGL ES
+  /// fallback).
   ///
   /// [antialias] is the reference renderer's constructor parameter: the frame is drawn with 4× MSAA and resolved, where
   /// the GPU supports offscreen MSAA (`gpuContext.doesSupportOffscreenMSAA`); elsewhere it is drawn without, with one

@@ -374,23 +374,24 @@ class GpuRenderer implements EffectComposerRenderer {
   final bool _loads;
 
   /// Whether a render into a target that does not clear keeps the target's color (`LoadAction.load`), as WebGL does:
-  /// probed once by the renderer package by clearing a texture and loading it in a second pass, never by platform. True on Metal;
-  /// false in flutter_tester, whose Impeller on Vulkan through SwiftShader clears it (flutter/flutter#196199).
+  /// probed once by the renderer package by clearing a texture and loading it in a second pass, never by platform.
+  /// True on Metal; false in flutter_tester, whose Impeller on Vulkan through SwiftShader clears it
+  /// (flutter/flutter#196199).
   /// TuningPass takes the reference's additive blend onto its read buffer where it is true (exception
   /// E-POSTPROCESSING).
   @override
   bool get loadKeepsColor => _loads;
 
   /// Whether this GPU filters 32-bit float textures linearly, as WebGL with OES_texture_float_linear does: probed
-  /// once by the renderer package by sampling a 2 × 1 float texture between its texels, never by platform. False on the iPhone
-  /// 11's A13, which reads the nearest texel; FloatType textures with a linear filter are then stored as half floats
-  /// (exception E-FLOATFILTER).
+  /// once by the renderer package by sampling a 2 × 1 float texture between its texels, never by platform. False on
+  /// the iPhone 11's A13, which reads the nearest texel; FloatType textures with a linear filter are then stored as
+  /// half floats (exception E-FLOATFILTER).
   bool get filtersFloat => _textures.filtersFloat;
 
-  /// Whether this GPU samples a depth buffer through a plain sampler: probed once by the renderer package by clearing a depth
-  /// buffer and reading it back, never by platform. True on Metal, where a render target's depth texture is copied
-  /// from its depth buffer; false in flutter_tester, whose SwiftShader reads black, where the meshes are drawn again
-  /// into it (exception E-DEPTHTEXTURE).
+  /// Whether this GPU samples a depth buffer through a plain sampler: probed once by the renderer package by clearing a
+  /// depth buffer and reading it back, never by platform. True on Metal, where a render target's depth texture is
+  /// copied from its depth buffer; false in flutter_tester, whose SwiftShader reads black, where the meshes are drawn
+  /// again into it (exception E-DEPTHTEXTURE).
   bool get readsDepth => _textures.readsDepth;
 
   // The frame's height in pixels, for gl_FragCoord in GL's orientation (shadows/lights.glsl).
@@ -1122,7 +1123,12 @@ class GpuRenderer implements EffectComposerRenderer {
             ..floats('size', [width.toDouble(), height.toDouble()])
             ..float('copy', copy ? 1 : 0)
             ..floats('rect', switch (rect) {
-              (final x, final y, final w, final h) => [x.toDouble(), y.toDouble(), x + w + 0.0, y + h + 0.0],
+              (final x, final y, final w, final h) => [
+                x + 0.0,
+                _row(y, h, height),
+                x + w + 0.0,
+                _row(y, h, height) + h,
+              ],
               _ => [0, 0, 0, 0],
             })
             ..floats('color', clear.storage),
@@ -1292,6 +1298,16 @@ class GpuRenderer implements EffectComposerRenderer {
     if (target.scissorTest) {
       pass.setScissor(gpu.Scissor(x: s.x.round(), y: (h - s.y - s.w).round(), width: s.z.round(), height: s.w.round()));
     }
+  }
+
+  // The first gl_FragCoord row of a [height]-row band starting at row [y] from the top of a target [frame] rows high:
+  // y itself where rows run down, counted from the bottom where they run up (GpuContext.rowsUp).
+  double _row(int y, int height, int frame) {
+    if (_context.rowsUp) {
+      return (frame - y - height).toDouble();
+    }
+
+    return y.toDouble();
   }
 
   // [r] (x and y from the bottom left, width, height in pixels) with y from the top of a [width] × [height] frame,
@@ -2041,7 +2057,7 @@ class GpuRenderer implements EffectComposerRenderer {
     variant.fragInfo
       ..begin()
       ..flag('flip', switch (textures.first) {
-        final Texture texture => topDown(texture),
+        final Texture texture => topDown(texture, _context),
         null => false,
       });
     variant.outputInfo.begin();
@@ -2833,7 +2849,7 @@ class GpuRenderer implements EffectComposerRenderer {
 
   static final List<double> _identity = Matrix3().elements;
 
-  static List<double> _transform(Texture? texture) {
+  List<double> _transform(Texture? texture) {
     if (texture == null) {
       return _identity;
     }
@@ -2844,7 +2860,7 @@ class GpuRenderer implements EffectComposerRenderer {
 
     // A render target's rows (and its depth texture's) start at the top here, at the bottom in WebGL: t is flipped
     // (t' = 1 - t).
-    return topDown(texture)
+    return topDown(texture, _context)
         ? (Matrix3()..set(1, 0, 0, 0, -1, 1, 0, 0, 1)).multiply(texture.matrix).elements
         : texture.matrix.elements;
   }
@@ -3215,8 +3231,18 @@ class GpuRenderer implements EffectComposerRenderer {
   void _outputUniforms(UniformBlock block, Material material, _Surface surface, Object3D scene) {
     final fog = scene is Scene ? scene.fog : null;
 
+    // How rows run in this draw's target (cube faces have their first row at the top on every GPU) and in 2D render
+    // targets, which this draw may sample (shadow maps, the transmission target): 1 up, -1 down.
+    var rows = -1.0;
+
+    if (_context.rowsUp && _renderTarget is! WebGLCubeRenderTarget) {
+      rows = 1;
+    }
+
     block
       ..begin()
+      ..float('rows', rows)
+      ..float('target_rows', _context.rowsUp ? 1 : -1)
       ..flag('opaque', !material.transparent && material.blending == NormalBlending && !material.alphaToCoverage)
       ..flag('premultiplied_alpha', material.premultipliedAlpha)
       ..float('tone_mapping', material.toneMapped && !_intoTarget ? _toneMapping().toDouble() : 0)

@@ -358,8 +358,12 @@ abstract interface class GpuContext {
 
   int get minimumUniformByteAlignment;
 
-  /// The most mip levels a texture of [width] × [height] can have: down to 1 × 1 where the GPU interface allows, as in
-  /// WebGL.
+  /// Whether 2D render targets and the frame are drawn with their first row at the bottom, as in GL and WebGL; false
+  /// where it is at the top (Flutter GPU). Cube map faces have their first row at the top either way.
+  bool get rowsUp;
+
+  /// The most mip levels a texture of [width] × [height] can have: down to 1 × 1 where the GPU interface allows, as
+  /// in WebGL.
   int maxMipLevelCount(int width, int height);
 
   bool supportsTextureFormat(PixelFormat format, {bool renderTarget = false, bool shaderRead = true});

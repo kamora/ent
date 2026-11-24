@@ -142,8 +142,8 @@ final class GlContext implements ent.GpuContext {
   }
 
   // Blits [frame] into [surface], a GlSurface's EGL surface. An IOSurface's pbuffer keeps the frame's rows (row 0 the
-  // top) and is finished before Flutter reads it; a [window] surface's row 0 is its bottom, so the frame is turned
-  // over, and swapping the buffers hands it to Flutter.
+  // top) and is finished before Flutter reads it; a [window] surface's row 0 is its bottom, and swapping the buffers
+  // hands it to Flutter. The frame is turned over where its rows run the other way.
   void _present(Pointer<Void> surface, GlTexture frame, int width, int height, {required bool window}) {
     if (eglMakeCurrent(_display, surface, surface, _context) == 0) {
       throw StateError(
@@ -157,15 +157,16 @@ final class GlContext implements ent.GpuContext {
       glBindFramebuffer(glReadFramebuffer, framebuffer.value);
       glFramebufferTexture2D(glReadFramebuffer, glColorAttachment0, glTexture2D, frame.name, 0);
       glBindFramebuffer(glDrawFramebuffer, 0);
+      final turn = frame._up != window;
       glBlitFramebuffer(
         0,
         0,
         width,
         height,
         0,
-        window ? height : 0,
+        turn ? height : 0,
         width,
-        window ? 0 : height,
+        turn ? 0 : height,
         glColorBufferBit,
         glNearest,
       );
@@ -211,6 +212,11 @@ final class GlContext implements ent.GpuContext {
       return value.value;
     });
   }
+
+  // 2D targets and the frame are drawn as WebGL draws them, their first row at the bottom; cube faces with theirs at
+  // the top, as the renderer's cube cameras expect (the shaders' _impeller_y_flip turns those over).
+  @override
+  bool get rowsUp => true;
 
   // Down to 1 × 1, from the larger side, as WebGL's getMipLevels.
   @override
@@ -355,6 +361,9 @@ final class GlTexture implements ent.Texture {
   /// Whether [name] is a multisampled renderbuffer.
   final bool multisampled;
 
+  // Whether the texture was last drawn with its first row at the bottom (GpuContext.rowsUp), so [read] turns it over.
+  bool _up = false;
+
   final GlContext _context;
 
   /// The texture's GL name.
@@ -433,7 +442,8 @@ final class GlTexture implements ent.Texture {
     return true;
   }
 
-  /// The first level as RGBA bytes, row 0 first; 8-bit RGBA formats only so far.
+  /// The first level as RGBA bytes, rows from the top (a texture drawn with its first row at the bottom is turned
+  /// over); 8-bit RGBA formats only so far.
   @override
   Future<ByteData> read() async {
     if (multisampled) {
@@ -464,7 +474,20 @@ final class GlTexture implements ent.Texture {
       glBindFramebuffer(glReadFramebuffer, 0);
       glDeleteFramebuffers(1, framebuffer);
       _check('Texture.read');
-      return ByteData.sublistView(Uint8List.fromList(data.asTypedList(width * height * bytes)));
+      final rows = data.asTypedList(width * height * bytes);
+
+      if (!_up) {
+        return ByteData.sublistView(Uint8List.fromList(rows));
+      }
+
+      final stride = width * bytes;
+      final turned = Uint8List(rows.length);
+
+      for (var y = 0; y < height; y++) {
+        turned.setRange(y * stride, (y + 1) * stride, rows, (height - 1 - y) * stride);
+      }
+
+      return ByteData.sublistView(turned);
     });
   }
 }
@@ -602,14 +625,17 @@ final class GlShader implements ent.Shader {
 
     final shader = glCreateShader(_source.stage == 'vertex' ? glVertexShader : glFragmentShader);
     using((arena) {
-      // Frames are drawn turned over (_impeller_y_flip), so gl_PointCoord, which counts from the window's top, is
-      // turned over too.
+      // gl_PointCoord counts from the window's top; in a target drawn turned over (_impeller_y_flip -1, rows -1) that
+      // is the image's bottom, so it is turned over too.
       final code = utf8.decode(_source.code);
       final text = arena<Pointer<Utf8>>()
         ..value =
             (_source.stage == 'vertex'
                     ? code
-                    : code.replaceAll('gl_PointCoord', 'vec2(gl_PointCoord.x, 1.0 - gl_PointCoord.y)'))
+                    : code.replaceAll(
+                        'gl_PointCoord',
+                        'vec2(gl_PointCoord.x, output_info.rows < 0.0 ? 1.0 - gl_PointCoord.y : gl_PointCoord.y)',
+                      ))
                 .toNativeUtf8(allocator: arena);
       glShaderSource(shader, 1, text, nullptr);
       glCompileShader(shader);
@@ -785,6 +811,10 @@ final class _Pass implements ent.RenderPass {
 
   (int, int) _size = (1, 1);
 
+  // Whether the pass draws its first row at the bottom, as WebGL: every target but a cube map's face, whose first row
+  // is at the top on every GPU (the shaders' _impeller_y_flip turns those over).
+  bool _up = true;
+
   // What the replay has set so far.
   _Pipeline? _pipeline;
 
@@ -824,6 +854,12 @@ final class _Pass implements ent.RenderPass {
     });
     glBindFramebuffer(glFramebuffer, _framebuffer);
     var mask = 0;
+    _up = !_target.colorAttachments.any((color) => (color.texture as GlTexture)._cube);
+
+    for (final color in _target.colorAttachments) {
+      (color.texture as GlTexture)._up = _up;
+      (color.resolveTexture as GlTexture?)?._up = _up;
+    }
 
     for (final (index, color) in _target.colorAttachments.indexed) {
       final texture = color.texture as GlTexture;
@@ -1017,7 +1053,7 @@ final class _Pass implements ent.RenderPass {
   void _apply() {
     final pipeline = _pipeline ?? (throw StateError('ent_opengl: a draw without a pipeline.'));
     glUseProgram(pipeline.program);
-    glUniform1f(pipeline.flip, -1);
+    glUniform1f(pipeline.flip, _up ? 1 : -1);
     glUniform1i(pipeline.baseInstance, 0);
 
     for (final location in _context._attributes) {
@@ -1122,18 +1158,40 @@ final class _Pass implements ent.RenderPass {
       glCullFaceMode(_cull == ent.CullMode.frontFace ? glFront : glBack);
     }
 
-    // The y flip mirrors the frame, so the winding GL sees is the other one.
-    glFrontFace(_winding == ent.WindingOrder.clockwise ? glCcw : glCw);
+    // Turned over (_impeller_y_flip -1), the target is mirrored, so the winding GL sees is the other one.
+    var front = _winding == ent.WindingOrder.clockwise ? glCw : glCcw;
+
+    if (!_up) {
+      front = front == glCw ? glCcw : glCw;
+    }
+
+    glFrontFace(front);
     final viewport = _viewport;
-    glViewport(viewport?.x ?? 0, viewport?.y ?? 0, viewport?.width ?? _size.$1, viewport?.height ?? _size.$2);
+
+    if (viewport == null) {
+      glViewport(0, 0, _size.$1, _size.$2);
+    } else {
+      glViewport(viewport.x, _row(viewport.y, viewport.height), viewport.width, viewport.height);
+    }
+
     final scissor = _scissor;
 
     if (scissor == null) {
       glDisable(glScissorTest);
     } else {
       glEnable(glScissorTest);
-      glScissor(scissor.x, scissor.y, scissor.width, scissor.height);
+      glScissor(scissor.x, _row(scissor.y, scissor.height), scissor.width, scissor.height);
     }
+  }
+
+  // The renderer counts viewports and scissors from the target's top, as Flutter GPU does: GL's first row from the
+  // bottom where the pass draws its first row there.
+  int _row(int y, int height) {
+    if (!_up) {
+      return y;
+    }
+
+    return _size.$2 - y - height;
   }
 }
 

@@ -87,7 +87,11 @@ class GpuTarget {
 }
 
 /// Whether [texture]'s rows start at the top (see [GpuTarget]): a render target's texture or depth texture.
-bool topDown(Texture texture) {
+bool topDown(Texture texture, gpu.GpuContext context) {
+  if (context.rowsUp) {
+    return false;
+  }
+
   return texture.isRenderTargetTexture || (texture is DepthTexture && texture.renderTarget != null);
 }
 
