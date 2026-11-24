@@ -3,13 +3,9 @@
 // (docs/flutter-gpu.md, Platforms), so every frame would come out black.
 
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 import 'package:vector_math/vector_math.dart' as vm;
-
-import 'passes.dart';
 
 // Submits [commands] and completes when the GPU has finished them: a readback right after a submit can miss the
 // GPU's writes on some Vulkan drivers (HostBuffers.idle).
@@ -19,14 +15,13 @@ Future<void> _submit(gpu.CommandBuffer commands) {
   return done.future;
 }
 
-Future<void>? _checked;
+final _checked = Expando<Future<void>>();
 
 /// Completes with a [StateError] when a cleared texture does not read back its clear color; runs once per
-/// process.
-Future<void> checkRendering() => _checked ??= _check();
+/// context.
+Future<void> checkRendering(gpu.GpuContext context) => _checked[context] ??= _check(context);
 
-Future<void> _check() async {
-  final context = gpu.gpuContext;
+Future<void> _check(gpu.GpuContext context) async {
   final target = context.createTexture(gpu.StorageMode.devicePrivate, 1, 1, format: gpu.PixelFormat.r8g8b8a8UNormInt);
   final commands = context.createCommandBuffer();
   commands.createRenderPass(
@@ -34,7 +29,7 @@ Future<void> _check() async {
   );
   await _submit(commands);
 
-  final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
+  final pixel = await target.read();
 
   if (pixel.getUint8(0) != 255 || pixel.getUint8(1) != 0 || pixel.getUint8(3) != 255) {
     throw StateError(
@@ -44,116 +39,4 @@ Future<void> _check() async {
       'older, older PowerVR, the first Samsung Xclipse); Flutter GPU needs Vulkan there.',
     );
   }
-}
-
-Future<bool>? _loads;
-
-/// Whether a color attachment loaded with `LoadAction.load` keeps what an earlier render pass stored in it, probed
-/// once per process: a 1×1 texture cleared red, then an empty pass that loads it, read back. Metal keeps it;
-/// flutter_tester's Impeller on Vulkan through SwiftShader clears it (flutter/flutter#196199).
-Future<bool> checkLoad() => _loads ??= _load();
-
-Future<bool> _load() async {
-  final context = gpu.gpuContext;
-  final target = context.createTexture(gpu.StorageMode.devicePrivate, 1, 1, format: gpu.PixelFormat.r8g8b8a8UNormInt);
-
-  for (final load in [false, true]) {
-    final commands = context.createCommandBuffer();
-    commands.createRenderPass(
-      gpu.RenderTarget.singleColor(
-        gpu.ColorAttachment(
-          texture: target,
-          loadAction: load ? gpu.LoadAction.load : gpu.LoadAction.clear,
-          clearValue: load ? vm.Vector4(0, 0, 1, 1) : vm.Vector4(1, 0, 0, 1),
-        ),
-      ),
-    );
-    await _submit(commands);
-  }
-
-  final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
-  return pixel.getUint8(0) == 255 && pixel.getUint8(2) == 0;
-}
-
-Future<bool>? _filters;
-
-/// Whether a 32-bit float texture is filtered linearly (WebGL's OES_texture_float_linear), probed once per process:
-/// a 2 × 1 RGBA32F texture of black and white, sampled linearly between the two texels into a 1 × 1 target and read
-/// back; mid-grey where it is filtered, black or white where the GPU reads the nearest texel (the iPhone 11's A13).
-Future<bool> checkFloatFilter(GpuPasses passes) => _filters ??= _filter(passes);
-
-Future<bool> _filter(GpuPasses passes) async {
-  final context = gpu.gpuContext;
-  final source = context.createTexture(
-    gpu.StorageMode.devicePrivate,
-    2,
-    1,
-    format: gpu.PixelFormat.r32g32b32a32Float,
-    enableRenderTargetUsage: false,
-  )..overwrite(Float32List.fromList([0, 0, 0, 1, 1, 1, 1, 1]).buffer.asByteData());
-  final target = context.createTexture(gpu.StorageMode.devicePrivate, 1, 1, format: gpu.PixelFormat.r8g8b8a8UNormInt);
-
-  passes
-    ..begin()
-    ..run(
-      target,
-      'MipFragment',
-      blocks: {
-        'MipInfo': (block) => block
-          ..float('source_lod', 0)
-          ..floats('size', [1, 1]),
-      },
-      textures: {
-        'source': PassTexture(
-          source,
-          gpu.SamplerOptions(minFilter: gpu.MinMagFilter.linear, magFilter: gpu.MinMagFilter.linear),
-        ),
-      },
-    );
-  await passes.idle();
-
-  final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
-  return (pixel.getUint8(0) - 128).abs() < 32;
-}
-
-Future<bool>? _depths;
-
-/// Whether a depth attachment can be sampled, probed once per process: a 1 × 1 depth buffer of the renderer's format
-/// cleared to 0.25 and stored, then read through a plain sampler2D into a 1 × 1 target. Metal reads the depth (in
-/// red, green and blue); flutter_tester's SwiftShader rejects a depth-stencil texture bound with both aspects and
-/// reads black (exception E-DEPTHTEXTURE).
-Future<bool> checkDepthRead(GpuPasses passes) => _depths ??= _depthRead(passes);
-
-Future<bool> _depthRead(GpuPasses passes) async {
-  final context = gpu.gpuContext;
-  final depth = context.createTexture(gpu.StorageMode.devicePrivate, 1, 1, format: context.defaultDepthStencilFormat);
-  final target = context.createTexture(gpu.StorageMode.devicePrivate, 1, 1, format: gpu.PixelFormat.r8g8b8a8UNormInt);
-  final commands = context.createCommandBuffer();
-  commands.createRenderPass(
-    gpu.RenderTarget.singleColor(
-      gpu.ColorAttachment(texture: target),
-      depthStencilAttachment: gpu.DepthStencilAttachment(
-        texture: depth,
-        depthStoreAction: gpu.StoreAction.store,
-        depthClearValue: 0.25,
-      ),
-    ),
-  );
-  commands.submit();
-  passes
-    ..begin()
-    ..run(
-      target,
-      'MipFragment',
-      blocks: {
-        'MipInfo': (block) => block
-          ..float('source_lod', 0)
-          ..floats('size', [1, 1]),
-      },
-      textures: {'source': PassTexture(depth, gpu.SamplerOptions())},
-    );
-  await passes.idle();
-
-  final pixel = (await target.asImage().toByteData(format: ui.ImageByteFormat.rawRgba))!;
-  return (pixel.getUint8(0) - 64).abs() < 3;
 }

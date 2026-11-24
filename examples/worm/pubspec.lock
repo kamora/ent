@@ -79,6 +79,13 @@ packages:
       relative: true
     source: path
     version: "0.1.0-dev.1"
+  ent_renderer:
+    dependency: "direct dev"
+    description:
+      path: "../../packages/ent_renderer"
+      relative: true
+    source: path
+    version: "0.1.0-dev.1"
   ent_shaders:
     dependency: "direct overridden"
     description:

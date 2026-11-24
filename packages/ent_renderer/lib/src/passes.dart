@@ -4,7 +4,7 @@
 
 import 'dart:typed_data';
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 
 import 'host_buffers.dart';
 import 'programs.dart';
@@ -20,7 +20,9 @@ class PassTexture {
 
 /// Runs fragment passes over whole target levels, each in its own command buffer, submitted in order.
 class GpuPasses {
-  GpuPasses(this._library);
+  GpuPasses(this._context, this._library) : _buffers = HostBuffers(_context);
+
+  final gpu.GpuContext _context;
 
   final gpu.ShaderLibrary _library;
 
@@ -35,9 +37,9 @@ class GpuPasses {
     destinationAlphaBlendFactor: gpu.BlendFactor.one,
   );
 
-  final HostBuffers _buffers = HostBuffers();
+  final HostBuffers _buffers;
 
-  late final gpu.DeviceBuffer _triangle = gpu.gpuContext.createDeviceBufferWithCopy(
+  late final gpu.DeviceBuffer _triangle = _context.createDeviceBufferWithCopy(
     Float32List.fromList([-1, -1, 3, -1, -1, 3]).buffer.asByteData(),
   );
 
@@ -69,7 +71,7 @@ class GpuPasses {
     Map<String, void Function(UniformBlock block)> blocks = const {},
     Map<String, PassTexture> textures = const {},
   }) {
-    final commands = gpu.gpuContext.createCommandBuffer();
+    final commands = _context.createCommandBuffer();
     final pass = commands.createRenderPass(
       gpu.RenderTarget.singleColor(
         gpu.ColorAttachment(texture: target, slice: slice, mipLevel: level, loadAction: gpu.LoadAction.dontCare),
@@ -94,7 +96,7 @@ class GpuPasses {
     final fragment = shaderOf(_library, name);
 
     pass
-      ..bindPipeline(_pipelines[name] ??= gpu.gpuContext.createRenderPipeline(_vertex, fragment, vertexLayout: _layout))
+      ..bindPipeline(_pipelines[name] ??= _context.createRenderPipeline(_vertex, fragment, vertexLayout: _layout))
       ..setCullMode(gpu.CullMode.none)
       ..setColorBlendEnable(keep)
       ..setColorBlendEquation(keep ? _keep : gpu.ColorBlendEquation())

@@ -5,7 +5,7 @@
 
 import 'dart:typed_data';
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 import 'package:ent/ent.dart';
 
 import 'programs.dart';
@@ -62,6 +62,10 @@ class _Entry {
 
 /// The geometry buffers a renderer holds; [count] is reported as `renderer.info.memory.geometries`.
 class GpuGeometries {
+  GpuGeometries(this._context);
+
+  final gpu.GpuContext _context;
+
   final Map<BufferGeometry, _Entry> _entries = {};
 
   final Map<(int, bool), (int, gpu.DeviceBuffer)> _defaults = {};
@@ -135,7 +139,7 @@ class GpuGeometries {
 
     return entry.attributes[key] = GpuBuffer(
       version,
-      gpu.gpuContext.createDeviceBufferWithCopy(floats.buffer.asByteData()),
+      _context.createDeviceBufferWithCopy(floats.buffer.asByteData()),
       floats.lengthInBytes,
     );
   }
@@ -160,7 +164,7 @@ class GpuGeometries {
       }
     }
 
-    final buffer = gpu.gpuContext.createDeviceBufferWithCopy(floats.buffer.asByteData());
+    final buffer = _context.createDeviceBufferWithCopy(floats.buffer.asByteData());
     _defaults[(slot.size, white)] = (length, buffer);
 
     return buffer;
@@ -175,7 +179,7 @@ class GpuGeometries {
     }
 
     final length = count < 1024 ? 1024 : count;
-    final buffer = gpu.gpuContext.createDeviceBufferWithCopy(
+    final buffer = _context.createDeviceBufferWithCopy(
       (Float32List(length * size)..fillRange(0, length * size, 1)).buffer.asByteData(),
     );
     _ones[size] = (length, buffer);
@@ -196,7 +200,7 @@ class GpuGeometries {
 
     return _instances[attribute] = GpuBuffer(
       attribute.version,
-      gpu.gpuContext.createDeviceBufferWithCopy(floats.buffer.asByteData()),
+      _context.createDeviceBufferWithCopy(floats.buffer.asByteData()),
       floats.lengthInBytes,
     );
   }
@@ -222,7 +226,7 @@ class GpuGeometries {
 
     return entry.index = GpuIndex(
       index.version,
-      gpu.gpuContext.createDeviceBufferWithCopy(data.buffer.asByteData(data.offsetInBytes, data.lengthInBytes)),
+      _context.createDeviceBufferWithCopy(data.buffer.asByteData(data.offsetInBytes, data.lengthInBytes)),
       data.lengthInBytes,
       wide ? gpu.IndexType.int32 : gpu.IndexType.int16,
       wide ? 4 : 2,
@@ -291,7 +295,7 @@ class GpuGeometries {
       }
     }
 
-    final texture = gpu.gpuContext.createTexture(
+    final texture = _context.createTexture(
       gpu.StorageMode.devicePrivate,
       width,
       rows * targets.length,

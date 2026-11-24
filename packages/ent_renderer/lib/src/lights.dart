@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 import 'package:ent/ent.dart';
 
 import 'ltc_data.dart';

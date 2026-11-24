@@ -1,4 +1,4 @@
-// Generates packages/ent_flutter/lib/src/gpu/ltc_data.dart from r187's
+// Generates packages/ent_renderer/lib/src/ltc_data.dart from r187's
 // examples/jsm/lights/RectAreaLightTexturesLib.js: the LTC_MAT_1 and LTC_MAT_2 arrays (64 × 64 RGBA texels each),
 // converted with r187's DataUtils.toHalfFloat and stored as base64 of little-endian half floats, as
 // RectAreaLightTexturesLib's LTC_HALF_1 and LTC_HALF_2 hold them (the iPhone 11's A13 cannot filter float32
@@ -32,4 +32,4 @@ for (const n of [1, 2]) {
 	lines.push('');
 }
 
-writeFileSync('packages/ent_flutter/lib/src/gpu/ltc_data.dart', lines.join('\n'));
+writeFileSync('packages/ent_renderer/lib/src/ltc_data.dart', lines.join('\n'));

@@ -33,10 +33,11 @@ jobs:
         run: |
           (cd packages/ent && dart pub get)
           (cd packages/ent_shaders && flutter pub get)
+          (cd packages/ent_renderer && flutter pub get)
           (cd packages/ent_flutter && flutter pub get)
           (cd examples/worm && flutter pub get)
       - name: Format
-        run: dart format --output=none --set-exit-if-changed packages/ent packages/ent_shaders packages/ent_flutter examples/worm
+        run: dart format --output=none --set-exit-if-changed packages/ent packages/ent_shaders packages/ent_renderer packages/ent_flutter examples/worm
       - name: Analyze ent
         working-directory: packages/ent
         run: dart analyze --fatal-infos
@@ -51,6 +52,9 @@ jobs:
       # hook, so analysis comes after them.
       - name: Analyze ent_shaders
         working-directory: packages/ent_shaders
+        run: flutter analyze --fatal-infos
+      - name: Analyze ent_renderer
+        working-directory: packages/ent_renderer
         run: flutter analyze --fatal-infos
       - name: ent_flutter tests (Impeller on Vulkan through SwiftShader)
         working-directory: packages/ent_flutter

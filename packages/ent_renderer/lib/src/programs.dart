@@ -3,7 +3,7 @@
 
 import 'dart:typed_data';
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 
 import 'host_buffers.dart';
 import 'lights.dart';
@@ -225,8 +225,8 @@ class UniformBlock {
 /// declares but never reads breaks the binding of the others (shaders/offset.glsl), so the shaders read every block
 /// they declare.
 class ProgramVariant {
-  ProgramVariant(this.vertex, this.fragment, gpu.VertexLayout layout, this._samplers)
-    : pipeline = gpu.gpuContext.createRenderPipeline(vertex, fragment, vertexLayout: layout),
+  ProgramVariant(gpu.GpuContext context, this.vertex, this.fragment, gpu.VertexLayout layout, this._samplers)
+    : pipeline = context.createRenderPipeline(vertex, fragment, vertexLayout: layout),
       vertInfo = UniformBlock(vertex, 'VertInfo'),
       fragInfo = UniformBlock(fragment, 'FragInfo'),
       mapInfo = UniformBlock(fragment, 'MapInfo'),
@@ -447,8 +447,17 @@ gpu.Shader shaderOf(gpu.ShaderLibrary library, String name) =>
 /// is never read, and binding a texture to a removed sampler is accepted by Flutter GPU but crashes the process
 /// when the pass is encoded (Flutter 3.47.6), so only these are bound; the list must match the shader.
 class Program {
-  Program(this._library, this.name, this._vertexName, this.fragment, this.samplers, [this.slots = meshSlots])
-    : _vertex = shaderOf(_library, _vertexName);
+  Program(
+    this._context,
+    this._library,
+    this.name,
+    this._vertexName,
+    this.fragment,
+    this.samplers, [
+    this.slots = meshSlots,
+  ]) : _vertex = shaderOf(_library, _vertexName);
+
+  final gpu.GpuContext _context;
 
   final gpu.ShaderLibrary _library;
 
@@ -479,7 +488,7 @@ class Program {
 
   /// This program's vertex stage with the fragment stage [fragment] reading [samplers]: a variant of this kind.
   Program withFragment(String fragment, Set<String> samplers) =>
-      Program(_library, name, _vertexName, fragment, samplers, slots);
+      Program(_context, _library, name, _vertexName, fragment, samplers, slots);
 
   /// The program of a BatchedMesh: the same fragment stage over the batching vertex stage (`MeshBatchVertex`),
   /// or `null` where [skinned] is.
@@ -488,7 +497,7 @@ class Program {
       return null;
     }
 
-    return _batched ??= Program(_library, name, 'MeshBatchVertex', fragment, samplers);
+    return _batched ??= Program(_context, _library, name, 'MeshBatchVertex', fragment, samplers);
   }
 
   /// The program of an InstancedMesh: the same fragment stage over the instancing vertex stage and
@@ -498,7 +507,7 @@ class Program {
       return null;
     }
 
-    return _instanced ??= Program(_library, name, 'MeshInstanceVertex', fragment, samplers, instanceSlots);
+    return _instanced ??= Program(_context, _library, name, 'MeshInstanceVertex', fragment, samplers, instanceSlots);
   }
 
   /// The program of an InstancedMesh whose geometry has morph attributes (`MeshInstanceMorphVertex`), or `null`
@@ -508,7 +517,15 @@ class Program {
       return null;
     }
 
-    return _instancedMorphed ??= Program(_library, name, 'MeshInstanceMorphVertex', fragment, samplers, instanceSlots);
+    return _instancedMorphed ??= Program(
+      _context,
+      _library,
+      name,
+      'MeshInstanceMorphVertex',
+      fragment,
+      samplers,
+      instanceSlots,
+    );
   }
 
   /// The program of an InstancedMesh with morph attributes and a `morphTexture` (setMorphAt's per-instance
@@ -519,6 +536,7 @@ class Program {
     }
 
     return _instancedMorphTexture ??= Program(
+      _context,
       _library,
       name,
       'MeshInstanceMorphTextureVertex',
@@ -535,7 +553,7 @@ class Program {
       return null;
     }
 
-    return _morphed ??= Program(_library, name, 'MeshMorphVertex', fragment, samplers);
+    return _morphed ??= Program(_context, _library, name, 'MeshMorphVertex', fragment, samplers);
   }
 
   /// The program of a SkinnedMesh: the same fragment stage over the skinning vertex stage and [skinSlots], or
@@ -545,7 +563,7 @@ class Program {
       return null;
     }
 
-    return _skinned ??= Program(_library, name, 'MeshSkinVertex', fragment, samplers, skinSlots);
+    return _skinned ??= Program(_context, _library, name, 'MeshSkinVertex', fragment, samplers, skinSlots);
   }
 
   /// The program of a SkinnedMesh whose geometry has morph attributes: both vertex stages' features in one
@@ -555,7 +573,7 @@ class Program {
       return null;
     }
 
-    return _skinnedMorphed ??= Program(_library, name, 'MeshSkinMorphVertex', fragment, samplers, skinSlots);
+    return _skinnedMorphed ??= Program(_context, _library, name, 'MeshSkinMorphVertex', fragment, samplers, skinSlots);
   }
 
   final List<VertexSlot> slots;
@@ -582,6 +600,7 @@ class Program {
   ProgramVariant variant({required bool offset}) {
     if (offset && fragment.endsWith('Fragment')) {
       return _offset ??= ProgramVariant(
+        _context,
         _vertex,
         shaderOf(_library, fragment.replaceFirst('Fragment', 'OffsetFragment')),
         _layout,
@@ -589,7 +608,7 @@ class Program {
       );
     }
 
-    return _plain ??= ProgramVariant(_vertex, shaderOf(_library, fragment), _layout, samplers);
+    return _plain ??= ProgramVariant(_context, _vertex, shaderOf(_library, fragment), _layout, samplers);
   }
 
   static gpu.VertexFormat _format(int size) {

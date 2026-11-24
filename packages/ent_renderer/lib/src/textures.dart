@@ -8,10 +8,10 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 import 'package:ent/ent.dart';
 
-import '../flutter_platform.dart';
+import 'flutter_platform.dart';
 
 /// RGBA texels of one level: [bytes] (8-bit) or [floats], rows in upload order (row 0 is t = 0). Floats of
 /// HalfFloatType data are uploaded as half floats ([half]), as WebGL keeps them (RGBA16F), and so are those of a
@@ -93,6 +93,10 @@ bool topDown(Texture texture) {
 
 /// The textures a renderer holds; [count] is reported as `renderer.info.memory.textures`.
 class GpuTextures {
+  GpuTextures(this._context);
+
+  final gpu.GpuContext _context;
+
   final Map<Texture, _Entry> _entries = {};
 
   final Map<RenderTarget, GpuTarget> _targets = {};
@@ -150,10 +154,9 @@ class GpuTextures {
     }
 
     final texture = target.texture;
-    final context = gpu.gpuContext;
     final cube = target is WebGLCubeRenderTarget;
     final depth = target.depthTexture is DepthTexture && !cube && target.depth == 1;
-    final samples = target.samples > 0 && !cube && !depth && target.depth == 1 && context.doesSupportOffscreenMSAA
+    final samples = target.samples > 0 && !cube && !depth && target.depth == 1 && _context.doesSupportOffscreenMSAA
         ? 4
         : 1;
 
@@ -192,10 +195,14 @@ class GpuTextures {
     target.addEventListener('dispose', listener);
 
     // A cube target's mip chain is filled after its last face, as the reference renderer does.
-    final levels = cube && _mipmapped(texture) ? gpu.Texture.fullMipCount(target.width, target.height) : 1;
+    var levels = 1;
+
+    if (cube && _mipmapped(texture)) {
+      levels = _context.maxMipLevelCount(target.width, target.height);
+    }
 
     return _targets[target] = GpuTarget(
-      context.createTexture(
+      _context.createTexture(
         gpu.StorageMode.devicePrivate,
         target.width,
         target.height,
@@ -203,18 +210,18 @@ class GpuTextures {
         textureType: cube ? gpu.TextureType.textureCube : gpu.TextureType.texture2D,
         mipLevelCount: levels,
       ),
-      context.createTexture(
+      _context.createTexture(
         gpu.StorageMode.devicePrivate,
         target.width,
         target.height,
-        format: context.defaultDepthStencilFormat,
+        format: _context.defaultDepthStencilFormat,
         sampleCount: samples,
         enableShaderReadUsage: depth && readsDepth,
       ),
       listener,
       levels: levels,
       depths: depth
-          ? context.createTexture(
+          ? _context.createTexture(
               gpu.StorageMode.devicePrivate,
               target.width,
               target.height,
@@ -222,17 +229,17 @@ class GpuTextures {
             )
           : null,
       replay: depth && !readsDepth
-          ? context.createTexture(
+          ? _context.createTexture(
               gpu.StorageMode.devicePrivate,
               target.width,
               target.height,
-              format: context.defaultDepthStencilFormat,
+              format: _context.defaultDepthStencilFormat,
               enableShaderReadUsage: false,
             )
           : null,
       samples: samples == 1
           ? null
-          : context.createTexture(
+          : _context.createTexture(
               gpu.StorageMode.devicePrivate,
               target.width,
               target.height,
@@ -304,12 +311,14 @@ class GpuTextures {
       return cached?.texture ?? fallback;
     }
 
-    final uploaded = _create(levels.first, _srgb(texture), levels.length);
+    final (given, count) = levels;
+    final uploaded = _create(given.first, _srgb(texture), count);
 
-    for (var i = 0; i < levels.length; i++) {
-      uploaded.overwrite(levels[i].data, mipLevel: i);
+    for (var i = 0; i < given.length; i++) {
+      uploaded.overwrite(given[i].data, mipLevel: i);
     }
 
+    _fill(uploaded, [given], count, _srgb(texture));
     return _keep(texture, cached, mipmapped, uploaded);
   }
 
@@ -335,9 +344,10 @@ class GpuTextures {
     }
 
     final faces = <List<_Texels>>[];
+    final counts = <int>[];
 
     for (final face in images) {
-      final image = face is DataTexture ? face.image : face;
+      final Object? image = face is DataTexture ? face.image : face;
 
       if (image == null || (image is FlutterImage && !image.complete)) {
         return null;
@@ -349,18 +359,20 @@ class GpuTextures {
         return null;
       }
 
-      faces.add(levels);
+      faces.add(levels.$1);
+      counts.add(levels.$2);
     }
 
-    final count = faces.map((levels) => levels.length).reduce(math.min);
+    final count = counts.reduce(math.min);
     final uploaded = _create(faces.first.first, _srgb(texture), count, cube: true);
 
     for (var face = 0; face < 6; face++) {
-      for (var i = 0; i < count; i++) {
+      for (var i = 0; i < math.min(count, faces[face].length); i++) {
         uploaded.overwrite(faces[face][i].data, mipLevel: i, slice: face);
       }
     }
 
+    _fill(uploaded, faces, count, _srgb(texture));
     return _keep(texture, cached, mipmapped, uploaded);
   }
 
@@ -383,7 +395,7 @@ class GpuTextures {
             mag == gpu.MinMagFilter.linear &&
             min == gpu.MinMagFilter.linear &&
             mip == gpu.MipFilter.linear
-        ? math.min(texture.anisotropy.floor(), gpu.gpuContext.maxSamplerAnisotropy)
+        ? math.min(texture.anisotropy.floor(), _context.maxSamplerAnisotropy)
         : 1;
 
     return gpu.SamplerOptions(
@@ -442,8 +454,8 @@ class GpuTextures {
         ColorManagement.getTransfer(texture.colorSpace) == SRGBTransfer;
   }
 
-  static gpu.Texture _create(_Texels base, bool srgb, int levels, {bool cube = false}) {
-    return gpu.gpuContext.createTexture(
+  gpu.Texture _create(_Texels base, bool srgb, int levels, {bool cube = false}) {
+    return _context.createTexture(
       gpu.StorageMode.devicePrivate,
       base.width,
       base.height,
@@ -458,8 +470,10 @@ class GpuTextures {
     );
   }
 
-  /// The levels to upload, or `null` (with a warning) for an image this renderer cannot read.
-  List<_Texels>? _levels(Texture texture, Object image) {
+  /// The levels to upload and how many the texture has, or `null` (with a warning) for an image this renderer cannot
+  /// read: every level of [Texture.mipmaps] when set; else the base, and for a mipmapped texture the count WebGL's
+  /// getMipLevels gives, whose levels below the base [_fill] writes.
+  (List<_Texels>, int)? _levels(Texture texture, Object image) {
     final user = texture.mipmaps;
 
     if (user.isNotEmpty) {
@@ -477,10 +491,10 @@ class GpuTextures {
 
       // texture.mipmaps sets the level count; without a mipmap filter only the base level is read.
       final count = _mipmapped(texture)
-          ? math.min(levels.length, gpu.Texture.fullMipCount(levels.first.width, levels.first.height))
+          ? math.min(levels.length, _context.maxMipLevelCount(levels.first.width, levels.first.height))
           : 1;
 
-      return levels.sublist(0, count);
+      return (levels.sublist(0, count), count);
     }
 
     final base = _texels(texture, image);
@@ -490,23 +504,31 @@ class GpuTextures {
     }
 
     if (!_mipmapped(texture)) {
-      return [base];
+      return ([base], 1);
     }
 
-    // getMipLevels: log2(max(width, height)) + 1, capped by what Flutter GPU allocates (it stops one level
-    // short of 1×1 and counts from the smaller side; flutter/flutter#186176).
-    final count = math.min(
-      math.max(base.width, base.height).bitLength,
-      gpu.Texture.fullMipCount(base.width, base.height),
+    // getMipLevels: log2(max(width, height)) + 1, capped by what the GPU interface allocates (Flutter GPU stops one
+    // level short of 1×1 and counts from the smaller side; flutter/flutter#186176).
+    return (
+      [base],
+      math.min(math.max(base.width, base.height).bitLength, _context.maxMipLevelCount(base.width, base.height)),
     );
-    final levels = [base];
-    final srgb = _srgb(texture);
+  }
 
-    while (levels.length < count) {
-      levels.add(_halve(levels.last, srgb));
+  /// Writes the levels of [texture] below those of [faces] (one list of levels per slice) up to [count]: on the GPU
+  /// as the reference's generateMipmap does where the GPU interface can, else here, each texel the average of a 2 × 2
+  /// block of the level above (in linear light for an sRGB texture, [srgb]; exception E-MIPFILTER).
+  void _fill(gpu.Texture texture, List<List<_Texels>> faces, int count, bool srgb) {
+    if (faces.every((levels) => levels.length >= count) || texture.generateMipmaps()) {
+      return;
     }
 
-    return levels;
+    for (final (slice, levels) in faces.indexed) {
+      for (var level = levels.last, i = levels.length; i < count; i++) {
+        level = _halve(level, srgb);
+        texture.overwrite(level.data, mipLevel: i, slice: slice);
+      }
+    }
   }
 
   /// The RGBA texels of [image] as WebGL uploads it: [DataImage] data of the texture's format and type, or a

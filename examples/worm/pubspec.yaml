@@ -20,6 +20,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  ent_renderer: ^0.1.0-dev.1
   vm_service: any
 
 flutter:

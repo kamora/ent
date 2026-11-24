@@ -2,7 +2,7 @@
 // on Vulkan through SwiftShader) and examples/worm/integration_test/parity_metal_test.dart (a macOS app on Metal):
 // every scene in fixtures/rendering/reference was drawn by the reference renderer in headless Chrome
 // (tool/reference/render/render.mjs, metadata in meta.json). Each test loads the scene's JSON with ObjectLoader, draws
-// it with FlutterGpuRenderer and compares the frames.
+// it with a renderer (FlutterGpuRenderer unless [declare] is given another) and compares the frames.
 
 import 'dart:convert';
 import 'dart:io';
@@ -12,9 +12,25 @@ import 'dart:ui' as ui;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ent_flutter/ent_flutter.dart';
+import 'package:ent_renderer/ent_renderer.dart' show FlutterImage, FlutterImagePlatform, GpuRenderer;
+import 'package:ent_renderer/gpu.dart' as gpu;
 
 /// Reads a repository file by its path from the repository root, such as `fixtures/rendering/reference/aa_basic.json`.
 typedef Read = Future<Uint8List> Function(String path);
+
+/// Creates the renderer a scene is drawn with.
+typedef Create = Future<GpuRenderer> Function({bool antialias});
+
+/// The default [Create]: a renderer on Flutter GPU.
+Future<GpuRenderer> flutterGpu({bool antialias = false}) => FlutterGpuRenderer.create(antialias: antialias);
+
+// Saves [texture]'s pixels to [failures] as `<frame>.png`.
+Future<void> save(Directory failures, String frame, gpu.Texture texture) async {
+  final image = FlutterImage.fromPixels(texture.width, texture.height, (await texture.read()).buffer.asUint8List());
+  File('${failures.path}/$frame.png')
+    ..createSync(recursive: true)
+    ..writeAsBytesSync(UriData.parse(FlutterImagePlatform().getDataURL(image, 'image/png')).contentAsBytes());
+}
 
 // Per channel, out of 255: both sides run on the same GPU, but shader arithmetic may round differently.
 const int tolerance = 2;
@@ -147,6 +163,8 @@ const Map<String, ({int wrong, int worst})> ios = {
 // 0.4988, ours 0.5047), and with LinearFilter on both sides the frames are equal. khronos_clearcoat: 19 on the
 // normal-mapped rows, worst 14; they match with every map on LinearFilter, but whether our levels or the GPU's choice
 // of level makes the gap is not separated.
+// They apply only to a renderer that builds mip levels on the CPU (Flutter GPU, which cannot generate them);
+// OpenGlRenderer generates them on the GPU as the reference does, and its parity runs set mipmapAllowances: false.
 const Map<String, ({int wrong, int worst})> mipmaps = {
   'khronos_normal_tangent_mirror': (wrong: 202, worst: 18),
   'khronos_alpha_blend_mode': (wrong: 8, worst: 89),
@@ -156,9 +174,16 @@ const Map<String, ({int wrong, int worst})> mipmaps = {
 
 // Compares [image] with the reference `<frame>.png` and fails on a wrong pixel (beyond [ties]) or too many edge
 // pixels; a failing frame is saved to [failures] when given.
-Future<void> compare(String frame, ui.Image image, Map<String, Object?> data, Read read, Directory? failures) async {
+Future<void> compare(
+  String frame,
+  gpu.Texture image,
+  Map<String, Object?> data,
+  Read read,
+  Directory? failures, {
+  bool mipmapAllowances = true,
+}) async {
   final size = image.width;
-  final actual = await rgba(image);
+  final actual = await image.read();
   final expected = png(await read('fixtures/rendering/reference/$frame.png'), size);
   expect([image.width, image.height], [data['size'], data['size']]);
 
@@ -195,13 +220,14 @@ Future<void> compare(String frame, ui.Image image, Map<String, Object?> data, Re
   // ignore: avoid_print
   print('$frame: $wrong wrong pixels (worst channel difference $worst), $edges edge pixels');
 
-  final tie = (Platform.isIOS ? ios[frame] : null) ?? ties[frame] ?? mipmaps[frame] ?? (wrong: 0, worst: 255);
+  final tie =
+      (Platform.isIOS ? ios[frame] : null) ??
+      ties[frame] ??
+      (mipmapAllowances ? mipmaps[frame] : null) ??
+      (wrong: 0, worst: 255);
 
   if (failures != null && (wrong > tie.wrong || worst > tie.worst || share > maxEdgeShare || edges > cap)) {
-    final png = (await image.toByteData(format: ui.ImageByteFormat.png))!;
-    File('${failures.path}/$frame.png')
-      ..createSync(recursive: true)
-      ..writeAsBytesSync(png.buffer.asUint8List());
+    await save(failures, frame, image);
   }
 
   expect(
@@ -247,10 +273,16 @@ int difference(ByteData a, ByteData b, int i) {
 
 // Compares the antialiased [image] with the reference `<frame>.png` by the rule of [antialiased], [plain] being the
 // same scene drawn without antialias; a failing frame is saved to [failures] when given.
-Future<void> compareAntialiased(String frame, ui.Image image, ui.Image plain, Read read, Directory? failures) async {
+Future<void> compareAntialiased(
+  String frame,
+  gpu.Texture image,
+  gpu.Texture plain,
+  Read read,
+  Directory? failures,
+) async {
   final size = image.width;
-  final actual = await rgba(image);
-  final flat = await rgba(plain);
+  final actual = await image.read();
+  final flat = await plain.read();
   final expected = png(await read('fixtures/rendering/reference/$frame.png'), size);
   final rule = antialiased[frame]!;
 
@@ -313,10 +345,7 @@ Future<void> compareAntialiased(String frame, ui.Image image, ui.Image plain, Re
   );
 
   if (failures != null && (wrong > 0 || share > maxEdgeShare || edges > rule.edges || blended < rule.blended)) {
-    final png = (await image.toByteData(format: ui.ImageByteFormat.png))!;
-    File('${failures.path}/$frame.png')
-      ..createSync(recursive: true)
-      ..writeAsBytesSync(png.buffer.asUint8List());
+    await save(failures, frame, image);
   }
 
   expect(wrong, 0, reason: '$frame: pixels differing by more than the antialias rule allows');
@@ -334,6 +363,8 @@ void declare(
   Map<String, String> skip = const {},
   Map<String, String> measure = const {},
   Directory? failures,
+  Create create = flutterGpu,
+  bool mipmapAllowances = true,
 }) {
   setUpAll(FlutterPlatform.install);
 
@@ -386,7 +417,7 @@ void declare(
         final shadows = (options['shadowMap'] as Map?) ?? {};
 
         // The reference renderer's properties the scene set; the rest keep their defaults.
-        FlutterGpuRenderer configured(FlutterGpuRenderer renderer) => renderer
+        GpuRenderer configured(GpuRenderer renderer) => renderer
           ..setSize(size, size)
           ..setClearColor(clear[0] as int, (clear[1] as num).toDouble())
           ..toneMapping = (options['toneMapping'] as int?) ?? NoToneMapping
@@ -401,7 +432,7 @@ void declare(
 
         // A renderer per scene: a test that timed out keeps running, and must not reconfigure the next one's.
         final antialias = data['antialias'] == true;
-        final renderer = configured(await FlutterGpuRenderer.create(antialias: antialias));
+        final renderer = configured(await create(antialias: antialias));
         addTearDown(renderer.dispose);
 
         // Per-instance morph influences (scenes.mjs `instanced`'s `morphs`): toJSON drops InstancedMesh.morphTexture.
@@ -422,7 +453,7 @@ void declare(
         // `userData.renderTarget`, its `depthTexture` that of the materials marked `userData.depthTexture`, as
         // page.html sets them. [plain] drops the target's samples (the frame without MSAA
         // of the `antialiased` rule).
-        Future<void> pass(FlutterGpuRenderer renderer, {bool plain = false}) async {
+        Future<void> pass(GpuRenderer renderer, {bool plain = false}) async {
           if (data['target'] case final Map pass) {
             final options = {...(pass['options'] as Map).cast<String, Object?>(), if (plain) 'samples': 0};
             final [width, height] = (pass['size'] as List).cast<int>();
@@ -521,14 +552,21 @@ void declare(
 
           for (final time in (animate['times'] as List).cast<num>()) {
             mixer.setTime(time.toDouble());
-            await compare('$name@$time', renderer.render(scene, camera), data, read, failures);
+            await compare(
+              '$name@$time',
+              renderer.draw(scene, camera),
+              data,
+              read,
+              failures,
+              mipmapAllowances: mipmapAllowances,
+            );
           }
         } else if (data['composer'] case final Map composer) {
           // An EffectComposer frame (scenes.mjs `composer`): a RenderPass, an FXAAPass with `fxaa`, a VignettePass with
           // the `vignette` values, a CopyPass with the `copy` opacity and a TuningPass with the `bloom` settings when
           // given, and an OutputPass; the last pass draws the frame. With `samples` its targets
           // are HalfFloatType targets of the frame's size with them ([plain]: without).
-          ui.Image draw(FlutterGpuRenderer renderer, {bool plain = false}) {
+          gpu.Texture draw(GpuRenderer renderer, {bool plain = false}) {
             final samples = plain ? 0 : (composer['samples'] as int?) ?? 0;
             final effects = samples == 0
                 ? EffectComposer(renderer)
@@ -574,15 +612,15 @@ void declare(
               ..render(0);
             addTearDown(effects.dispose);
 
-            return renderer.texture!.asImage();
+            return renderer.frame!;
           }
 
           if (antialiased.containsKey(name)) {
-            final plain = configured(await FlutterGpuRenderer.create());
+            final plain = configured(await create());
             addTearDown(plain.dispose);
             await compareAntialiased(name, draw(renderer), draw(plain, plain: true), read, failures);
           } else {
-            await compare(name, draw(renderer), data, read, failures);
+            await compare(name, draw(renderer), data, read, failures, mipmapAllowances: mipmapAllowances);
           }
         } else if (data['views'] case final Map views) {
           // A frame drawn in views (scenes.mjs `views`), as page.html draws it: per view the viewport, the scissor
@@ -594,7 +632,7 @@ void declare(
             ObjectLoader().parse((overlay['camera'] as Map).cast<String, Object?>()) as Camera,
           );
           renderer.autoClear = views['autoClear'] as bool;
-          late ui.Image image;
+          late gpu.Texture image;
 
           for (final step in (views['list'] as List).cast<Map>()) {
             final [x, y, w, h] = [for (final v in (step['scissor'] ?? step['viewport']) as List) (v as num).toDouble()];
@@ -615,10 +653,10 @@ void declare(
                 renderer.clearDepth();
             }
 
-            image = step['overlay'] == true ? renderer.render(other, view) : renderer.render(scene, camera);
+            image = step['overlay'] == true ? renderer.draw(other, view) : renderer.draw(scene, camera);
           }
 
-          await compare(name, image, data, read, failures);
+          await compare(name, image, data, read, failures, mipmapAllowances: mipmapAllowances);
         } else if (data['overlay'] case final Map overlay) {
           // An overlay drawn into the same frame (scenes.mjs `overlay`), as page.html draws it: autoClear off, clear,
           // the scene, clearDepth when `clearDepth` is set, the overlay; the last render's image shows both.
@@ -631,21 +669,21 @@ void declare(
             renderer.clearDepth();
           }
 
-          final image = renderer.render(
+          final image = renderer.draw(
             await ObjectLoader().parseAsync((overlay['scene'] as Map).cast<String, Object?>()),
             ObjectLoader().parse((overlay['camera'] as Map).cast<String, Object?>()) as Camera,
           );
-          await compare(name, image, data, read, failures);
+          await compare(name, image, data, read, failures, mipmapAllowances: mipmapAllowances);
         } else if (antialiased.containsKey(name)) {
           // The same scene without antialias (and a render target pass without samples) marks the geometric edges
           // and shows that MSAA blended them.
-          final image = renderer.render(scene, camera);
-          final plain = configured(await FlutterGpuRenderer.create());
+          final image = renderer.draw(scene, camera);
+          final plain = configured(await create());
           addTearDown(plain.dispose);
           await pass(plain, plain: true);
-          await compareAntialiased(name, image, plain.render(scene, camera), read, failures);
+          await compareAntialiased(name, image, plain.draw(scene, camera), read, failures);
         } else {
-          await compare(name, renderer.render(scene, camera), data, read, failures);
+          await compare(name, renderer.draw(scene, camera), data, read, failures, mipmapAllowances: mipmapAllowances);
         }
       } on TestFailure catch (e) {
         if (!measure.containsKey(name)) {

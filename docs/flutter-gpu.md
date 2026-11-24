@@ -160,7 +160,7 @@ shadows in both, are `float` uniforms (1 or 0) in these blocks:
 | `OutputInfo` | fragment | `fog_color`, `fog_mode` (0, 1: Fog, 2: FogExp2), `fog_near`, `fog_far`, `fog_density`, `opaque`, `premultiplied_alpha`, `tone_mapping` (the constant), `tone_mapping_exposure`, `output_srgb` |
 | `OffsetInfo` | fragment | `polygon_offset` (factor, units); declared only in variants with `polygon_offset` |
 
-The light uniforms are WebGLLights.setup and setupView once per frame (`lib/src/gpu/lights.dart`): lights
+The light uniforms are WebGLLights.setup and setupView once per frame (`ent_renderer/lib/src/lights.dart`): lights
 sorted shadow-casting first (`shadowCastingAndTexturingLightsFirst`), colors times intensity, ambient lights and
 light probes summed, positions and directions in view space, `coneCos = cos(angle)`, `penumbraCos =
 cos(angle × (1 − penumbra))`. The shaders hold at most 4 directional, 8 point, 4 spot, 2 hemisphere and 2 rect area
@@ -311,7 +311,7 @@ material, transparent `DoubleSide` materials in two passes (back faces, then fro
   E-PLATFORM): `FlutterImage` decodes data URLs, http(s) and asset keys into straight RGBA, so textures loaded by
   `ObjectLoader` (the reference serializes a CanvasTexture or image as a PNG data URL and a DataTexture as its data
   array; `texture.mipmaps` are not serialized by the reference) render after `parseAsync`. PNGs are decoded in Dart
-  (`lib/src/png.dart`, on another isolate) to the straight values a browser hands WebGL; other formats go through
+  (`ent_renderer/lib/src/png.dart`, on another isolate) to the straight values a browser hands WebGL; other formats go through
   dart:ui, which premultiplies, so a translucent WebP or AVIF texel's color may move by up to 255 / alpha steps and
   a transparent one loses it (E-DECODE). The PNG decoder matches headless Chrome byte for byte on 55 fixtures
   (`node tool/png_fixtures.mjs --chrome`; `test/png_test.dart`): every color type and bit depth, tRNS, the five
@@ -325,7 +325,7 @@ material, transparent `DoubleSide` materials in two passes (back faces, then fro
 color, opacity, `roughness`, `metalness` and their maps (channels G and B), emissive, and every map of the basic
 kinds (normal, bump, displacement, ao with specular occlusion, light, alpha, map), `vertexColors`, `flatShading`
 (also WebGLPrograms' rule: no normal attribute and no normal map), fog and the output path; direct light through
-the GGX BRDF with the DFG LUT (`lib/src/gpu/dfg.dart`, the reference's 16 × 16 RG16F table) and multiple-scattering
+the GGX BRDF with the DFG LUT (`ent_renderer/lib/src/dfg.dart`, the reference's 16 × 16 RG16F table) and multiple-scattering
 compensation, indirect light through the split-sum model. Physical: `ior`, `specularIntensity` and `specularColor`
 (+ maps), `clearcoat`, `clearcoatRoughness`, `clearcoatNormalScale` (+ the three maps), `sheen`, `sheenColor`,
 `sheenRoughness` (+ maps), `iridescence`, `iridescenceIOR`, thickness range (+ maps), `anisotropy`,
@@ -342,7 +342,7 @@ the GPU's coarse derivatives.
 ### Environments and backgrounds
 
 - **Environment maps**, resolved as WebGLRenderer.setProgram and WebGLEnvironments do
-  (`lib/src/gpu/environments.dart`): `scene.environment` for Standard, Physical, Lambert and Phong, with
+  (`ent_renderer/lib/src/environments.dart`): `scene.environment` for Standard, Physical, Lambert and Phong, with
   `environmentIntensity` and `environmentRotation`; `material.envMap` with `envMapIntensity` and
   `envMapRotation`. Standard and Physical always read a PMREM (also of their own envMap), Lambert and Phong a
   PMREM of the scene's environment (irradiance only) or their own envMap as a cube map; MeshBasicMaterial its
@@ -355,7 +355,7 @@ the GPU's coarse derivatives.
   (cube maps with flipEnvMap, equirectangular maps with four subsamples) and its mip levels, then the levels of a
   HalfFloatType cube target, the sharp ones by GGX importance sampling (256 samples, the source level matched to
   each sample's solid angle), the three roughest by integrating the 16 × 16 source level; `roughnessToMip` reads
-  them back. Cube faces and mip levels are drawn by `GpuPasses` (`lib/src/gpu/passes.dart`): a fragment pass over
+  them back. Cube faces and mip levels are drawn by `GpuPasses` (`ent_renderer/lib/src/passes.dart`): a fragment pass over
   one level of one face of a target, a triangle covering it, uniform blocks and textures by name, one command buffer
   per pass (submitted in order before the frame's); `shaders/face.glsl` gives the direction through a cube texel
   from the face and the window position (the GL cube map table), which is what the reference's 5 × 5 × 5 box under a
@@ -402,7 +402,7 @@ and Toon ignore rect area lights (the reference defines `RE_Direct_RectArea` onl
   `shadow.autoUpdate`/`needsUpdate`; `mapSize` (the map is recreated when it changes). Skinned, morphed, instanced
   and batched casters use the depth program's matching variant. Shadow draws count in `info.render`, as the reference
   (reset before the shadow pass).
-- The map (`lib/src/gpu/shadows.dart`, exception E-SHADOWMAP) is an `r32Float` color target cleared to 1, with a
+- The map (`ent_renderer/lib/src/shadows.dart`, exception E-SHADOWMAP) is an `r32Float` color target cleared to 1, with a
   transient depth buffer; MeshDepthMaterial with packing 0 writes `gl_FragCoord.z` (`shaders/depth.glsl`). The
   receivers (Lambert, Phong, Toon, Standard, Physical, ShadowMaterial; MeshBasicMaterial receives nothing in the
   reference either) apply shadowmap_vertex and getShadow in `shaders/lights.glsl`: the shadow coordinate from the
@@ -616,7 +616,7 @@ and Toon ignore rect area lights (the reference defines `RE_Direct_RectArea` onl
 subclass the reference has); `null` returns to the frame, and `getRenderTarget()` reads it back. Internal targets
 (transmission, PMREM, shadow maps) are described with their features.
 
-- Storage: `GpuTextures.target` (`lib/src/gpu/textures.dart`) creates a color texture (8-bit RGBA, SRGB8_ALPHA8 for
+- Storage: `GpuTextures.target` (`ent_renderer/lib/src/textures.dart`) creates a color texture (8-bit RGBA, SRGB8_ALPHA8 for
   an sRGB texture, RGBA16F for HalfFloatType, RGBA32F for FloatType) and a depth buffer on first use and drops
   both on the target's `dispose` event, which `RenderTarget.setSize` also fires (the next render recreates them at
   the new size). They count in `renderer.info.memory.textures`.
@@ -731,7 +731,7 @@ awaiting (a CubeCamera's faces, render targets, `compile`) draw with the uniform
 frame (16 unawaited renders into 16 targets each showed the color of the last). It also appends a block on every
 overflow and never reuses it.
 
-The renderer and `GpuPasses` use `HostBuffers` (`lib/src/gpu/host_buffers.dart`) instead: a bump allocator over
+The renderer and `GpuPasses` use `HostBuffers` (`ent_renderer/lib/src/host_buffers.dart`) instead: a bump allocator over
 pooled 64 KB host-visible blocks (larger data gets a buffer of its own), one frame per `render` (per batch of
 passes; `HostBuffers.frame`, bumped by `next()`). Every command buffer that reads a frame is submitted through it
 and counted; the frame's blocks return to the pool when the frame has ended and its last command buffer has
@@ -1052,7 +1052,7 @@ ent ports the reference's `EffectComposer`, `RenderPass`, `OutputPass`, `FXAAPas
 `EffectComposerRenderer`. Each effect is an `EffectMaterial` with typed settings and no shader code, and its shader is
 the renderer's (exception E-POSTPROCESSING):
 
-- `lib/src/gpu/effects.dart` registers an `Effect` per material class: `CopyMaterial`, `OutputMaterial`,
+- `ent_renderer/lib/src/effects.dart` registers an `Effect` per material class: `CopyMaterial`, `OutputMaterial`,
   `VignetteMaterial`, `FXAAMaterial` and the bloom's `HighPassMaterial`, `BlurMaterial` and `BloomMaterial`
   (below). Each draws with `EffectVertex` (`shaders/effect.vert`: `vUv` and the projected position) and its
   fragment stage (`copy.frag`, `output_pass.frag`, `vignette.frag`, `fxaa.frag`, the bloom's three). The
@@ -1327,7 +1327,7 @@ iPhone 11: iOS 16.3.1, A13, profile build. M1: macOS, profile build, a 60 Hz dis
   measured with the current `render`; from the table (a guess) `meshes` holds near 500 and `shadowed` drops there.
   `instanced` holds 60 Hz up to 2000.
 
-How the uniform path works (`gpu/programs.dart`):
+How the uniform path works (`ent_renderer/lib/src/programs.dart`):
 
 - `UniformBlock` keeps one `ByteData` per block (`begin()` zeroes it) and writes through a `Float32List` view of it
   (member offsets are float-aligned; arm64 and x64 are little-endian like the GPU): `floats` with an indexed loop

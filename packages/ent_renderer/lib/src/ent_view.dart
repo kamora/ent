@@ -1,12 +1,27 @@
-// A widget that sizes a FlutterGpuRenderer to its layout and shows a frame per tick.
+// A widget that sizes a renderer to its layout and shows a frame per tick, through the renderer's FrameDisplay.
 
-import 'dart:ui' as ui;
+import 'dart:async';
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ent/ent.dart';
 
-import 'flutter_gpu_renderer.dart';
+import '../gpu.dart' as gpu;
+import 'gpu_renderer.dart';
+
+/// How a renderer package shows the frames of its renderer in a widget tree ([GpuRenderer.createDisplay]).
+abstract class FrameDisplay {
+  /// Shows [frame], a texture the renderer drew. A display that shows it later returns a future; the view draws no
+  /// other frame until it completes.
+  FutureOr<void> show(gpu.Texture frame);
+
+  /// The last frame shown, at one frame pixel per physical pixel from the top left of a box of [width] × [height]
+  /// logical pixels at [pixelRatio].
+  Widget build(double width, double height, double pixelRatio);
+
+  /// Releases what the display holds.
+  void dispose();
+}
 
 /// Called before each frame with the time since the view started, to animate the scene. As with a Flutter
 /// [Ticker], the time keeps running while the view is paused, so a scene driven by it jumps ahead on resume.
@@ -47,7 +62,7 @@ class EntView extends StatefulWidget {
   });
 
   /// The renderer that draws the frames; the app owns and disposes it.
-  final FlutterGpuRenderer renderer;
+  final GpuRenderer renderer;
 
   /// The scene drawn.
   final Object3D scene;
@@ -86,13 +101,17 @@ class EntView extends StatefulWidget {
 class _EntViewState extends State<EntView> with SingleTickerProviderStateMixin {
   late final Ticker _ticker;
 
-  ui.Image? _image;
+  late FrameDisplay _display;
+
+  // Whether the display is still showing the last frame.
+  bool _showing = false;
 
   Size _size = Size.zero;
 
   @override
   void initState() {
     super.initState();
+    _display = widget.renderer.createDisplay();
     _ticker = createTicker(_tick)..start();
   }
 
@@ -100,34 +119,51 @@ class _EntViewState extends State<EntView> with SingleTickerProviderStateMixin {
   void didUpdateWidget(EntView old) {
     super.didUpdateWidget(old);
 
-    // A new renderer, camera or composer is sized on the next layout.
+    // A new renderer, camera or composer is sized on the next layout; a new renderer brings its own display.
     if (widget.renderer != old.renderer || widget.camera != old.camera || widget.composer != old.composer) {
       _size = Size.zero;
+    }
+
+    if (widget.renderer != old.renderer) {
+      _display.dispose();
+      _display = widget.renderer.createDisplay();
     }
   }
 
   void _tick(Duration elapsed) {
-    if (_size.isEmpty || !SchedulerBinding.instance.framesEnabled) {
+    if (_size.isEmpty || _showing || !SchedulerBinding.instance.framesEnabled) {
       return;
     }
 
     widget.onFrame?.call(elapsed);
-    setState(() {
-      _image?.dispose();
-      _image = _render();
+    final display = _display;
+    final shown = display.show(_render());
+
+    if (shown is! Future<void>) {
+      setState(() {});
+      return;
+    }
+
+    _showing = true;
+    shown.whenComplete(() {
+      _showing = false;
+
+      if (mounted && display == _display) {
+        setState(() {});
+      }
     });
   }
 
   // The frame: the composer's, whose last pass draws into the renderer's frame texture, or a plain render.
-  ui.Image _render() {
+  gpu.Texture _render() {
     final composer = widget.composer;
 
     if (composer == null) {
-      return widget.renderer.render(widget.scene, widget.camera);
+      return widget.renderer.draw(widget.scene, widget.camera);
     }
 
     composer.render();
-    return widget.renderer.texture!.asImage();
+    return widget.renderer.frame!;
   }
 
   void _resize(Size size, double pixelRatio) {
@@ -158,7 +194,7 @@ class _EntViewState extends State<EntView> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _ticker.dispose();
-    _image?.dispose();
+    _display.dispose();
     super.dispose();
   }
 
@@ -186,17 +222,7 @@ class _EntViewState extends State<EntView> with SingleTickerProviderStateMixin {
       child: LayoutBuilder(
         builder: (context, constraints) {
           _resize(constraints.biggest, pixelRatio);
-
-          // The image is floor(size * pixelRatio) pixels: drawn unscaled from the top left, unfiltered.
-          return RawImage(
-            image: _image,
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
-            scale: pixelRatio,
-            fit: BoxFit.none,
-            alignment: Alignment.topLeft,
-            filterQuality: FilterQuality.none,
-          );
+          return _display.build(constraints.maxWidth, constraints.maxHeight, pixelRatio);
         },
       ),
     );

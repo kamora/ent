@@ -19,7 +19,8 @@ import 'dart:ui' as ui;
 import 'package:flutter_gpu/gpu.dart' as gpu;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ent_flutter/ent_flutter.dart';
-import 'package:ent_flutter/src/gpu/programs.dart';
+import 'package:ent_flutter/src/gpu/backend.dart';
+import 'package:ent_renderer/ent_renderer.dart' show shaderOf;
 import 'package:ent_shaders/ent_shaders.dart';
 
 const int tolerance = 2;
@@ -105,7 +106,7 @@ void main() {
   }
 
   test('a shader missing from the bundle is named, not reported as a missing bundle', () async {
-    final library = (await gpu.ShaderLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle'))!;
+    final library = (await FlutterGpuLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle'))!;
     expect(shaderOf(library, 'FaceVertex'), isNotNull);
     expect(
       () => shaderOf(library, 'NoSuchVertex'),
@@ -121,14 +122,13 @@ void main() {
     );
     final root = Directory.current.uri.resolve('.dart_tool/').resolve('${package['rootUri']}/');
     final bytes = File.fromUri(root.resolve('build/shaderbundles/ent.shaderbundle')).readAsBytesSync();
-    final vulkan = (await gpu.ShaderLibrary.fromBytes(ByteData.sublistView(strip(bytes, {'vulkan'}))))!;
-
-    // macOS keeps Metal and Vulkan: the bundle's OpenGL slots are empty, so keeping only them leaves the names. Linux
-    // (not supported in this release) keeps every backend.
-    expect(
-      strip(bytes, {'opengl_es', 'opengl_desktop'}).length,
-      Platform.isMacOS ? lessThan(64 << 10) : greaterThan(64 << 10),
+    final vulkan = FlutterGpuLibrary(
+      (await gpu.ShaderLibrary.fromBytes(ByteData.sublistView(strip(bytes, {'vulkan'}))))!,
     );
+
+    // macOS keeps Metal, Vulkan and OpenGL ES: the bundle's desktop OpenGL slots are empty, so keeping only them leaves
+    // the names. Linux (not supported in this release) keeps every backend.
+    expect(strip(bytes, {'opengl_desktop'}).length, Platform.isMacOS ? lessThan(64 << 10) : greaterThan(64 << 10));
     expect(shaderOf(vulkan, 'FaceVertex'), isNotNull);
 
     // A bundle with another GPU's backend only (iOS Metal, which the macOS build already left out) has nothing for
@@ -137,7 +137,7 @@ void main() {
   });
 
   test('the bundle holds the variants the registry lists', () async {
-    final library = (await gpu.ShaderLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle'))!;
+    final library = (await FlutterGpuLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle'))!;
     expect(shaderOf(library, 'basic'), isNotNull);
     expect(shaderOf(library, 'basic map polygon_offset'), isNotNull);
     expect(() => shaderOf(library, 'basic light_map'), throwsStateError);

@@ -15,7 +15,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:ent_example/bench.dart';
 import 'package:ent_flutter/ent_flutter.dart';
-import 'package:ent_flutter/src/render_list.dart';
+import 'package:ent_renderer/ent_renderer.dart' show RenderList;
 
 const profiling = String.fromEnvironment('BENCH') == 'profile';
 

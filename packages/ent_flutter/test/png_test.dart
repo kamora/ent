@@ -6,7 +6,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ent_flutter/src/png.dart';
+import 'package:ent_renderer/ent_renderer.dart';
 
 void main() {
   final fixtures = Directory('test/png').listSync().whereType<File>().where((f) => f.path.endsWith('.png')).toList()

@@ -8,7 +8,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 
 // One frame's blocks and its command buffers in flight.
 class _Frame {
@@ -22,11 +22,15 @@ class _Frame {
 /// A bump allocator over pooled host-visible blocks, one frame at a time: [emplace] writes the current frame's
 /// data, [submit] submits a command buffer that reads it, [next] ends the frame.
 class HostBuffers {
+  HostBuffers(this._context);
+
   /// The length of each block; larger data gets a buffer of its own, dropped after its frame.
   static const int block = 64 * 1024;
 
   // The most free blocks kept for later frames; the rest are released.
   static const int _spare = 64;
+
+  final gpu.GpuContext _context;
 
   final List<gpu.DeviceBuffer> _free = [];
 
@@ -51,13 +55,12 @@ class HostBuffers {
 
   /// Copies [bytes] into the current frame, aligned for a uniform binding, and returns the view.
   gpu.BufferView emplace(ByteData bytes) {
-    final context = gpu.gpuContext;
     final length = bytes.lengthInBytes;
-    final align = context.minimumUniformByteAlignment;
+    final align = _context.minimumUniformByteAlignment;
     var offset = (_offset + align - 1) ~/ align * align;
 
     if (length > block) {
-      final buffer = context.createDeviceBuffer(gpu.StorageMode.hostVisible, length);
+      final buffer = _context.createDeviceBuffer(gpu.StorageMode.hostVisible, length);
       _frame.blocks.add(buffer);
       _write(buffer, bytes, 0);
       return gpu.BufferView(buffer, offsetInBytes: 0, lengthInBytes: length);
@@ -65,7 +68,7 @@ class HostBuffers {
 
     if (_frame.blocks.isEmpty || _frame.blocks.last.sizeInBytes != block || offset + length > block) {
       _frame.blocks.add(
-        _free.isEmpty ? context.createDeviceBuffer(gpu.StorageMode.hostVisible, block) : _free.removeLast(),
+        _free.isEmpty ? _context.createDeviceBuffer(gpu.StorageMode.hostVisible, block) : _free.removeLast(),
       );
       offset = 0;
     }

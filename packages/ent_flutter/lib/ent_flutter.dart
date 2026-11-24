@@ -2,9 +2,8 @@
 library;
 
 export 'package:ent/ent.dart';
+export 'package:ent_renderer/ent_renderer.dart'
+    show EntFrameCallback, EntPointerCallback, EntView, FlutterImage, FlutterPlatform, ShadowMap;
 
 export 'src/flutter_gpu_renderer.dart';
-export 'src/flutter_platform.dart' show FlutterImage, FlutterPlatform;
 export 'src/orbit_controls_listener.dart';
-export 'src/gpu/shadows.dart' show ShadowMap;
-export 'src/ent_view.dart';

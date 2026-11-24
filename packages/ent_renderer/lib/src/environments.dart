@@ -5,10 +5,10 @@
 
 import 'dart:math' as math;
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 import 'package:ent/ent.dart';
 
-import '../flutter_platform.dart';
+import 'flutter_platform.dart';
 import 'passes.dart';
 import 'programs.dart';
 import 'textures.dart';
@@ -51,7 +51,9 @@ class _Cached {
 /// The cube maps and PMREMs a renderer holds, keyed by their source texture and rebuilt when its version
 /// changes.
 class GpuEnvironments {
-  GpuEnvironments(this._passes, this._textures);
+  GpuEnvironments(this._context, this._passes, this._textures);
+
+  final gpu.GpuContext _context;
 
   final GpuPasses _passes;
 
@@ -143,10 +145,10 @@ class GpuEnvironments {
     final source = _textures.texture(texture);
     final mipmapped =
         texture.generateMipmaps && texture.minFilter != NearestFilter && texture.minFilter != LinearFilter;
-    final levels = mipmapped ? math.min(height.bitLength, gpu.Texture.fullMipCount(height, height)) : 1;
+    final levels = mipmapped ? math.min(height.bitLength, _context.maxMipLevelCount(height, height)) : 1;
 
     // Half floats where 32-bit floats are not filtered, as the source is (E-FLOATFILTER).
-    final target = gpu.gpuContext.createTexture(
+    final target = _context.createTexture(
       gpu.StorageMode.devicePrivate,
       height,
       height,
@@ -250,7 +252,7 @@ class GpuEnvironments {
   // _textureToCubemap: the source map at level 0 of the source target, then its mip levels (the source target
   // generates mipmaps).
   void _toCubemap(Texture texture, int size) {
-    final levels = math.min(size.bitLength, gpu.Texture.fullMipCount(size, size));
+    final levels = math.min(size.bitLength, _context.maxMipLevelCount(size, size));
 
     if (_source == null || _source!.width != size) {
       _source = _target(size, levels);
@@ -346,8 +348,8 @@ class GpuEnvironments {
   static double _log2(double x) => math.log(x) / math.ln2;
 
   // A HalfFloatType cube render target in LinearSRGBColorSpace (_createRenderTarget).
-  static gpu.Texture _target(int size, int levels) {
-    return gpu.gpuContext.createTexture(
+  gpu.Texture _target(int size, int levels) {
+    return _context.createTexture(
       gpu.StorageMode.devicePrivate,
       size,
       size,

@@ -6,7 +6,7 @@
 // more targets, [ShadowTarget.pass] and [ShadowTarget.map] (the reference's `shadow.mapPass` and `shadow.map`), RGBA
 // half floats where the reference's are RG ones; the receivers read [ShadowTarget.map], one light texture slot.
 
-import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:ent_renderer/gpu.dart' as gpu;
 import 'package:ent/ent.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
@@ -51,20 +51,15 @@ void prepareShadow(LightShadow shadow, {bool created = false}) {
 /// One light's shadow map: the depth per texel in [texture], cleared to 1 (the far plane), and the depth buffer
 /// it is drawn with; for VSM ([vsm]) also the blur's targets.
 class ShadowTarget {
-  ShadowTarget(this.width, this.height, {bool vsm = false})
-    : pass = vsm ? _half(width, height) : null,
-      map = vsm ? _half(width, height) : null,
-      texture = gpu.gpuContext.createTexture(
-        gpu.StorageMode.devicePrivate,
-        width,
-        height,
-        format: gpu.PixelFormat.r32Float,
-      ),
-      _depth = gpu.gpuContext.createTexture(
+  ShadowTarget(gpu.GpuContext context, this.width, this.height, {bool vsm = false})
+    : pass = vsm ? _half(context, width, height) : null,
+      map = vsm ? _half(context, width, height) : null,
+      texture = context.createTexture(gpu.StorageMode.devicePrivate, width, height, format: gpu.PixelFormat.r32Float),
+      _depth = context.createTexture(
         gpu.StorageMode.deviceTransient,
         width,
         height,
-        format: gpu.gpuContext.defaultDepthStencilFormat,
+        format: context.defaultDepthStencilFormat,
         enableShaderReadUsage: false,
       );
 
@@ -83,8 +78,8 @@ class ShadowTarget {
   final gpu.Texture? map;
 
   /// The blur's targets: RGBA half floats (Flutter GPU has no RG half-float format).
-  static gpu.Texture _half(int width, int height) {
-    return gpu.gpuContext.createTexture(
+  static gpu.Texture _half(gpu.GpuContext context, int width, int height) {
+    return context.createTexture(
       gpu.StorageMode.devicePrivate,
       width,
       height,
