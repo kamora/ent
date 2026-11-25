@@ -85,10 +85,10 @@ packages:
     dependency: "direct main"
     description:
       name: ent_renderer
-      sha256: "47c624524846bd634cc9314b15ef3268508f924cd7b02449d6110210b6e3790a"
+      sha256: "193b0e42bd14f60bfa5ca3e21c81913aa755929295c21d1da1824f8c0ca2bf9a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.1"
+    version: "0.1.0-dev.2"
   ent_shaders:
     dependency: transitive
     description:

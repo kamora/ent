@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  ent_flutter: ^0.1.0-dev.2
+  ent_flutter: ^0.1.0-dev.3
 
 dev_dependencies:
   flutter_driver:
@@ -19,7 +19,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  ent_renderer: ^0.1.0-dev.1
+  ent_renderer: ^0.1.0-dev.2
   vm_service: any
 
 flutter:
