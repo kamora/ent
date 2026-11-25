@@ -117,12 +117,12 @@ rim. Its shader variant is `hologram` (with `polygon_offset` when the material s
 
 The material shaders are compiled when the app is built, one variant per material setup it uses: a kind and its
 flags, such as `lambert map normal_map` (docs/shader-variants.md). The app lists them in a registry file its
-pubspec names:
+pubspec names, under its renderer package (`ent_flutter` or `ent_opengl`; an app with both names it under each):
 
 ```yaml
 hooks:
   user_defines:
-    ent_shaders:
+    ent_flutter:
       shaders: ent_shaders.json
 ```
 

@@ -4,6 +4,8 @@ dependency_overrides:
     path: ../../ent
   ent_flutter:
     path: ../../ent_flutter
+  ent_impeller:
+    path: ../../ent_impeller
   ent_renderer:
     path: ../../ent_renderer
   ent_shaders:

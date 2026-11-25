@@ -436,7 +436,7 @@ class ProgramVariant {
 /// The shader [name] from [library]; a [StateError] naming it when the bundle lacks it (a stale build).
 gpu.Shader shaderOf(gpu.ShaderLibrary library, String name) =>
     library[name] ??
-    (throw StateError('ent_flutter: the shader bundle has no $name; rebuild it (flutter clean, then build).'));
+    (throw StateError('${library.package}: the shader bundle has no $name; rebuild it (flutter clean, then build).'));
 
 /// A material kind's program: its plain variant and, built on first use, the variant that applies
 /// `polygonOffset` (for example `ShadowFragment` and `ShadowOffsetFragment` in the shader bundle, compiled from

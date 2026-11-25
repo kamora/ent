@@ -1,5 +1,5 @@
 # Self-contained, as pub.dev reads it: a published package has no parent directory to include from.
-include: package:flutter_lints/flutter.yaml
+include: package:lints/recommended.yaml
 
 formatter:
   page_width: 120

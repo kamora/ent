@@ -13,7 +13,7 @@ import 'dart:io';
 import 'package:ent_renderer/gpu.dart' as ent;
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart';
-import 'package:ent_shaders/ent_shaders.dart';
+import 'package:ent_impeller/ent_impeller.dart';
 import 'package:ffi/ffi.dart';
 
 import 'gl.dart';
@@ -592,7 +592,7 @@ final class _Commands implements ent.CommandBuffer {
   }
 }
 
-/// The shaders of a bundle's OpenGL ES backend (GLSL ES 3.00), read by `readBundle` of ent_shaders.
+/// The shaders of a bundle's OpenGL ES backend (GLSL ES 3.00), read by `readBundle` of ent_impeller.
 final class GlLibrary implements ent.ShaderLibrary {
   /// The shaders of [bundle], an `ent.shaderbundle` that keeps the `opengl_es` backend.
   GlLibrary(Uint8List bundle) : _shaders = readBundle(bundle, 'opengl_es');
@@ -600,6 +600,9 @@ final class GlLibrary implements ent.ShaderLibrary {
   final Map<String, BundledShader> _shaders;
 
   final Map<String, GlShader> _handles = {};
+
+  @override
+  String get package => 'ent_opengl';
 
   @override
   GlShader? operator [](String shaderName) {

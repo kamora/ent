@@ -1,7 +1,10 @@
-# Resolves ent, ent_renderer and ent_shaders from this repository: ent_flutter asks for them from pub.dev.
+# Resolves ent, ent_impeller, ent_renderer and ent_shaders from this repository: ent_flutter asks for them from
+# pub.dev.
 dependency_overrides:
   ent:
     path: ../../packages/ent
+  ent_impeller:
+    path: ../../packages/ent_impeller
   ent_renderer:
     path: ../../packages/ent_renderer
   ent_shaders:

@@ -8,12 +8,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:ent_shaders/ent_shaders.dart';
-import 'package:flutter_gpu_shaders/environment.dart';
+import 'package:ent_impeller/ent_impeller.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('every registered variant uses each uniform block and sampler it declares (Metal)', () async {
-    final impellerc = (await findImpellerC()).toFilePath();
+    final impellerc = findImpellerc().path;
 
     // ent_shaders' root, where pub resolved it: the variants include its shaders/.
     final config = json.decode(File('.dart_tool/package_config.json').readAsStringSync()) as Map<String, Object?>;

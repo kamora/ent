@@ -44,5 +44,5 @@ flutter:
 # The shader variants the scene draws with: the parity scenes' registry of ent_flutter.
 hooks:
   user_defines:
-    ent_shaders:
+    ent_opengl:
       shaders: ../../ent_flutter/test/ent_shaders.json

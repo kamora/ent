@@ -144,6 +144,9 @@ final class FlutterGpuLibrary implements ent.ShaderLibrary {
 
   final _shaders = <String, _Shader?>{};
 
+  @override
+  String get package => 'ent_flutter';
+
   /// The bundle asset [name], or null when Flutter GPU cannot load it.
   static Future<FlutterGpuLibrary?> fromAsset(String name) async {
     final library = await gpu.ShaderLibrary.fromAsset(name);

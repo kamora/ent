@@ -23,8 +23,8 @@ class FlutterGpuRenderer extends GpuRenderer {
     super.readsDepth,
   });
 
-  /// Loads the shader bundle and creates a renderer. The bundle is `ent_shaders`' asset
-  /// `packages/ent_shaders/build/shaderbundles/ent.shaderbundle`, which its build hook writes. Throws a [StateError]
+  /// Loads the shader bundle and creates a renderer. The bundle is this package's asset
+  /// `packages/ent_flutter/build/shaderbundles/ent.shaderbundle`, which its build hook writes. Throws a [StateError]
   /// when the app has not enabled Flutter GPU, or when Flutter GPU cannot render on this device (Android's OpenGL ES
   /// fallback).
   ///
@@ -60,15 +60,26 @@ class FlutterGpuRenderer extends GpuRenderer {
     FlutterGpuLibrary? library;
     Object? error;
 
-    try {
-      library = await FlutterGpuLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle');
-    } catch (e) {
-      error = e;
+    // An app reaches the bundle under this package's name; this package's own tests, where it is the root package,
+    // without it.
+    for (final key in const [
+      'packages/ent_flutter/build/shaderbundles/ent.shaderbundle',
+      'build/shaderbundles/ent.shaderbundle',
+    ]) {
+      try {
+        library = await FlutterGpuLibrary.fromAsset(key);
+      } catch (e) {
+        error ??= e;
+      }
+
+      if (library != null) {
+        break;
+      }
     }
 
     if (library == null) {
       throw StateError(
-        'ent_flutter: no shader bundle for this GPU; is the build hook of ent_shaders enabled? A bundle built for '
+        'ent_flutter: no shader bundle for this GPU; is the build hook of ent_flutter enabled? A bundle built for '
         'another target keeps only that target\'s backends: rebuild for this one. ${error ?? ''}',
       );
     }

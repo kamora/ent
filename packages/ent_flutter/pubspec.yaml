@@ -2,7 +2,7 @@ name: ent_flutter
 description: >-
   Ent Engine for Flutter: a 3D renderer on Flutter GPU (Impeller), with a scene widget, picking and orbit
   controls. Exports all of the ent engine.
-version: 0.1.0-dev.1
+version: 0.1.0-dev.2
 repository: https://github.com/kamora/ent/tree/master/packages/ent_flutter
 issue_tracker: https://github.com/kamora/ent/issues
 platforms:
@@ -25,19 +25,28 @@ dependencies:
     sdk: flutter
   flutter_gpu:
     sdk: flutter
+  code_assets: ^2.2.0
   ent: ^0.1.0-dev.1
+  ent_impeller: ^0.1.0-dev.1
   ent_renderer: ^0.1.0-dev.1
-  ent_shaders: ^0.1.0-dev.1
+  hooks: ^2.2.0
   vector_math: ^2.4.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  ent_shaders: ^0.1.0-dev.2
   flutter_lints: ^6.0.0
-  flutter_gpu_shaders: ^0.5.2
 
 # The shader variants this package's own tests draw with.
 hooks:
   user_defines:
-    ent_shaders:
+    ent_flutter:
       shaders: test/ent_shaders.json
+
+flutter:
+  assets:
+
+    # The build hook writes this bundle when an app is built, so a published copy of the package has none yet.
+    # ignore: asset_does_not_exist
+    - build/shaderbundles/ent.shaderbundle

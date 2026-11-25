@@ -19,8 +19,9 @@ phones, among them both test phones (Galaxy A22, Galaxy S10). OpenGL ES 3 runs o
 | Android | The system's `libEGL` and `libGLESv3` | Verified on a Galaxy S10 (Mali-G76) |
 | iOS, Windows, Linux | Not yet | |
 
-No Flutter GPU switch is needed; the app's shader bundle carries the `opengl_es` backend on macOS and Android
-(`ent_shaders`' build hook keeps it there for every app).
+No Flutter GPU switch is needed. `ent_opengl`'s build hook compiles the shaders of `ent_shaders` into its own bundle
+with the `opengl_es` backend only (through `ent_impeller`); the app names its shader registry under
+`hooks: user_defines: ent_opengl: shaders:`.
 
 ## How it draws
 
@@ -86,8 +87,6 @@ The parity scenes are the same as Flutter GPU's, compared with the same referenc
   `UnimplementedError`.
 - No anisotropic filtering (`maxSamplerAnisotropy` is 1).
 - A transmissive object drawn into a `CubeCamera` face takes its rows from the cube pass; no scene checks it.
-- The `opengl_es` shaders add to every macOS and Android app's bundle (about 12 MB for the test registry on macOS),
-  whichever renderer the app uses.
 
 ## Tests
 

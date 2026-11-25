@@ -45,5 +45,5 @@ flutter:
 # The shader variants this app draws with (its scenes and the parity integration tests).
 hooks:
   user_defines:
-    ent_shaders:
+    ent_flutter:
       shaders: ent_shaders.json

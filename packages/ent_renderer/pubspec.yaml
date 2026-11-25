@@ -22,7 +22,7 @@ dependencies:
   flutter:
     sdk: flutter
   ent: ^0.1.0-dev.1
-  ent_shaders: ^0.1.0-dev.1
+  ent_shaders: ^0.1.0-dev.2
   vector_math: ^2.4.4
 
 dev_dependencies:

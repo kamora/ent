@@ -9,8 +9,10 @@ platform parity are reported separately. Where Ent differs from the reference on
 - `ent`: math, core, cameras, objects, geometries, materials, lights, textures and animation, with GLTFLoader,
   HDRLoader, OrbitControls and EffectComposer (render, FXAA, vignette, copy, bloom and output passes), checked
   against values the reference produced (`fixtures/values/`).
-- `ent_shaders`: the GLSL every renderer shares, the variant registry and the build hook that compiles them into one
-  shader bundle; nothing compiles at runtime.
+- `ent_shaders`: the GLSL every renderer shares and the variant scheme (pure Dart). Each renderer package compiles
+  them into its own bundle with its own build hook when the app is built; nothing compiles at runtime.
+- `ent_impeller`: the toolchain of both renderers on Impeller's shader compiler: it runs `impellerc`, keeps the
+  backends a renderer draws with, and reads a bundle back.
 - `ent_renderer`: the renderer core both renderers share (render lists, programs, lights, shadows, textures,
   environment maps, passes, `EntView`), written against the small GPU interface of `package:ent_renderer/gpu.dart`.
 - `ent_flutter`: `FlutterGpuRenderer` on Flutter GPU. About 160 scenes are compared pixel by pixel with the reference's

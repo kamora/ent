@@ -1,14 +1,10 @@
 name: ent_shaders
 description: >-
-  The shaders of Ent Engine, compiled when an app is built into one shader bundle that its renderers share: fixed
-  shaders, plus the material variants the app lists in its pubspec.
-version: 0.1.0-dev.1
+  The shaders of Ent Engine, written once for every renderer: the GLSL of the fixed shaders and the materials, and the
+  variant scheme that turns the material setups an app lists into shader sources.
+version: 0.1.0-dev.2
 repository: https://github.com/kamora/ent/tree/master/packages/ent_shaders
 issue_tracker: https://github.com/kamora/ent/issues
-platforms:
-  android:
-  ios:
-  macos:
 topics:
   - graphics
   - rendering
@@ -17,24 +13,7 @@ topics:
 
 environment:
   sdk: ^3.13.5
-  flutter: ">=3.47.6"
-
-dependencies:
-  flutter:
-    sdk: flutter
-  flutter_gpu_shaders: ^0.5.2
-  hooks: ^2.2.0
-  code_assets: ^2.2.0
-  flat_buffers: ^25.9.23
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
-
-flutter:
-  assets:
-
-    # The build hook writes this bundle when an app is built, so a published copy of the package has none yet.
-    # ignore: asset_does_not_exist
-    - build/shaderbundles/ent.shaderbundle
+  lints: ^6.0.0
+  test: ^1.25.6

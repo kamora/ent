@@ -1,25 +1,26 @@
 # ent_shaders
 
-The shaders of Ent Engine, shared by its renderers. An app does not use this package directly: a renderer package
-such as [`ent_flutter`][ent_flutter] depends on it, and the app names the shader variants it draws with.
+The shaders of Ent Engine, written once for every renderer. An app does not use this package directly: a renderer
+package such as [`ent_flutter`][ent_flutter] or [`ent_opengl`][ent_opengl] compiles these shaders into its own form
+when the app is built, and the app names the shader variants it draws with.
 
-Shaders are compiled only when the app is built, never at runtime. This package's build hook compiles them with
-`impellerc` into one shader bundle, the asset `packages/ent_shaders/build/shaderbundles/ent.shaderbundle`:
+- `shaders/`: the GLSL of the fixed shaders (vertex stages, backgrounds, environment maps, shadows, post-processing)
+  and of the materials.
+- `ent.shaderbundle.json`: the list of the fixed shaders, each with its stage and file.
+- `package:ent_shaders/ent_shaders.dart`: the variant scheme, which turns a material setup such as
+  `lambert map normal_map` into a key, and a key into a shader source with its defines.
 
-- the fixed shaders in `ent.shaderbundle.json` (vertex stages, backgrounds, environment maps, shadows,
-  post-processing);
-- one fragment variant per material setup the app lists, such as `lambert map normal_map`.
-
-The bundle keeps only the GPU backends of the target the app is built for.
+Nothing here compiles anything: each renderer package carries its own toolchain. Both of today's renderers compile
+through [`ent_impeller`][ent_impeller], on Impeller's shader compiler. Shaders are never compiled at runtime.
 
 ## Shader variants
 
-Name the registry file in the app's `pubspec.yaml`:
+The app lists its variants in a registry file and names it in its `pubspec.yaml`, under its renderer package:
 
 ```yaml
 hooks:
   user_defines:
-    ent_shaders:
+    ent_flutter:
       shaders: ent_shaders.json
 ```
 
@@ -41,4 +42,6 @@ MIT, © 2026 KAMORA Ltd.; see `LICENSE`.
 The notices of the third-party code it builds on are in `THIRD_PARTY_NOTICES.md`.
 
 [ent_flutter]: https://github.com/kamora/ent/tree/master/packages/ent_flutter
+[ent_opengl]: https://github.com/kamora/ent/tree/master/packages/ent_opengl
+[ent_impeller]: https://github.com/kamora/ent/tree/master/packages/ent_impeller
 [variants]: https://github.com/kamora/ent/blob/master/docs/shader-variants.md

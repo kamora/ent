@@ -300,6 +300,10 @@ abstract interface class Shader {
 }
 
 abstract interface class ShaderLibrary {
+  /// The renderer package whose build hook compiled the bundle, such as `ent_flutter`: the app names its shader
+  /// registry under it (`hooks: user_defines: <package>: shaders:`), and errors say which renderer they come from.
+  String get package;
+
   Shader? operator [](String shaderName);
 }
 

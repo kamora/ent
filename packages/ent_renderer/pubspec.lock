@@ -78,7 +78,7 @@ packages:
       path: "../ent_shaders"
       relative: true
     source: path
-    version: "0.1.0-dev.1"
+    version: "0.1.0-dev.2"
   fake_async:
     dependency: transitive
     description:

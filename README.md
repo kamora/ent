@@ -74,7 +74,8 @@ GPU and list the shader variants your materials need.
 | Package | What it is |
 | --- | --- |
 | [`ent`](packages/ent) | The engine in pure Dart: scenes, loaders, controls and post-processing. No Flutter needed. |
-| [`ent_shaders`](packages/ent_shaders) | The shaders every renderer shares, compiled when the app is built. |
+| [`ent_shaders`](packages/ent_shaders) | The shaders every renderer shares. |
+| [`ent_impeller`](packages/ent_impeller) | The toolchain that compiles them for both renderers when the app is built. |
 | [`ent_renderer`](packages/ent_renderer) | The renderer core both renderers share, and `EntView`. |
 | [`ent_flutter`](packages/ent_flutter) | The Flutter GPU renderer. Exports all of `ent` and `EntView`. |
 | [`ent_opengl`](packages/ent_opengl) | The OpenGL ES renderer, on ANGLE on macOS. Exports all of `ent` and `EntView`. |
@@ -103,7 +104,8 @@ where it does not (see Platforms). The scene code is the same for both.
 
 ```sh
 (cd packages/ent && dart test)
-(cd packages/ent_shaders && flutter test)
+(cd packages/ent_shaders && dart test)
+(cd packages/ent_impeller && dart test)
 (cd packages/ent_flutter && flutter test --enable-impeller --enable-flutter-gpu)
 (cd examples/worm && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
 (cd packages/ent_opengl && flutter test --enable-impeller --enable-flutter-gpu)

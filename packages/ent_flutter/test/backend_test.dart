@@ -59,7 +59,7 @@ void main() {
   });
 
   test('the shader bundle loads, and each shader keeps one handle', () async {
-    final library = (await FlutterGpuLibrary.fromAsset('packages/ent_shaders/build/shaderbundles/ent.shaderbundle'))!;
+    final library = (await FlutterGpuLibrary.fromAsset('build/shaderbundles/ent.shaderbundle'))!;
     expect(library['missing shader'], isNull);
 
     final copy = library['CopyFragment']!;

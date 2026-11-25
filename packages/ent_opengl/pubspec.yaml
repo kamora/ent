@@ -5,7 +5,6 @@ description: >-
 version: 0.1.0-dev.1
 repository: https://github.com/kamora/ent/tree/master/packages/ent_opengl
 issue_tracker: https://github.com/kamora/ent/issues
-publish_to: none
 platforms:
   android:
   macos:
@@ -21,10 +20,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  code_assets: ^2.2.0
   ent: ^0.1.0-dev.1
+  ent_impeller: ^0.1.0-dev.1
   ent_renderer: ^0.1.0-dev.1
-  ent_shaders: ^0.1.0-dev.1
   ffi: ^2.1.0
+  hooks: ^2.2.0
   vector_math: ^2.4.4
   wrangle: ^0.1.0-dev.1
 
@@ -36,15 +37,23 @@ flutter:
         pluginClass: EntOpenGlPlugin
       macos:
         pluginClass: EntOpenGlPlugin
+  assets:
+
+    # The build hook writes this bundle when an app is built, so a published copy of the package has none yet.
+    # ignore: asset_does_not_exist
+    - build/shaderbundles/ent.shaderbundle
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  ent_flutter: ^0.1.0-dev.1
+  ent_flutter: ^0.1.0-dev.2
   flutter_lints: ^6.0.0
 
-# The shader variants this package's tests draw with: the parity scenes' registry of ent_flutter.
+# The shader variants this package's tests draw with: the parity scenes' registry of ent_flutter, for both renderers
+# (the tests compare their frames).
 hooks:
   user_defines:
-    ent_shaders:
+    ent_opengl:
+      shaders: ../ent_flutter/test/ent_shaders.json
+    ent_flutter:
       shaders: ../ent_flutter/test/ent_shaders.json

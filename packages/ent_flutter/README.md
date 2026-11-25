@@ -41,12 +41,13 @@ on Metal, on an M1 Mac and an iPhone 11 ([`docs/flutter-gpu.md`][flutter-gpu], "
 
 1. Depend on `ent_flutter` and enable Flutter GPU (above).
 2. List the shader variants the app draws with. The material shaders are compiled when the app is built, one
-   variant per material setup, such as `lambert map normal_map`. Name the registry file in `pubspec.yaml`:
+   variant per material setup, such as `lambert map normal_map`, by this package's build hook. Name the registry
+   file in `pubspec.yaml`, under `ent_flutter`:
 
    ```yaml
    hooks:
      user_defines:
-       ent_shaders:
+       ent_flutter:
          shaders: ent_shaders.json
    ```
 

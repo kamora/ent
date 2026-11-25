@@ -1930,8 +1930,8 @@ class GpuRenderer implements EffectComposerRenderer {
 
     if (!_variants.containsKey(key) && _library[key] == null) {
       final message =
-          'ent_flutter: the shader variant "$key" is not registered; add it to the "variants" of the registry that '
-          'pubspec.yaml names in hooks: user_defines: ent_shaders: shaders:, then rebuild.';
+          '${_library.package}: the shader variant "$key" is not registered; add it to the "variants" of the registry '
+          'that pubspec.yaml names in hooks: user_defines: ${_library.package}: shaders:, then rebuild.';
 
       if (recorded == null) {
         throw StateError(message);
@@ -3218,7 +3218,7 @@ class GpuRenderer implements EffectComposerRenderer {
       vertex: vertex,
     )) {
       throw StateError(
-        'ent_flutter: a MeshStandardMaterial or MeshPhysicalMaterial draw needs more than $maxTextureSlots 2D '
+        '${_library.package}: a MeshStandardMaterial or MeshPhysicalMaterial draw needs more than $maxTextureSlots 2D '
         'textures (its maps, the shadow and spot light maps in use, the DFG table, the transmission target); its '
         '$name finds no free slot. Give the material fewer textures (maps with the same texture share a slot), or the '
         'scene fewer shadow-casting lights.',

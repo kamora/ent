@@ -13,16 +13,17 @@ compile. List them in a registry file beside the app's `pubspec.yaml`, `ent_shad
 }
 ```
 
-Name it in `pubspec.yaml`:
+Name it in `pubspec.yaml`, under the renderer package the app uses (`ent_flutter` or `ent_opengl`), whose build
+hook compiles the shaders:
 
 ```yaml
 hooks:
   user_defines:
-    ent_shaders:
+    ent_flutter:
       shaders: ent_shaders.json
 ```
 
-The next build compiles these variants with the fixed shaders into the app's shader bundle. A renderer drawing a
+The next build compiles these variants with the fixed shaders into the renderer's shader bundle. A renderer drawing a
 material whose variant is missing throws a `StateError` naming the key to add.
 
 To collect the keys an app needs, `ent_flutter`'s renderer can record them while the app runs through its scenes:

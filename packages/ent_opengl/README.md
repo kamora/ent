@@ -23,7 +23,18 @@ where Impeller falls back to OpenGL ES.
 ## Getting started
 
 1. Depend on `ent_opengl`.
-2. List the shader variants the app draws with, as for `ent_flutter` ([its README][getting_started], step 2).
+2. List the shader variants the app draws with, in a registry file as for `ent_flutter` ([its README][getting_started],
+   step 2), and name it under `ent_opengl`, whose build hook compiles them:
+
+   ```yaml
+   hooks:
+     user_defines:
+       ent_opengl:
+         shaders: ent_shaders.json
+   ```
+
+   An app that uses Flutter GPU on some platforms and OpenGL ES on others depends on both renderer packages and
+   names the same file under each.
 3. Install the platform services, create the renderer and show the scene:
 
    ```dart

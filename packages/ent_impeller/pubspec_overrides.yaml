@@ -1,0 +1,4 @@
+# Resolves ent_shaders from this repository while developing; pub ignores this file when publishing.
+dependency_overrides:
+  ent_shaders:
+    path: ../ent_shaders

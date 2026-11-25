@@ -3,7 +3,6 @@
 @TestOn('mac-os')
 library;
 
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -14,17 +13,11 @@ import 'package:ent_renderer/gpu.dart' as ent;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vector_math/vector_math.dart' as vm;
 
-const String bundle = 'packages/ent_shaders/build/shaderbundles/ent.shaderbundle';
+/// The Flutter GPU bundle, which the hook of ent_flutter (a dependency here) wrote.
+const String bundle = 'packages/ent_flutter/build/shaderbundles/ent.shaderbundle';
 
-/// The bundle the hook of ent_shaders wrote, where pub resolved ent_shaders.
-Uint8List bundleBytes() {
-  final config = json.decode(File('.dart_tool/package_config.json').readAsStringSync()) as Map<String, Object?>;
-  final package = (config['packages']! as List<Object?>).cast<Map<String, Object?>>().firstWhere(
-    (p) => p['name'] == 'ent_shaders',
-  );
-  final root = Directory.current.uri.resolve('.dart_tool/').resolve('${package['rootUri']}/');
-  return File.fromUri(root.resolve('build/shaderbundles/ent.shaderbundle')).readAsBytesSync();
-}
+/// The OpenGL ES bundle, which this package's hook wrote in its build/.
+Uint8List bundleBytes() => File('build/shaderbundles/ent.shaderbundle').readAsBytesSync();
 
 ent.BufferView view(ent.GpuContext context, List<double> values) {
   final buffer = context.createDeviceBufferWithCopy(Float32List.fromList(values).buffer.asByteData());

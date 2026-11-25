@@ -22,13 +22,33 @@ class OpenGlRenderer extends GpuRenderer {
     super.readsDepth,
   });
 
-  /// Loads the shader bundle (ent_shaders' asset, whose build hook keeps the `opengl_es` backend on macOS and Android)
-  /// and creates a renderer on the process's [GlContext]. [antialias] is the reference renderer's constructor
+  /// Loads the shader bundle (this package's asset, which its build hook writes with the `opengl_es` backend only) and
+  /// creates a renderer on the process's [GlContext]. [antialias] is the reference renderer's constructor
   /// parameter: the frame is drawn with 4× MSAA and resolved.
   static Future<OpenGlRenderer> create({bool antialias = false}) async {
     final context = GlContext.shared;
 
-    final bytes = await rootBundle.load('packages/ent_shaders/build/shaderbundles/ent.shaderbundle');
+    ByteData? bytes;
+    Object? error;
+
+    // An app reaches the bundle under this package's name; this package's own tests, where it is the root package,
+    // without it.
+    for (final key in const [
+      'packages/ent_opengl/build/shaderbundles/ent.shaderbundle',
+      'build/shaderbundles/ent.shaderbundle',
+    ]) {
+      try {
+        bytes = await rootBundle.load(key);
+        break;
+      } catch (e) {
+        error ??= e;
+      }
+    }
+
+    if (bytes == null) {
+      throw StateError('ent_opengl: no shader bundle; is the build hook of ent_opengl enabled? $error');
+    }
+
     final library = GlLibrary(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
 
     // Outside a try: a shader missing from the bundle throws its own error, naming the shader.

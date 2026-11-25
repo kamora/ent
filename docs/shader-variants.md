@@ -2,12 +2,13 @@
 
 Design note, implemented for every material that draws meshes, lines, points and sprites (ShadowMaterial keeps its
 fixed shader). Each material kind's fragment stage is a variant an app registers and the build compiles (E-SHADERS);
-nothing compiles on the device. The shaders, the registry code and the build hook are in `packages/ent_shaders`, shared
-by every renderer.
+nothing compiles on the device. The shaders and the variant scheme are in `packages/ent_shaders`, shared by every
+renderer. Each renderer package compiles them into its own form with its own build hook: `ent_flutter` and `ent_opengl`
+both through `packages/ent_impeller`, the toolchain on Impeller's shader compiler.
 
 ## Goal
 
-- The bundle holds only the variants the app uses, for the one GPU backend its target runs.
+- The bundle holds only the variants the app uses, for the GPU backends its renderer runs on its target.
 - A shader is written the way the reference writes it: `#ifdef USE_MAP` and similar flags instead of uniform switches.
 - A missing variant is a clear error naming the variant and the registry line to add, never a silent fallback.
 - Custom shaders later use the same path.
@@ -33,14 +34,18 @@ The renderer computes a draw's flags from the material, keeps those its kind acc
 
 ## Registry
 
-The app lists its variants in a JSON file and points `ent_shaders`' build hook at it from its `pubspec.yaml`:
+The app lists its variants in a JSON file and points its renderer's build hook at it from its `pubspec.yaml`, under
+the renderer package's name (a hook reads only the user defines under its own package):
 
 ```yaml
 hooks:
   user_defines:
-    ent_shaders:
+    ent_flutter:
       shaders: ent_shaders.json
 ```
+
+An app that uses `ent_opengl` names it under `ent_opengl:`; an app that uses both renderers (one per platform, say)
+names the same file under both.
 
 ```json
 {
@@ -70,20 +75,26 @@ release behave the same.
 2. Generate one small source per shader into `build/`: the flags as `#define` lines, then `#include` of the kind's GLSL.
    Bundle entries cannot carry defines of their own (`impeller/compiler/shader_bundle.cc` accepts only `file`, `type`,
    `language` and `entry_point`), so the defines live in these generated files.
-3. Compile them into the bundle with impellerc.
-4. Strip the bundle to the target's backends: Metal iOS; Metal desktop, Vulkan (`flutter test` runs Vulkan) and
-   OpenGL ES (macOS); Vulkan and OpenGL ES (Android); another target keeps all five. The OpenGL ES backend is GLSL ES
-   3.00 (`--gles-language-version=300`), for the GL renderer. impellerc ignores platform flags in bundle mode, so
-   `lib/src/bundles.dart` rewrites its FlatBuffer output (`flat_buffers`), with the target OS from the hook's code
-   config. Measured before OpenGL ES was kept: 14.9 MB becomes 3.1 MB (iOS), 5.6 MB (macOS), 2.5 MB (Vulkan only).
-   Keeping OpenGL ES took the test registry's macOS bundle from 21.2 MB to 33.3 MB (2026-11-23); an app should keep
-   only the backends of the renderers it uses (not done yet). `readBundle` reads one backend's shaders, with their
-   inputs, uniform blocks and textures, for a renderer that loads the bundle itself.
-5. Write `build/shaderbundles/ent.shaderbundle.owner` (the target OS and the registry) and declare it an input of
-   the hook: every build writes the same bundle, so one for another target or registry replaces it and rewrites the
-   stamp, and the next build for this one reruns the hook (checked: iOS, then macOS, then iOS). The stamp is dated
-   2000, so the hook runner does not take it for a file changed during the build; the bundle keeps its own date, so
-   `flutter test` copies it into its assets.
+3. Compile them, with the fixed shaders `ent_shaders`' `ent.shaderbundle.json` lists, into the renderer package's
+   `build/shaderbundles/ent.shaderbundle` with impellerc. `ent_impeller` runs the Flutter SDK's impellerc itself
+   (`IMPELLERC` when Flutter's tools set it, else the SDK's engine artifacts), with `ent_shaders`' root as the include
+   folder, and declares every file impellerc's depfile lists as an input of the hook, the compiler too, so editing a
+   shader or upgrading Flutter rebuilds the bundle.
+4. Strip the bundle to the backends the renderer runs on the target. `ent_flutter`: Metal iOS (iOS); Metal desktop and
+   Vulkan (macOS, where `flutter test` runs Vulkan); Vulkan (Android). `ent_opengl`: OpenGL ES, as GLSL ES 3.00
+   (`--gles-language-version=300`), on macOS and Android. Another target keeps all five. impellerc ignores platform
+   flags in bundle mode, so `ent_impeller`'s `lib/src/bundles.dart` rewrites its FlatBuffer output (`flat_buffers`),
+   with the target OS from the hook's code config. The test registry's macOS bundles (2026-11-25): 22.0 MB for
+   `ent_flutter`, 12.6 MB for `ent_opengl`; one bundle with both took 33.3 MB. `readBundle` reads one backend's
+   shaders, with their inputs, uniform blocks and textures, for a renderer that loads the bundle itself.
+5. Write `build/shaderbundles/ent.shaderbundle.owner` (the target OS, the registry and the compiler) and declare it
+   an input of the hook: every build writes the same bundle, so one for another target or registry replaces it and
+   rewrites the stamp, and the next build for this one reruns the hook. The stamp is dated 2000, so the hook runner
+   does not take it for a file changed during the build; the bundle keeps its own date, so `flutter test` copies it
+   into its assets.
+6. The renderer loads the bundle as `packages/<renderer>/build/shaderbundles/ent.shaderbundle`, or, in the renderer
+   package's own tests (where it is the root package and its assets have no prefix), as
+   `build/shaderbundles/ent.shaderbundle`.
 
 The engine's internal shaders (environment maps, mips, shadows, clear, frame) and the post-processing effects are always
 compiled; they are not material variants.
@@ -94,10 +105,12 @@ The test suite registers its own list: every key the parity scenes need, recorde
 
 ## Open questions
 
-- Shared output: the bundle is written inside `ent_flutter`'s own `build/`, so two apps using one copy of the
+- Shared output: the bundle is written inside the renderer package's own `build/`, so two apps using one copy of the
   package (the pub cache) rebuild it for each other's registry. Dart data assets, which write into the hook's own
-  output, would fix that; `flutter_gpu_shaders` supports them, still experimental.
-- Android: the stripping is checked for iOS, macOS and `flutter test`, not yet in an Android build.
+  output, would fix that; the hooks API has them, still experimental.
+- Android: the stripping is checked for macOS and `flutter test`, not yet in an Android or iOS build since the hooks
+  moved into the renderer packages.
+- An app with both renderers runs impellerc twice, once per renderer hook, though each keeps different backends.
 - Basic still switches its env map, fog, tone mapping and line rule by uniforms, Normal its flat shading, double
   side and tangents; only their maps, vertex colors and polygon offset are flags so far.
 - Missing variant mid-frame: the StateError leaves that frame half drawn, and in a long run the frames after it went
@@ -122,7 +135,8 @@ The test suite registers its own list: every key the parity scenes need, recorde
 ## Jobs
 
 1. MeshBasicMaterial end to end: flags, generated sources, registry, lookup, the missing-variant error, parity. Done
-   for its maps, vertex colors and polygon offset (`ent_shaders`' `lib/src/variants.dart` and `hook/build.dart`).
+   for its maps, vertex colors and polygon offset (`ent_shaders`' `lib/src/variants.dart`, `ent_impeller`'s
+   `compileShaders`).
 2. Backend stripping in the hook. Done.
 3. The other materials, one per job. Done: Normal (`normals.glsl`, with `flags.glsl` shared by every chunk),
    Lambert, Phong and Toon (their maps and Toon's gradient map; their lights still switch by uniforms), Matcap,
