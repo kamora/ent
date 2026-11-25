@@ -22,6 +22,9 @@ class OpenGlRenderer extends GpuRenderer {
     super.readsDepth,
   });
 
+  @override
+  String get name => 'OpenGlRenderer';
+
   /// Loads the shader bundle (this package's asset, which its build hook writes with the `opengl_es` backend only) and
   /// creates a renderer on the process's [GlContext]. [antialias] is the reference renderer's constructor
   /// parameter: the frame is drawn with 4× MSAA and resolved.

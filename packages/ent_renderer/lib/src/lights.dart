@@ -54,6 +54,11 @@ const int maxLightTextures = 6;
 
 /// The lights of one frame, as the shaders' LightInfo block reads them.
 class LightState {
+  LightState(this.name);
+
+  /// The renderer's name, which starts the warnings.
+  final String name;
+
   final List<double> ambient = [0, 0, 0];
 
   /// The summed spherical harmonics of the light probes, 9 × rgb.
@@ -377,19 +382,19 @@ class LightState {
     }
 
     warnOnce(
-      'FlutterGpuRenderer: more than $maxLightTextures shadow maps and spot light maps; the shaders hold '
+      '$name: more than $maxLightTextures shadow maps and spot light maps; the shaders hold '
       '$maxLightTextures (exception E-SHADERS), the others are ignored.',
     );
     return -1;
   }
 
-  static bool _full(int count, int max, String type) {
+  bool _full(int count, int max, String type) {
     if (count < max) {
       return false;
     }
 
     warnOnce(
-      'FlutterGpuRenderer: more than $max ${type}s in the scene; the shaders hold $max (exception E-SHADERS), '
+      '$name: more than $max ${type}s in the scene; the shaders hold $max (exception E-SHADERS), '
       'the others are ignored.',
     );
     return true;

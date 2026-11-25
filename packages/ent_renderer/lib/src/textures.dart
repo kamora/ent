@@ -97,9 +97,12 @@ bool topDown(Texture texture, gpu.GpuContext context) {
 
 /// The textures a renderer holds; [count] is reported as `renderer.info.memory.textures`.
 class GpuTextures {
-  GpuTextures(this._context);
+  GpuTextures(this._context, this.name);
 
   final gpu.GpuContext _context;
+
+  /// The renderer's name, which starts the warnings.
+  final String name;
 
   final Map<Texture, _Entry> _entries = {};
 
@@ -175,7 +178,7 @@ class GpuTextures {
       (_mipmapped(texture) && !cube, 'generateMipmaps'),
     ]) {
       if (unsupported) {
-        warnOnce('FlutterGpuRenderer: render target $option is not supported; ignored.');
+        warnOnce('$name: render target $option is not supported; ignored.');
       }
     }
 
@@ -186,7 +189,7 @@ class GpuTextures {
         gpu.PixelFormat.r8g8b8a8UNormIntSRGB,
       UnsignedByteType => gpu.PixelFormat.r8g8b8a8UNormInt,
       _ => () {
-        warnOnce('FlutterGpuRenderer: render target texture type ${texture.type} is not supported; using 8-bit RGBA.');
+        warnOnce('$name: render target texture type ${texture.type} is not supported; using 8-bit RGBA.');
         return gpu.PixelFormat.r8g8b8a8UNormInt;
       }(),
     };
@@ -300,12 +303,12 @@ class GpuTextures {
     }
 
     if (image == null) {
-      warn('FlutterGpuRenderer: Texture marked for update but no image data found.');
+      warn('$name: Texture marked for update but no image data found.');
       return cached?.texture ?? fallback;
     }
 
     if (image is FlutterImage && !image.complete) {
-      warn('FlutterGpuRenderer: Texture marked for update but image is incomplete');
+      warn('$name: Texture marked for update but image is incomplete');
       return cached?.texture ?? fallback;
     }
 
@@ -551,7 +554,7 @@ class GpuTextures {
 
       texels = read;
     } else {
-      warn('FlutterGpuRenderer: unsupported texture image ${image.runtimeType}; the texture reads as black.');
+      warn('$name: unsupported texture image ${image.runtimeType}; the texture reads as black.');
       return null;
     }
 
@@ -590,7 +593,7 @@ class GpuTextures {
 
     if (channels == 0 || size == 0 || width < 1 || height < 1) {
       warn(
-        'FlutterGpuRenderer: unsupported texture format ${texture.format} / type ${texture.type}; the texture '
+        '$name: unsupported texture format ${texture.format} / type ${texture.type}; the texture '
         'reads as black.',
       );
       return null;

@@ -341,11 +341,11 @@ class GpuRenderer implements EffectComposerRenderer {
 
   final RenderList _list = RenderList();
 
-  final LightState _lights = LightState();
+  late final LightState _lights = LightState(name);
 
   late final GpuGeometries _geometries = GpuGeometries(_context);
 
-  late final GpuTextures _textures = GpuTextures(_context);
+  late final GpuTextures _textures = GpuTextures(_context, name);
 
   late final HostBuffers _buffers = HostBuffers(_context);
 
@@ -372,6 +372,9 @@ class GpuRenderer implements EffectComposerRenderer {
   final int _samples;
 
   final bool _loads;
+
+  /// The renderer's class name, which starts its warnings (`ENT.FlutterGpuRenderer: …`); each renderer names itself.
+  String get name => 'GpuRenderer';
 
   /// Whether a render into a target that does not clear keeps the target's color (`LoadAction.load`), as WebGL does:
   /// probed once by the renderer package by clearing a texture and loading it in a second pass, never by platform.
@@ -681,7 +684,7 @@ class GpuRenderer implements EffectComposerRenderer {
   @override
   void setRenderTarget(RenderTarget? target, [int activeCubeFace = 0, int activeMipmapLevel = 0]) {
     if ((target?.depth ?? 1) > 1 || activeMipmapLevel != 0) {
-      warnOnce('FlutterGpuRenderer: 3D and array render targets and mip levels are not supported yet.');
+      warnOnce('$name: 3D and array render targets and mip levels are not supported yet.');
     }
 
     _renderTarget = target;
@@ -1339,7 +1342,7 @@ class GpuRenderer implements EffectComposerRenderer {
       _rgb.copy(color);
       alpha = 1;
     } else if (color != null && background == null && !(color is Texture && GpuEnvironments.isEnvironment(color))) {
-      warnOnce('FlutterGpuRenderer: unsupported background ${color.runtimeType}; using the clear color.');
+      warnOnce('$name: unsupported background ${color.runtimeType}; using the clear color.');
     }
 
     if (transmission && color is! Color && _clearAlpha < 1) {
@@ -1415,7 +1418,7 @@ class GpuRenderer implements EffectComposerRenderer {
     }
 
     if (settings.type == PCFSoftShadowMap) {
-      warn('FlutterGpuRenderer: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.');
+      warn('$name: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.');
       settings.type = PCFShadowMap;
     }
 
@@ -1426,16 +1429,14 @@ class GpuRenderer implements EffectComposerRenderer {
         final shadow = _shadowOf(light);
 
         if (shadow == null) {
-          warnOnce('FlutterGpuRenderer: ${light.type} shadows are not supported yet; the light casts none.');
+          warnOnce('$name: ${light.type} shadows are not supported yet; the light casts none.');
           continue;
         }
 
         final vsm = settings.type == VSMShadowMap;
 
         if (light is PointLight && vsm) {
-          warnOnce(
-            'FlutterGpuRenderer: VSM shadow maps are not supported for PointLights. Use PCF or BasicShadowMap instead.',
-          );
+          warnOnce('$name: VSM shadow maps are not supported for PointLights. Use PCF or BasicShadowMap instead.');
           continue;
         }
 
@@ -1629,7 +1630,7 @@ class GpuRenderer implements EffectComposerRenderer {
     final surface = _Surface.of(material);
 
     if (surface.wireframe) {
-      warnOnce('FlutterGpuRenderer: wireframe is not supported yet (lines come with phase 5); not drawn.');
+      warnOnce('$name: wireframe is not supported yet (lines come with phase 5); not drawn.');
       return;
     }
 
@@ -1949,7 +1950,7 @@ class GpuRenderer implements EffectComposerRenderer {
   }
 
   Program? _unsupported(String message) {
-    warnOnce('FlutterGpuRenderer: $message');
+    warnOnce('$name: $message');
     return null;
   }
 
@@ -1965,7 +1966,7 @@ class GpuRenderer implements EffectComposerRenderer {
     }
 
     if (object is! Mesh && object is! Line && object is! Points && object is! Sprite) {
-      warnOnce('FlutterGpuRenderer: ${object.type} is not supported yet; it is not drawn.');
+      warnOnce('$name: ${object.type} is not supported yet; it is not drawn.');
       return;
     }
 
@@ -1993,7 +1994,7 @@ class GpuRenderer implements EffectComposerRenderer {
     }
 
     if (_Surface.of(material).wireframe) {
-      warnOnce('FlutterGpuRenderer: wireframe is not supported yet (lines come with phase 5); not drawn.');
+      warnOnce('$name: wireframe is not supported yet (lines come with phase 5); not drawn.');
       return;
     }
 
@@ -2040,7 +2041,7 @@ class GpuRenderer implements EffectComposerRenderer {
     final streams = [for (final slot in effectSlots) _geometries.attribute(geometry, slot)];
 
     if (streams.contains(null)) {
-      warnOnce('FlutterGpuRenderer: ${material.name} needs position and uv attributes; not drawn.');
+      warnOnce('$name: ${material.name} needs position and uv attributes; not drawn.');
       return;
     }
 
@@ -2463,7 +2464,7 @@ class GpuRenderer implements EffectComposerRenderer {
   // copies only its attributes into the batch), with one warning.
   Program _batchedOf(Program kind, bool morphed) {
     if (morphed) {
-      warnOnce('FlutterGpuRenderer: a BatchedMesh geometry has morph attributes; they are not drawn.');
+      warnOnce('$name: a BatchedMesh geometry has morph attributes; they are not drawn.');
     }
 
     return kind.batched ??
@@ -2561,7 +2562,7 @@ class GpuRenderer implements EffectComposerRenderer {
     final count = math.min(morph.count, maxMorphTargets);
 
     if (morph.count > maxMorphTargets) {
-      warnOnce('FlutterGpuRenderer: a geometry has more than $maxMorphTargets morph targets; the rest are not drawn.');
+      warnOnce('$name: a geometry has more than $maxMorphTargets morph targets; the rest are not drawn.');
     }
 
     final attributes = geometry.morphAttributes;
@@ -2637,7 +2638,7 @@ class GpuRenderer implements EffectComposerRenderer {
   }
 
   // The reference's setBlending; `null` where the reference logs an error and keeps the previous blend function.
-  static gpu.ColorBlendEquation? _blendEquation(Material material, int blending) {
+  gpu.ColorBlendEquation? _blendEquation(Material material, int blending) {
     const zero = gpu.BlendFactor.zero;
     const one = gpu.BlendFactor.one;
     const oneMinusSrcAlpha = gpu.BlendFactor.oneMinusSourceAlpha;
@@ -2669,7 +2670,7 @@ class GpuRenderer implements EffectComposerRenderer {
             return factors(gpu.BlendFactor.destinationColor, oneMinusSrcAlpha, zero, one);
         }
 
-        error('FlutterGpuRenderer: Invalid blending: ', [blending]);
+        error('$name: Invalid blending: ', [blending]);
         return null;
       }
 
@@ -2679,14 +2680,14 @@ class GpuRenderer implements EffectComposerRenderer {
         case AdditiveBlending:
           return factors(gpu.BlendFactor.sourceAlpha, one, one, one);
         case SubtractiveBlending:
-          error('FlutterGpuRenderer: SubtractiveBlending requires material.premultipliedAlpha = true');
+          error('$name: SubtractiveBlending requires material.premultipliedAlpha = true');
           return null;
         case MultiplyBlending:
-          error('FlutterGpuRenderer: MultiplyBlending requires material.premultipliedAlpha = true');
+          error('$name: MultiplyBlending requires material.premultipliedAlpha = true');
           return null;
       }
 
-      error('FlutterGpuRenderer: Invalid blending: ', [blending]);
+      error('$name: Invalid blending: ', [blending]);
       return null;
     }
 
@@ -2703,7 +2704,7 @@ class GpuRenderer implements EffectComposerRenderer {
     );
   }
 
-  static gpu.BlendOperation _operation(int equation) {
+  gpu.BlendOperation _operation(int equation) {
     switch (equation) {
       case SubtractEquation:
         return gpu.BlendOperation.subtract;
@@ -2711,15 +2712,13 @@ class GpuRenderer implements EffectComposerRenderer {
         return gpu.BlendOperation.reverseSubtract;
       case MinEquation:
       case MaxEquation:
-        warnOnce(
-          'FlutterGpuRenderer: MinEquation and MaxEquation are not available on Flutter GPU; using AddEquation.',
-        );
+        warnOnce('$name: MinEquation and MaxEquation are not supported; using AddEquation.');
     }
 
     return gpu.BlendOperation.add;
   }
 
-  static gpu.BlendFactor _factor(int factor) {
+  gpu.BlendFactor _factor(int factor) {
     switch (factor) {
       case ZeroFactor:
         return gpu.BlendFactor.zero;
@@ -2746,7 +2745,7 @@ class GpuRenderer implements EffectComposerRenderer {
     }
 
     warnOnce(
-      'FlutterGpuRenderer: constant blend factors read Flutter GPU\'s unset blend color, not material.blendColor '
+      '$name: constant blend factors read the GPU\'s unset blend color, not material.blendColor '
       'and blendAlpha.',
     );
 
@@ -2865,11 +2864,11 @@ class GpuRenderer implements EffectComposerRenderer {
         : texture.matrix.elements;
   }
 
-  static double _channel(Texture? texture) {
+  double _channel(Texture? texture) {
     final channel = texture?.channel ?? 0;
 
     if (channel > 1) {
-      warnOnce('FlutterGpuRenderer: texture channels above 1 (uv2, uv3) are not supported yet; using uv.');
+      warnOnce('$name: texture channels above 1 (uv2, uv3) are not supported yet; using uv.');
       return 0;
     }
 
@@ -3270,7 +3269,7 @@ class GpuRenderer implements EffectComposerRenderer {
   // getToneMappingFunction: an unknown constant warns and uses LinearToneMapping.
   int _toneMapping() {
     if (toneMapping < NoToneMapping || toneMapping > NeutralToneMapping) {
-      warn('FlutterGpuRenderer: Unsupported toneMapping:', [toneMapping]);
+      warn('$name: Unsupported toneMapping:', [toneMapping]);
       return LinearToneMapping;
     }
 

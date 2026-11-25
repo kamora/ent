@@ -704,7 +704,7 @@ void main() {
     expect(eight[0], greaterThan(seven[0] + 2), reason: 'the eighth light adds');
     expect(nine, rgb(eight[0], eight[1], eight[2]), reason: 'the ninth is dropped');
 
-    final warnings = messages.where((m) => m.contains('more than 8 PointLights')).toList();
+    final warnings = messages.where((m) => m.contains('ENT.FlutterGpuRenderer: more than 8 PointLights')).toList();
     expect(warnings, hasLength(1));
   });
 

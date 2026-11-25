@@ -1,3 +1,9 @@
+## 0.1.0-dev.2
+
+- Needs `ent_renderer` 0.1.0-dev.2: warnings from the shared core start with `ENT.OpenGlRenderer:`, not
+  `ENT.FlutterGpuRenderer:`.
+- The example is the one file `example/main.dart`; the example app moved to the repository's `examples/opengl`.
+
 ## 0.1.0-dev.1
 
 - First release: `OpenGlRenderer` on OpenGL ES 3, on ANGLE (from `wrangle`) on macOS and the system's OpenGL ES on

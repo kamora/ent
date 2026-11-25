@@ -24,6 +24,9 @@ class FlutterGpuRenderer extends GpuRenderer {
     super.readsDepth,
   });
 
+  @override
+  String get name => 'FlutterGpuRenderer';
+
   /// Loads the shader bundle and creates a renderer. The bundle is this package's asset
   /// `packages/ent_flutter/build/shaderbundles/ent.shaderbundle`, which its build hook writes. Throws a [StateError]
   /// when the app has not enabled Flutter GPU, or when Flutter GPU cannot render on this device (Android's OpenGL ES

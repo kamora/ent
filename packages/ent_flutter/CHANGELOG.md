@@ -1,3 +1,7 @@
+## 0.1.0-dev.3
+
+- Needs `ent_renderer` 0.1.0-dev.2: warnings from the shared core start with `ENT.FlutterGpuRenderer:`.
+
 ## 0.1.0-dev.2
 
 - **Breaking:** the app names its shader registry under `ent_flutter` (`hooks: user_defines: ent_flutter: shaders:`)

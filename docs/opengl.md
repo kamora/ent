@@ -87,6 +87,9 @@ The parity scenes are the same as Flutter GPU's, compared with the same referenc
   `UnimplementedError`.
 - No anisotropic filtering (`maxSamplerAnisotropy` is 1).
 - A transmissive object drawn into a `CubeCamera` face takes its rows from the cube pass; no scene checks it.
+- A macOS app that depends on `ent_opengl` carries ANGLE (about 6 MB per architecture) even when its registry's
+  `renderers` map gives macOS to `ent_flutter`. Dependencies apply to every platform, and `wrangle`'s build hook,
+  which bundles the library, does not read the map. The library is never loaded there; only the app's size grows.
 
 ## Tests
 
