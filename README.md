@@ -34,7 +34,7 @@ differences are listed in the [compatibility exceptions](docs/compatibility-exce
 
 <div align="center">
 
-![Ent Engine's mascot, an old tree spirit](media/ent-concept.jpg)
+![Ent Engine's mascot, an old tree spirit](media/concept.jpg)
 
 </div>
 
