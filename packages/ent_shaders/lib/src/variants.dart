@@ -106,6 +106,45 @@ String keyOf(String kind, Iterable<String> flags) => [kind, ...flags.toList()..s
   return (kind: kind, flags: flags);
 }
 
+/// The platforms a registry's `renderers` map can name, as the hooks API names them.
+const platforms = ['android', 'ios', 'macos', 'windows', 'linux'];
+
+/// The renderer package a registry file assigns to each platform (`"renderers": {"android": "ent_opengl", ...}`), or
+/// null when it has no map, in which case every renderer builds for every platform it supports. A [FormatException]
+/// for a malformed map or an unknown platform.
+Map<String, String>? readRenderers(String text) {
+  final renderers = switch (json.decode(text)) {
+    {'renderers': final Object? map} => map,
+    _ => null,
+  };
+
+  if (renderers == null) {
+    return null;
+  }
+
+  if (renderers is! Map<String, Object?>) {
+    throw const FormatException('ent_shaders: "renderers" maps a platform to a package, as {"ios": "ent_flutter"}.');
+  }
+
+  final assigned = <String, String>{};
+
+  for (final MapEntry(key: platform, value: package) in renderers.entries) {
+    if (!platforms.contains(platform)) {
+      throw FormatException(
+        'ent_shaders: unknown platform "$platform" in "renderers"; known: ${platforms.join(', ')}.',
+      );
+    }
+
+    if (package is! String) {
+      throw FormatException('ent_shaders: the renderer of "$platform" is a package name, not $package.');
+    }
+
+    assigned[platform] = package;
+  }
+
+  return assigned;
+}
+
 /// The variant keys a registry file lists, normalized; a [FormatException] for a malformed file or key.
 List<String> readRegistry(String text) {
   final variants = switch (json.decode(text)) {

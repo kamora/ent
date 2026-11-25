@@ -33,8 +33,20 @@ where Impeller falls back to OpenGL ES.
          shaders: ent_shaders.json
    ```
 
-   An app that uses Flutter GPU on some platforms and OpenGL ES on others depends on both renderer packages and
-   names the same file under each.
+   An app that uses Flutter GPU on some platforms and OpenGL ES on others depends on both renderer packages, names
+   the same file under each, and says in it which renderer draws where, so each platform carries only its renderer's
+   shaders:
+
+   ```json
+   {
+   	"renderers": {
+   		"ios": "ent_flutter",
+   		"macos": "ent_flutter",
+   		"android": "ent_opengl"
+   	},
+   	"variants": ["basic"]
+   }
+   ```
 3. Install the platform services, create the renderer and show the scene:
 
    ```dart

@@ -96,8 +96,8 @@ InstancedMesh holds 60 fps at 2000):
 - GPU time per frame, and the cost of MSAA, are not measured.
 
 Linux (not in this release): flutter_tester on GitHub's `ubuntu-latest` passes every test but crashes (segmentation
-fault) while shutting down after `parity_test.dart`; cause unknown. The hook keeps every backend there, since it is not
-settled whether Linux apps would draw through Vulkan or OpenGL.
+fault) while shutting down after `parity_test.dart`; cause unknown. No renderer's hook builds for Linux yet, so its
+bundles are empty there; which backends Linux keeps is decided when it is supported.
 
 Tooling: on a fresh checkout an app's device tests need one build first (Flutter collects assets before the shader
 hook runs on that path; `docs/flutter-gpu.md`, "Flags"). Data assets would remove it once Flutter stable has them.

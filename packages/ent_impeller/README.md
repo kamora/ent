@@ -6,7 +6,9 @@ renderer's own shader bundle when an app is built. An app does not use this pack
 
 - `compileShaders(input, output, backends)`: compiles the fixed shaders and the variants the app's registry lists
   (`hooks: user_defines: <renderer package>: shaders:`) into the renderer package's
-  `build/shaderbundles/ent.shaderbundle`, keeping only the backends the renderer draws with on the target.
+  `build/shaderbundles/ent.shaderbundle`, keeping only the backends the renderer draws with on the target. The
+  bundle is empty on a platform the renderer does not support, or one the registry's `renderers` map gives to
+  another renderer.
 - `strip(bundle, backends)`: a bundle with only those backends.
 - `readBundle(bundle, backend)`: a bundle's shaders for one backend, with their inputs, uniform blocks and textures.
 - `findImpellerc()`: the Flutter SDK's `impellerc` (or `IMPELLERC`, which Flutter's tools set for build hooks).

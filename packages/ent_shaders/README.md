@@ -32,6 +32,9 @@ hooks:
 }
 ```
 
+An app with two renderers, one per platform, adds which renderer draws where, such as
+`"renderers": {"ios": "ent_flutter", "android": "ent_opengl"}`; `readRenderers` reads it.
+
 A key is a material kind followed by its flags; [`docs/shader-variants.md`][variants] lists them. A renderer
 throws a `StateError` naming the key of a draw whose variant is missing.
 

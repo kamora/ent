@@ -13,10 +13,38 @@ import 'impellerc.dart';
 
 /// Compiles the shaders a renderer package draws with into `build/shaderbundles/ent.shaderbundle` in that package
 /// (the asset its pubspec declares): the fixed shaders of ent_shaders, plus the variants the app's registry lists
-/// (`hooks: user_defines: <package>: shaders:`), keeping only [backends] of the target. A target missing from
-/// [backends] keeps every backend.
-Future<void> compileShaders(BuildInput input, BuildOutputBuilder output, Map<OS, Set<String>> backends) async {
+/// (`hooks: user_defines: <package>: shaders:`), keeping the target's [backends]. The keys of [backends] are the
+/// platforms the renderer supports; a null value keeps every backend.
+///
+/// The bundle is empty on a platform the renderer does not support, and on one the registry's `renderers` map gives
+/// to another renderer: the renderer's `create()` then says why. The build fails when the map gives this renderer a
+/// platform it does not support, or names a package the app does not have.
+Future<void> compileShaders(BuildInput input, BuildOutputBuilder output, Map<OS, Set<String>?> backends) async {
   final root = input.packageRoot;
+  final package = input.packageName;
+  final registry = input.userDefines.path('shaders');
+  final text = registry == null ? null : File.fromUri(registry).readAsStringSync();
+  final renderers = text == null ? null : readRenderers(text);
+  final target = input.config.buildCodeAssets ? input.config.code.targetOS : null;
+
+  if (registry != null) {
+    output.dependencies.add(registry);
+  }
+
+  for (final MapEntry(key: platform, value: renderer) in renderers?.entries ?? const <MapEntry<String, String>>[]) {
+    if (await Isolate.resolvePackageUri(Uri.parse('package:$renderer/')) == null) {
+      throw StateError(
+        '$package: the shader registry gives $platform to $renderer, which is not a package of this app.',
+      );
+    }
+
+    if (renderer == package && !backends.keys.any((os) => os.name == platform)) {
+      throw StateError(
+        '$package: the shader registry gives $platform to $package, which supports only '
+        '${backends.keys.map((os) => os.name).join(', ')}.',
+      );
+    }
+  }
 
   // Every build of the package, from any app using it (by path, or through one pub cache), rewrites build/variants/
   // and the one bundle: they take turns, or one wipes the sources another is still compiling. Closing the file
@@ -27,49 +55,20 @@ Future<void> compileShaders(BuildInput input, BuildOutputBuilder output, Map<OS,
   await lock.lock(FileLock.blockingExclusive);
 
   try {
-    final shaders = (await Isolate.resolvePackageUri(Uri.parse('package:ent_shaders/')))!.resolve('../');
-    final fixed = shaders.resolve('ent.shaderbundle.json');
-    final manifest = {
-      for (final MapEntry(:key, :value) in (json.decode(File.fromUri(fixed).readAsStringSync()) as Map).entries)
-        key as String: {...value as Map, 'file': shaders.resolve(value['file'] as String).toFilePath()},
-    };
-    final registry = input.userDefines.path('shaders');
-    final variants = Directory.fromUri(root.resolve('build/variants/'));
-
-    if (variants.existsSync()) {
-      variants.deleteSync(recursive: true);
-    }
-
-    variants.createSync(recursive: true);
-    output.dependencies.add(fixed);
-
-    if (registry != null) {
-      output.dependencies.add(registry);
-
-      for (final key in readRegistry(File.fromUri(registry).readAsStringSync())) {
-        final file = File.fromUri(variants.uri.resolve(fileOf(key)))..writeAsStringSync(sourceOf(key));
-        manifest[key] = {'type': 'fragment', 'file': file.path};
-      }
-    }
-
-    final impellerc = findImpellerc();
     final bundle = File.fromUri(root.resolve('build/shaderbundles/ent.shaderbundle'))..parent.createSync();
-    final read = compileBundle(impellerc, manifest, bundle, includes: [shaders]);
+    File? impellerc;
 
-    // The variants are written again on every build: depending on them would rerun the hook every time; their
-    // registry stands for them. The compiler is an input too, so a new Flutter recompiles.
-    output.dependencies.addAll([
-      for (final file in read)
-        if (!file.absolute.path.startsWith(Directory.fromUri(root.resolve('build/')).path)) file.absolute.uri,
-      impellerc.absolute.uri,
-    ]);
+    // Drawn here: a supported target, which the registry's map (when it has one) gives to this renderer.
+    if (target == null || backends.containsKey(target) && (renderers == null || renderers[target.name] == package)) {
+      impellerc = findImpellerc();
+      output.dependencies.addAll(await _compile(root, text, impellerc, bundle));
+      final kept = backends[target];
 
-    // The target and its backends: a target missing from [backends] (Linux, Windows) keeps all.
-    final target = input.config.buildCodeAssets ? input.config.code.targetOS : null;
-    final kept = backends[target];
-
-    if (kept != null) {
-      bundle.writeAsBytesSync(strip(bundle.readAsBytesSync(), kept));
+      if (kept != null) {
+        bundle.writeAsBytesSync(strip(bundle.readAsBytesSync(), kept));
+      }
+    } else {
+      bundle.writeAsBytesSync(const []);
     }
 
     // Every target and registry writes this one bundle, so another build may have replaced it. The stamp says whose
@@ -77,11 +76,42 @@ Future<void> compileShaders(BuildInput input, BuildOutputBuilder output, Map<OS,
     // reruns a hook whose input is dated after it started the hook.
     output.dependencies.add(
       (File.fromUri(root.resolve('build/shaderbundles/ent.shaderbundle.owner'))
-            ..writeAsStringSync('${target?.name} $registry ${impellerc.path}\n')
+            ..writeAsStringSync('${target?.name} $registry ${impellerc?.path}\n')
             ..setLastModifiedSync(DateTime.utc(2000)))
           .uri,
     );
   } finally {
     await lock.close();
   }
+}
+
+// Compiles the fixed shaders and the variants of the registry [text] into [bundle], with every backend. Returns the
+// files to depend on: those impellerc read, but not the variants (written again on every build, they would rerun
+// the hook every time; their registry stands for them), and the compiler, so a new Flutter recompiles.
+Future<List<Uri>> _compile(Uri root, String? text, File impellerc, File bundle) async {
+  final shaders = (await Isolate.resolvePackageUri(Uri.parse('package:ent_shaders/')))!.resolve('../');
+  final fixed = shaders.resolve('ent.shaderbundle.json');
+  final manifest = {
+    for (final MapEntry(:key, :value) in (json.decode(File.fromUri(fixed).readAsStringSync()) as Map).entries)
+      key as String: {...value as Map, 'file': shaders.resolve(value['file'] as String).toFilePath()},
+  };
+  final variants = Directory.fromUri(root.resolve('build/variants/'));
+
+  if (variants.existsSync()) {
+    variants.deleteSync(recursive: true);
+  }
+
+  variants.createSync(recursive: true);
+
+  for (final key in text == null ? const <String>[] : readRegistry(text)) {
+    final file = File.fromUri(variants.uri.resolve(fileOf(key)))..writeAsStringSync(sourceOf(key));
+    manifest[key] = {'type': 'fragment', 'file': file.path};
+  }
+
+  return [
+    fixed,
+    for (final file in compileBundle(impellerc, manifest, bundle, includes: [shaders]))
+      if (!file.absolute.path.startsWith(Directory.fromUri(root.resolve('build/')).path)) file.absolute.uri,
+    impellerc.absolute.uri,
+  ];
 }

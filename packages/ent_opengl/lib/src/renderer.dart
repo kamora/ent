@@ -49,6 +49,14 @@ class OpenGlRenderer extends GpuRenderer {
       throw StateError('ent_opengl: no shader bundle; is the build hook of ent_opengl enabled? $error');
     }
 
+    // The hook writes an empty bundle where this renderer is not drawn.
+    if (bytes.lengthInBytes == 0) {
+      throw StateError(
+        'ent_opengl: not built for this platform: ent_opengl does not support it, or the "renderers" map of the '
+        'app\'s shader registry gives it to another renderer.',
+      );
+    }
+
     final library = GlLibrary(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
 
     // Outside a try: a shader missing from the bundle throws its own error, naming the shader.

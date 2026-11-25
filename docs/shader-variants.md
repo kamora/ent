@@ -44,8 +44,24 @@ hooks:
       shaders: ent_shaders.json
 ```
 
-An app that uses `ent_opengl` names it under `ent_opengl:`; an app that uses both renderers (one per platform, say)
-names the same file under both.
+An app that uses `ent_opengl` names it under `ent_opengl:`. An app that uses both renderers, one per platform, names
+the same file under both, and says in it which renderer draws on which platform:
+
+```json
+{
+	"renderers": {
+		"ios": "ent_flutter",
+		"macos": "ent_flutter",
+		"android": "ent_opengl"
+	},
+	"variants": ["basic", "lambert map"]
+}
+```
+
+Each renderer's hook then compiles only for the platforms given to it, and writes an empty bundle elsewhere; its
+`create()` there throws a `StateError` saying it was not built for the platform. Without `renderers`, a renderer
+compiles for every platform it supports. The build fails when the map gives a renderer a platform it does not support
+(`ent_opengl` on `ios`), or names a package the app does not have. A platform missing from the map gets no renderer.
 
 ```json
 {
@@ -82,11 +98,13 @@ release behave the same.
    shader or upgrading Flutter rebuilds the bundle.
 4. Strip the bundle to the backends the renderer runs on the target. `ent_flutter`: Metal iOS (iOS); Metal desktop and
    Vulkan (macOS, where `flutter test` runs Vulkan); Vulkan (Android). `ent_opengl`: OpenGL ES, as GLSL ES 3.00
-   (`--gles-language-version=300`), on macOS and Android. Another target keeps all five. impellerc ignores platform
-   flags in bundle mode, so `ent_impeller`'s `lib/src/bundles.dart` rewrites its FlatBuffer output (`flat_buffers`),
-   with the target OS from the hook's code config. The test registry's macOS bundles (2026-11-25): 22.0 MB for
-   `ent_flutter`, 12.6 MB for `ent_opengl`; one bundle with both took 33.3 MB. `readBundle` reads one backend's
-   shaders, with their inputs, uniform blocks and textures, for a renderer that loads the bundle itself.
+   (`--gles-language-version=300`), on macOS and Android. On a platform the renderer does not support, or one the
+   registry gives to the other renderer, the hook compiles nothing and writes an empty bundle (checked in a scratch app
+   with both renderers, 2026-11-25: macOS, iOS and Android each carry only their renderer's shaders). impellerc ignores
+   platform flags in bundle mode, so `ent_impeller`'s `lib/src/bundles.dart` rewrites its FlatBuffer output
+   (`flat_buffers`), with the target OS from the hook's code config. The test registry's macOS bundles (2026-11-25):
+   22.0 MB for `ent_flutter`, 12.6 MB for `ent_opengl`; one bundle with both took 33.3 MB. `readBundle` reads one
+   backend's shaders, with their inputs, uniform blocks and textures, for a renderer that loads the bundle itself.
 5. Write `build/shaderbundles/ent.shaderbundle.owner` (the target OS, the registry and the compiler) and declare it
    an input of the hook: every build writes the same bundle, so one for another target or registry replaces it and
    rewrites the stamp, and the next build for this one reruns the hook. The stamp is dated 2000, so the hook runner

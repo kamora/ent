@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:ent/ent.dart';
 import 'package:ent_renderer/ent_renderer.dart';
 import 'package:ent_renderer/gpu.dart' as gpu;
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart' hide Texture;
 import 'package:flutter_gpu/gpu.dart' as flutter_gpu;
 
@@ -60,12 +61,7 @@ class FlutterGpuRenderer extends GpuRenderer {
     FlutterGpuLibrary? library;
     Object? error;
 
-    // An app reaches the bundle under this package's name; this package's own tests, where it is the root package,
-    // without it.
-    for (final key in const [
-      'packages/ent_flutter/build/shaderbundles/ent.shaderbundle',
-      'build/shaderbundles/ent.shaderbundle',
-    ]) {
+    for (final key in _bundles) {
       try {
         library = await FlutterGpuLibrary.fromAsset(key);
       } catch (e) {
@@ -78,6 +74,16 @@ class FlutterGpuRenderer extends GpuRenderer {
     }
 
     if (library == null) {
+      // The hook writes an empty bundle where this renderer is not drawn.
+      for (final key in _bundles) {
+        if (await _empty(key)) {
+          throw StateError(
+            'ent_flutter: not built for this platform: ent_flutter does not support it, or the "renderers" map of '
+            'the app\'s shader registry gives it to another renderer.',
+          );
+        }
+      }
+
       throw StateError(
         'ent_flutter: no shader bundle for this GPU; is the build hook of ent_flutter enabled? A bundle built for '
         'another target keeps only that target\'s backends: rebuild for this one. ${error ?? ''}',
@@ -136,4 +142,17 @@ final class _ImageDisplay implements FrameDisplay {
 
   @override
   void dispose() => _image?.dispose();
+}
+
+// The shader bundle as an app reaches it, under this package's name, and as this package's own tests do: there it is
+// the root package, whose assets have no prefix.
+const _bundles = ['packages/ent_flutter/build/shaderbundles/ent.shaderbundle', 'build/shaderbundles/ent.shaderbundle'];
+
+// Whether the asset [key] exists and is empty.
+Future<bool> _empty(String key) async {
+  try {
+    return (await rootBundle.load(key)).lengthInBytes == 0;
+  } catch (_) {
+    return false;
+  }
 }

@@ -13,6 +13,21 @@ void main() {
     ]);
   });
 
+  test('the renderers map: each platform with its package, or null without one', () {
+    expect(readRenderers('{"variants": []}'), isNull);
+    expect(readRenderers('{"renderers": {"ios": "ent_flutter", "android": "ent_opengl"}, "variants": []}'), {
+      'ios': 'ent_flutter',
+      'android': 'ent_opengl',
+    });
+    expect(readRegistry('{"renderers": {"ios": "ent_flutter"}, "variants": ["basic"]}'), ['basic']);
+    expect(
+      () => readRenderers('{"renderers": {"iphone": "ent_flutter"}}'),
+      throwsA(isA<FormatException>().having((e) => e.message, 'message', contains('unknown platform "iphone"'))),
+    );
+    expect(() => readRenderers('{"renderers": {"ios": 1}}'), throwsFormatException);
+    expect(() => readRenderers('{"renderers": ["ios"]}'), throwsFormatException);
+  });
+
   test('an unknown kind or flag names itself and what is known', () {
     expect(
       () => parseKey('lava map'),
