@@ -73,9 +73,11 @@ bool isPng(Uint8List bytes) {
   final pixels = Uint8List(width * height * 4);
 
   // The tRNS key of a gray or RGB image, in raw samples.
-  final key = trns != null && type != 3
-      ? [for (var i = 0; i + 1 < trns.length; i += 2) trns[i] << 8 | trns[i + 1]]
-      : null;
+  List<int>? key;
+
+  if (trns != null && type != 3) {
+    key = [for (var i = 0; i + 1 < trns.length; i += 2) trns[i] << 8 | trns[i + 1]];
+  }
 
   int sample(Uint8List row, int i) => switch (depth) {
     16 => row[i * 2] << 8 | row[i * 2 + 1],
@@ -152,11 +154,22 @@ bool isPng(Uint8List bytes) {
             pixels.setRange(o, o + 3, palette, index * 3);
           }
 
-          pixels[o + 3] = trns != null && index < trns.length ? trns[index] : 255;
+          if (trns != null && index < trns.length) {
+            pixels[o + 3] = trns[index];
+          } else {
+            pixels[o + 3] = 255;
+          }
         } else if (type == 0 || type == 4) {
           final gray = sample(row, s);
           pixels.fillRange(o, o + 3, scale(gray));
-          pixels[o + 3] = type == 4 ? scale(sample(row, s + 1)) : (key != null && gray == key[0] ? 0 : 255);
+
+          if (type == 4) {
+            pixels[o + 3] = scale(sample(row, s + 1));
+          } else if (key != null && gray == key[0]) {
+            pixels[o + 3] = 0;
+          } else {
+            pixels[o + 3] = 255;
+          }
         } else {
           final r = sample(row, s);
           final g = sample(row, s + 1);
@@ -164,10 +177,15 @@ bool isPng(Uint8List bytes) {
           pixels
             ..[o] = scale(r)
             ..[o + 1] = scale(g)
-            ..[o + 2] = scale(b)
-            ..[o + 3] = type == 6
-                ? scale(sample(row, s + 3))
-                : (key != null && key.length == 3 && r == key[0] && g == key[1] && b == key[2] ? 0 : 255);
+            ..[o + 2] = scale(b);
+
+          if (type == 6) {
+            pixels[o + 3] = scale(sample(row, s + 3));
+          } else if (key != null && key.length == 3 && r == key[0] && g == key[1] && b == key[2]) {
+            pixels[o + 3] = 0;
+          } else {
+            pixels[o + 3] = 255;
+          }
         }
       }
     }
@@ -203,7 +221,14 @@ void _unfilter(int filter, Uint8List row, Uint8List prior, int step) {
         final pa = (b - c).abs();
         final pb = (a - c).abs();
         final pc = (a + b - c - c).abs();
-        row[i] += pa <= pb && pa <= pc ? a : (pb <= pc ? b : c);
+
+        if (pa <= pb && pa <= pc) {
+          row[i] += a;
+        } else if (pb <= pc) {
+          row[i] += b;
+        } else {
+          row[i] += c;
+        }
       }
     default:
       throw FormatException('PNG: unknown filter $filter');

@@ -2,7 +2,7 @@ name: ent_renderer
 description: >-
   The renderer core of Ent Engine, shared by its renderers: render lists, programs, uniforms, lights, shadows,
   environment maps and passes, written against a small GPU interface each renderer implements.
-version: 0.1.0-dev.2
+version: 0.1.0-dev.3
 repository: https://github.com/kamora/ent/tree/master/packages/ent_renderer
 issue_tracker: https://github.com/kamora/ent/issues
 platforms:

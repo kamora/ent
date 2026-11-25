@@ -1029,8 +1029,17 @@ class GpuRenderer implements EffectComposerRenderer {
     // `_currentViewport`, `_currentScissor`) in Flutter GPU's top-left origin, the scissor within the frame; `null`
     // where they cover the whole frame, the common case, which sets neither (exception E-FRAME); compile's 1 × 1 frame
     // uses neither. Flutter GPU rejects a viewport that starts outside the frame (GL takes it).
-    final view = target == null && !_warming ? _flip(_currentViewport, width, height) : null;
-    final cut = target == null && !_warming && _scissorTest ? _flip(_currentScissor, width, height, clamp: true) : null;
+    (int, int, int, int)? view;
+    (int, int, int, int)? cut;
+
+    if (target == null && !_warming) {
+      view = _flip(_currentViewport, width, height);
+
+      if (_scissorTest) {
+        cut = _flip(_currentScissor, width, height, clamp: true);
+      }
+    }
+
     final paint = autoClear || force || clearColor;
     final wipe = autoClear || force || clearDepth;
     final cleared = paint && cut == null;
@@ -1052,18 +1061,20 @@ class GpuRenderer implements EffectComposerRenderer {
     final stored = _kept;
 
     if (target == null && !_warming) {
-      _kept = autoClear
-          ? null
-          : stored != null && stored.width == width && stored.height == height
-          ? stored
-          : _context.createTexture(
-              gpu.StorageMode.devicePrivate,
-              width,
-              height,
-              format: _context.defaultDepthStencilFormat,
-              sampleCount: _samples,
-              enableShaderReadUsage: false,
-            );
+      if (autoClear) {
+        _kept = null;
+      } else if (stored != null && stored.width == width && stored.height == height) {
+        _kept = stored;
+      } else {
+        _kept = _context.createTexture(
+          gpu.StorageMode.devicePrivate,
+          width,
+          height,
+          format: _context.defaultDepthStencilFormat,
+          sampleCount: _samples,
+          enableShaderReadUsage: false,
+        );
+      }
     }
 
     final depthLoad = switch (target) {
@@ -1079,15 +1090,26 @@ class GpuRenderer implements EffectComposerRenderer {
     // them without autoClear, and resolves into its texture at the end of every render (the reference resolves in
     // updateMultisampleRenderTarget after each render into it).
     final sampled = target == null ? _sampled : target.samples;
+    var colorLoad = gpu.LoadAction.load;
+    var depthStore = gpu.StoreAction.dontCare;
+
+    if (cleared || (target == null && !copy)) {
+      colorLoad = gpu.LoadAction.clear;
+    } else if (copy) {
+      colorLoad = gpu.LoadAction.dontCare;
+    }
+
+    if (target != null || kept) {
+      depthStore = gpu.StoreAction.store;
+    }
+
     final pass = commands.createRenderPass(
       gpu.RenderTarget.singleColor(
         gpu.ColorAttachment(
           texture: sampled ?? texture,
           resolveTexture: sampled == null ? null : texture,
           slice: into is WebGLCubeRenderTarget ? _face : 0,
-          loadAction: cleared || (target == null && !copy)
-              ? gpu.LoadAction.clear
-              : (copy ? gpu.LoadAction.dontCare : gpu.LoadAction.load),
+          loadAction: colorLoad,
           storeAction: switch ((sampled, target)) {
             (null, _) => gpu.StoreAction.store,
             (_, null) => gpu.StoreAction.multisampleResolve,
@@ -1098,7 +1120,7 @@ class GpuRenderer implements EffectComposerRenderer {
         depthStencilAttachment: gpu.DepthStencilAttachment(
           texture: target?.depth ?? (kept ? _kept! : _depthBuffer!),
           depthLoadAction: depthLoad ? gpu.LoadAction.load : gpu.LoadAction.clear,
-          depthStoreAction: target != null || kept ? gpu.StoreAction.store : gpu.StoreAction.dontCare,
+          depthStoreAction: depthStore,
           depthClearValue: 1,
         ),
       ),
@@ -1111,7 +1133,7 @@ class GpuRenderer implements EffectComposerRenderer {
     // The copy, and a clear inside the scissor (gl.clear is scissored; the load action clears the whole attachment):
     // the clear value over the copy or transparent black, then the far depth over the loaded depth with the color
     // kept by blending (ZERO, ONE). Both are drawn before the scissor applies.
-    final rect = cut == null || !paint ? null : cut;
+    final rect = paint ? cut : null;
 
     if (copy || rect != null) {
       pass
@@ -1244,7 +1266,7 @@ class GpuRenderer implements EffectComposerRenderer {
       for (final items in [_list.opaque, _list.transmissive, _list.transparent]) {
         for (final item in items) {
           final object = item.object;
-          final material = override != null && item.material.allowOverride ? override : item.material;
+          final material = _overridden(override, item.material);
           final surface = _Surface.of(material);
 
           if (object is! Mesh ||
@@ -1323,7 +1345,11 @@ class GpuRenderer implements EffectComposerRenderer {
       (x1, y1) = (x1.clamp(x0, width), y1.clamp(y0, height));
     }
 
-    return x0 == 0 && y0 == 0 && x1 == width && y1 == height ? null : (x0, y0, x1 - x0, y1 - y0);
+    if (x0 == 0 && y0 == 0 && x1 == width && y1 == height) {
+      return null;
+    }
+
+    return (x0, y0, x1 - x0, y1 - y0);
   }
 
   // The background's clear value, as the reference renders it: in the output color space ([linear]: the working color
@@ -1364,9 +1390,12 @@ class GpuRenderer implements EffectComposerRenderer {
   void _transmissionPass(Object3D scene, Camera camera, _Background? background, int width, int height) {
     final w = (width * transmissionResolutionScale).floor().clamp(1, 16384);
     final h = (height * transmissionResolutionScale).floor().clamp(1, 16384);
-    final target = _transmission?.width == w && _transmission?.height == h
-        ? _transmission!
-        : _transmission = _TransmissionTarget(_context, w, h);
+
+    if (_transmission?.width != w || _transmission?.height != h) {
+      _transmission = _TransmissionTarget(_context, w, h);
+    }
+
+    final target = _transmission!;
     final (clear, _) = _clearValue(scene, background, linear: true, transmission: true);
     final (frameWidth, frameHeight, into) = (_frameWidth, _frameHeight, _intoTarget);
     final doubles = [
@@ -1604,7 +1633,11 @@ class GpuRenderer implements EffectComposerRenderer {
     if (material is List) {
       for (final group in geometry.groups) {
         final index = group.materialIndex;
-        final m = index is int && index >= 0 && index < material.length ? material[index] as Material? : null;
+        Material? m;
+
+        if (index is int && index >= 0 && index < material.length) {
+          m = material[index] as Material?;
+        }
 
         if (m != null && m.visible) {
           _castShadow(pass, object, geometry, m, group, scene, camera, shadowCamera);
@@ -1789,7 +1822,7 @@ class GpuRenderer implements EffectComposerRenderer {
 
     variant.outputInfo
       ..begin()
-      ..float('tone_mapping', background.toneMapped && !_intoTarget ? _toneMapping().toDouble() : 0)
+      ..float('tone_mapping', _toneMapping(background.toneMapped))
       ..float('tone_mapping_exposure', toneMappingExposure)
       ..flag('output_srgb', !_intoTarget && ColorManagement.getTransfer(outputColorSpace) == SRGBTransfer);
 
@@ -1949,6 +1982,19 @@ class GpuRenderer implements EffectComposerRenderer {
     });
   }
 
+  // The scene's overrideMaterial [override] where [material] allows it, else [material].
+  static Material _overridden(Material? override, Material material) {
+    if (override == null) {
+      return material;
+    }
+
+    if (!material.allowOverride) {
+      return material;
+    }
+
+    return override;
+  }
+
   Program? _unsupported(String message) {
     warnOnce('$name: $message');
     return null;
@@ -1959,7 +2005,7 @@ class GpuRenderer implements EffectComposerRenderer {
   void _renderObject(gpu.RenderPass pass, RenderItem item, Object3D scene, Camera camera, [int? side]) {
     final object = item.object;
     final override = scene is Scene ? scene.overrideMaterial : null;
-    final material = override != null && item.material.allowOverride ? override : item.material;
+    final material = _overridden(override, item.material);
 
     if (!object.layers.test(camera.layers)) {
       return;
@@ -2175,7 +2221,12 @@ class GpuRenderer implements EffectComposerRenderer {
     final variant = program.variant(offset: material.polygonOffset);
 
     // renderInstances' instance count, and USE_INSTANCING_COLOR (color_fragment multiplies by vColor).
-    final instanced = object is InstancedMesh && program.slots.last.instance ? object : null;
+    InstancedMesh? instanced;
+
+    if (object is InstancedMesh && program.slots.last.instance) {
+      instanced = object;
+    }
+
     final tint = instanced?.instanceColor != null;
 
     // Bindings persist across draws: a program with fewer vertex slots would inherit the previous ones.
@@ -2220,7 +2271,12 @@ class GpuRenderer implements EffectComposerRenderer {
 
     // The environment of the standard, Lambert and Phong kinds (a PMREM, except for a Lambert or Phong material's own
     // envMap) and its rotation.
-    final environment = _environmental(material) && scene is Scene ? scene.environment : null;
+    Texture? environment;
+
+    if (_environmental(material) && scene is Scene) {
+      environment = scene.environment;
+    }
+
     final own = _envMap(material);
     final pmrem = material is MeshStandardMaterial || (_environmental(material) && own == null);
     final env = _environments.get(own ?? environment, pmrem: pmrem);
@@ -2452,9 +2508,14 @@ class GpuRenderer implements EffectComposerRenderer {
   // stage). An InstancedMesh.morphTexture (setMorphAt) gives each instance its own influences. A kind without the
   // variant draws once.
   Program _instancedOf(Program kind, InstancedMesh object, bool morphed) {
-    final program = morphed && object.morphTexture != null
-        ? kind.instancedMorphTexture
-        : (morphed ? kind.instancedMorphed : kind.instanced);
+    var program = kind.instanced;
+
+    if (morphed && object.morphTexture != null) {
+      program = kind.instancedMorphTexture;
+    } else if (morphed) {
+      program = kind.instancedMorphed;
+    }
+
     return program ??
         (_unsupported('${kind.name} has no instancing variant; an InstancedMesh with it is drawn once.') ??
             (morphed ? _morphedOf(kind) : kind));
@@ -2566,8 +2627,11 @@ class GpuRenderer implements EffectComposerRenderer {
     }
 
     final attributes = geometry.morphAttributes;
-    final alpha = geometry.getAttribute('color')?.itemSize == 4;
-    final colors = attributes['color'] != null && material.vertexColors ? (alpha ? 2 : 1) : 0;
+    var colors = 0;
+
+    if (attributes['color'] != null && material.vertexColors) {
+      colors = geometry.getAttribute('color')?.itemSize == 4 ? 2 : 1;
+    }
 
     variant.morphInfo
       ..begin()
@@ -2624,7 +2688,11 @@ class GpuRenderer implements EffectComposerRenderer {
       return;
     }
 
-    final blending = material.blending == NormalBlending && !material.transparent ? NoBlending : material.blending;
+    var blending = material.blending;
+
+    if (blending == NormalBlending && !material.transparent) {
+      blending = NoBlending;
+    }
 
     if (blending == NoBlending) {
       pass.setColorBlendEnable(false);
@@ -2987,8 +3055,13 @@ class GpuRenderer implements EffectComposerRenderer {
         ..float('specular_intensity', m.specularIntensity)
         ..floats('specular_color', [specular.r, specular.g, specular.b])
         ..float('diffuse_roughness', m.diffuseRoughness > 0 ? m.diffuseRoughness : 0)
-        ..float('retroreflectivity', m.retroreflectivity > 0 ? m.retroreflectivity : 0)
-        ..float('dispersion', m.dispersion > 0 && m.transmission > 0 ? m.dispersion : 0);
+        ..float('retroreflectivity', m.retroreflectivity > 0 ? m.retroreflectivity : 0);
+
+      if (m.dispersion > 0 && m.transmission > 0) {
+        block.float('dispersion', m.dispersion);
+      } else {
+        block.float('dispersion', 0);
+      }
 
       if (m.clearcoat > 0) {
         block
@@ -3027,12 +3100,11 @@ class GpuRenderer implements EffectComposerRenderer {
           ..floats('transmission_size', [(target?.width ?? 1).toDouble(), (target?.height ?? 1).toDouble()]);
       }
 
-      variant.bindTexture(
-        pass,
-        'transmission_sampler_map',
-        m.transmission > 0 && target != null ? target : _textures.fallback,
-        _TransmissionTarget.sampler,
-      );
+      if (m.transmission > 0 && target != null) {
+        variant.bindTexture(pass, 'transmission_sampler_map', target, _TransmissionTarget.sampler);
+      } else {
+        variant.bindTexture(pass, 'transmission_sampler_map', _textures.fallback, _TransmissionTarget.sampler);
+      }
     } else {
       variant.bindTexture(pass, 'transmission_sampler_map', _textures.fallback, gpu.SamplerOptions());
     }
@@ -3082,9 +3154,15 @@ class GpuRenderer implements EffectComposerRenderer {
 
   // The shared maps (shaders/maps.glsl): map, alphaMap, alphaTest, aoMap, lightMap, emissiveMap, specularMap.
   void _mapUniforms(gpu.RenderPass pass, ProgramVariant variant, Material material, _Surface surface) {
+    var alphaTest = 0.0;
+
+    if (material.alphaTest > 0 && material is! LineDashedMaterial) {
+      alphaTest = material.alphaTest;
+    }
+
     variant.mapInfo
       ..begin()
-      ..float('alpha_test', material.alphaTest > 0 && material is! LineDashedMaterial ? material.alphaTest : 0)
+      ..float('alpha_test', alphaTest)
       ..float('ao_map_intensity', surface.aoMapIntensity)
       ..float('light_map_intensity', surface.lightMapIntensity);
 
@@ -3244,7 +3322,7 @@ class GpuRenderer implements EffectComposerRenderer {
       ..float('target_rows', _context.rowsUp ? 1 : -1)
       ..flag('opaque', !material.transparent && material.blending == NormalBlending && !material.alphaToCoverage)
       ..flag('premultiplied_alpha', material.premultipliedAlpha)
-      ..float('tone_mapping', material.toneMapped && !_intoTarget ? _toneMapping().toDouble() : 0)
+      ..float('tone_mapping', _toneMapping(material.toneMapped))
       ..float('tone_mapping_exposure', toneMappingExposure)
       ..flag('output_srgb', !_intoTarget && ColorManagement.getTransfer(outputColorSpace) == SRGBTransfer);
 
@@ -3266,14 +3344,23 @@ class GpuRenderer implements EffectComposerRenderer {
     }
   }
 
-  // getToneMappingFunction: an unknown constant warns and uses LinearToneMapping.
-  int _toneMapping() {
-    if (toneMapping < NoToneMapping || toneMapping > NeutralToneMapping) {
-      warn('$name: Unsupported toneMapping:', [toneMapping]);
-      return LinearToneMapping;
+  // getToneMappingFunction for something drawn with [toneMapped]: none (0) where it is not tone mapped or the render
+  // goes into a target; an unknown constant warns and uses LinearToneMapping.
+  double _toneMapping(bool toneMapped) {
+    if (!toneMapped) {
+      return 0;
     }
 
-    return toneMapping;
+    if (_intoTarget) {
+      return 0;
+    }
+
+    if (toneMapping < NoToneMapping || toneMapping > NeutralToneMapping) {
+      warn('$name: Unsupported toneMapping:', [toneMapping]);
+      return LinearToneMapping.toDouble();
+    }
+
+    return toneMapping.toDouble();
   }
 
   static gpu.CompareFunction _compare(int depthFunc) {

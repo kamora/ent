@@ -1,3 +1,7 @@
+## 0.1.0-dev.3
+
+- Internal: conditional expressions test one condition each; behaviour and frames unchanged.
+
 ## 0.1.0-dev.2
 
 - The core's warnings name the renderer that prints them (`ENT.OpenGlRenderer: …`, `ENT.FlutterGpuRenderer: …`)

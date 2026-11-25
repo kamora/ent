@@ -1489,6 +1489,34 @@ export default {
 
 	},
 
+	// Anisotropic filtering (anisotropy 16) on map_receding_plane's plane. The checker's two colors (NoColorSpace)
+	// average exactly at every level (120 in each channel), so a CPU-built and a GPU-built mip chain are the same
+	// and only the sampler's anisotropy shapes the far rows; without it they blur toward the average much sooner.
+	map_anisotropy() {
+
+		const map = new THREE.DataTexture( checker( 64, 64, 4, [ 40, 200, 120, 255 ], [ 200, 40, 120, 255 ] ), 64, 64 );
+		Object.assign( map, {
+			wrapS: THREE.RepeatWrapping,
+			wrapT: THREE.RepeatWrapping,
+			minFilter: THREE.LinearMipmapLinearFilter,
+			magFilter: THREE.LinearFilter,
+			generateMipmaps: true,
+			anisotropy: 16,
+		} );
+		map.repeat.set( 2, 6 );
+		map.needsUpdate = true;
+
+		const plane = new THREE.Mesh( new THREE.PlaneGeometry( 2.4, 12 ), new THREE.MeshBasicMaterial( { map } ) );
+		plane.rotation.x = - Math.PI / 2;
+		plane.position.set( 0.013, - 0.5, - 5.17 );
+
+		const scene = new THREE.Scene();
+		scene.add( plane );
+
+		return { scene, camera: camera( 50, [ 0, 0.4, 1.4 ] ), clear: [ 0x000000, 1 ] };
+
+	},
+
 	// alphaMap (green channel, linear filtering, from uv1 on one quad) with alphaTest: hard cut-out edges.
 	map_alpha_map_alpha_test() {
 
@@ -3635,6 +3663,44 @@ export default {
 			camera: front(),
 			clear: [ 0x202020, 1 ],
 			cube: { size: 32, options: {}, near: 0.1, far: 100, position: mirror.position.toArray() },
+		};
+
+	},
+
+	// A transmissive pane drawn into a CubeCamera face: the cube pass runs its own transmission pass. The mirror is
+	// cube_camera_standard's quad with MeshBasicMaterial, which shows the cube texture without prefiltering; it
+	// reflects mostly the +x face, where a tinted pane facing it stands before four horizontal stripes, so a
+	// transmission target read upside down shows them in the wrong order. The stripes run past both the mirror's
+	// view and the main view (from z -2.4 to 4): a stripe's corner seen through the pane is covered differently by
+	// the 4× multisample positions where a renderer draws the target's rows from the top (Flutter GPU, up to
+	// 6/255 in the mirror) instead of from the bottom (WebGL). The main view sees the pane edge-on at its right.
+	cube_camera_transmission() {
+
+		const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+		const [ a, b ] = [ at( [ [ 16, 20 ] ], 3 ), at( [ [ 80, 60 ] ], 3 ) ];
+		const mirror = new THREE.Mesh( plain( new THREE.PlaneGeometry( b[ 0 ] - a[ 0 ], a[ 1 ] - b[ 1 ] ) ), material );
+		mirror.position.set( ( a[ 0 ] + b[ 0 ] ) / 2, ( a[ 1 ] + b[ 1 ] ) / 2, 0 );
+		mirror.geometry.setAttribute( 'normal', new THREE.Float32BufferAttribute( Array( 4 ).fill( [ 0.6, 0, 0.8 ] ).flat(), 3 ) );
+
+		const scene = room( material, mirror );
+
+		for ( const [ color, y ] of [ [ 0xff5533, 1.35 ], [ 0x33cc66, 1.05 ], [ 0x3366ff, 0.75 ], [ 0xffcc33, 0.45 ] ] ) {
+
+			const stripe = quad( new THREE.MeshBasicMaterial( { color } ), 2.6, y, 0.8, 6.4, 0.3 );
+			stripe.rotation.y = - Math.PI / 2;
+			scene.add( stripe );
+
+		}
+
+		const pane = quad( new THREE.MeshPhysicalMaterial( { color: 0xffffff, roughness: 0.05, transmission: 1, thickness: 0.3, attenuationColor: 0xccddff, attenuationDistance: 2 } ), 1.8, 0, 0, 3, 3 );
+		pane.rotation.y = - Math.PI / 2;
+		scene.add( pane );
+
+		return {
+			scene,
+			camera: front(),
+			clear: [ 0x202020, 1 ],
+			cube: { size: 64, options: {}, near: 0.1, far: 100, position: mirror.position.toArray() },
 		};
 
 	},

@@ -145,9 +145,11 @@ class RenderList {
           if (material is List) {
             for (final group in geometry.groups) {
               final index = group.materialIndex;
-              final groupMaterial = index is int && index >= 0 && index < material.length
-                  ? material[index] as Material?
-                  : null;
+              Material? groupMaterial;
+
+              if (index is int && index >= 0 && index < material.length) {
+                groupMaterial = material[index] as Material?;
+              }
 
               if (groupMaterial != null && groupMaterial.visible) {
                 _push(object, geometry, groupMaterial, groupOrder, group, camera);

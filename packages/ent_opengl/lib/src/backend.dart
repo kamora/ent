@@ -200,8 +200,22 @@ final class GlContext implements ent.GpuContext {
   @override
   bool get doesSupportOffscreenMSAA => true;
 
+  // EXT_texture_filter_anisotropic's limit, as the reference reads it (WebGLCapabilities.getMaxAnisotropy); 1
+  // without the extension.
   @override
-  int get maxSamplerAnisotropy => 1;
+  late final int maxSamplerAnisotropy = () {
+    _current();
+
+    if (!glGetString(glExtensions).toDartString().split(' ').contains('GL_EXT_texture_filter_anisotropic')) {
+      return 1;
+    }
+
+    return using((arena) {
+      final value = arena<Float>();
+      glGetFloatv(glMaxTextureMaxAnisotropy, value);
+      return value.value.floor();
+    });
+  }();
 
   @override
   int get minimumUniformByteAlignment {
@@ -279,6 +293,11 @@ final class GlContext implements ent.GpuContext {
       );
       glSamplerParameteri(value.value, glTextureWrapS, _wrap(options.widthAddressMode));
       glSamplerParameteri(value.value, glTextureWrapT, _wrap(options.heightAddressMode));
+
+      if (options.maxAnisotropy > 1) {
+        glSamplerParameterf(value.value, glTextureMaxAnisotropy, options.maxAnisotropy.toDouble());
+      }
+
       return value.value;
     });
   }

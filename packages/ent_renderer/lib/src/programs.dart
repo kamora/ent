@@ -163,7 +163,11 @@ class UniformBlock {
 
     for (var c = 0; c < 4; c++) {
       for (var r = 0; r < 4; r++) {
-        _floats[i + c * 4 + r] = c < 3 && r < 3 ? e[c * 3 + r] : (c == r ? 1 : 0);
+        if (c < 3 && r < 3) {
+          _floats[i + c * 4 + r] = e[c * 3 + r];
+        } else {
+          _floats[i + c * 4 + r] = c == r ? 1 : 0;
+        }
       }
     }
   }

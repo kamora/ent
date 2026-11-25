@@ -71,8 +71,10 @@ the frame's size changes.
 The parity scenes are the same as Flutter GPU's, compared with the same reference frames and rules, with no
 `mipmaps` allowances (`mipmapAllowances: false`).
 
-- macOS (M1, ANGLE on Metal): every scene passes. `ent_opengl`'s host tests (169, one scene skipped everywhere) and
-  the example app's parity test (162) pass there and on GitHub's runner (CI job `opengl`).
+- macOS (M1, ANGLE on Metal): every scene passes. `ent_opengl`'s host tests (172, one scene skipped everywhere) and
+  the example app's parity test (164) pass there and on GitHub's runner (CI job `opengl`), among them
+  `map_anisotropy` (anisotropic filtering through EXT_texture_filter_anisotropic, up to the GPU's limit) and
+  `cube_camera_transmission` (a transmissive object drawn into a `CubeCamera` face).
 - Galaxy S10 (Mali-G76): compared both with the M1's reference frames and with frames the reference draws in Chrome
   on the same phone (`tool/reference/render/render.mjs` with `REMOTE`; the example's `PARITY_REFERENCE`). The
   differences left against the M1 are the GPU's: our frame and Chrome's on the phone differ from the M1 alike
@@ -85,8 +87,6 @@ The parity scenes are the same as Flutter GPU's, compared with the same referenc
 
 - Reading back textures other than 8-bit RGBA (`readRenderTargetPixels` of a float target) throws
   `UnimplementedError`.
-- No anisotropic filtering (`maxSamplerAnisotropy` is 1).
-- A transmissive object drawn into a `CubeCamera` face takes its rows from the cube pass; no scene checks it.
 - A macOS app that depends on `ent_opengl` carries ANGLE (about 6 MB per architecture) even when its registry's
   `renderers` map gives macOS to `ent_flutter`. Dependencies apply to every platform, and `wrangle`'s build hook,
   which bundles the library, does not read the map. The library is never loaded there; only the app's size grows.

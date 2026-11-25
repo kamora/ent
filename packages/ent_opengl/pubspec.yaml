@@ -2,7 +2,7 @@ name: ent_opengl
 description: >-
   The OpenGL ES renderer of Ent Engine: the shared renderer core drawing through OpenGL ES 3, on ANGLE (Metal) on
   macOS and on the system's OpenGL ES on Android.
-version: 0.1.0-dev.2
+version: 0.1.0-dev.3
 repository: https://github.com/kamora/ent/tree/master/packages/ent_opengl
 issue_tracker: https://github.com/kamora/ent/issues
 platforms:

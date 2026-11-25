@@ -204,7 +204,11 @@ const int glLinearMipmapLinear = 0x2703;
 const int glClampToEdge = 0x812F;
 const int glRepeat = 0x2901;
 const int glMirroredRepeat = 0x8370;
+
+// EXT_texture_filter_anisotropic.
 const int glTextureMaxAnisotropy = 0x84FE;
+const int glMaxTextureMaxAnisotropy = 0x84FF;
+const int glExtensions = 0x1F03;
 
 final glCreateShader = _gles.lookupFunction<Uint32 Function(Uint32), int Function(int)>('glCreateShader');
 final glShaderSource = _gles
@@ -309,6 +313,12 @@ final glGenSamplers = _gles.lookupFunction<Void Function(Int32, Pointer<Uint32>)
 );
 final glSamplerParameteri = _gles.lookupFunction<Void Function(Uint32, Uint32, Int32), void Function(int, int, int)>(
   'glSamplerParameteri',
+);
+final glSamplerParameterf = _gles.lookupFunction<Void Function(Uint32, Uint32, Float), void Function(int, int, double)>(
+  'glSamplerParameterf',
+);
+final glGetFloatv = _gles.lookupFunction<Void Function(Uint32, Pointer<Float>), void Function(int, Pointer<Float>)>(
+  'glGetFloatv',
 );
 final glBindSampler = _gles.lookupFunction<Void Function(Uint32, Uint32), void Function(int, int)>('glBindSampler');
 

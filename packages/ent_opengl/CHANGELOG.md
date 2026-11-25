@@ -1,3 +1,8 @@
+## 0.1.0-dev.3
+
+- Anisotropic filtering: `texture.anisotropy` applies up to the GPU's limit, read from
+  EXT_texture_filter_anisotropic (`maxSamplerAnisotropy` was 1).
+
 ## 0.1.0-dev.2
 
 - Needs `ent_renderer` 0.1.0-dev.2: warnings from the shared core start with `ENT.OpenGlRenderer:`, not

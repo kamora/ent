@@ -72,8 +72,7 @@ Rendering:
 - On Flutter GPU, mip levels are built on the CPU; ANGLE builds them on the GPU, which is behind the `mipmaps`
   allowances (E-MIPFILTER). A GPU build matches its first level, not the deeper ones. `ent_opengl` builds them on the
   GPU and needs no allowance.
-- `ent_opengl`: no readback of non-8-bit textures, no anisotropic filtering, a transmissive object inside a
-  `CubeCamera` face unchecked; iOS, Windows and Linux not yet (`docs/opengl.md`, Limits).
+- `ent_opengl`: no readback of non-8-bit textures; iOS, Windows and Linux not yet (`docs/opengl.md`, Limits).
 - BoxTextured is skipped: 2 pixels at 3/255, the GPU's level of detail, cause unknown.
 - Shadows: PCF on point lights is checked on Metal only (filtering across cube seams under SwiftShader); no point
   scene with a non-zero bias, no ShadowMaterial scene with a point light; `customDistanceMaterial` not checked.

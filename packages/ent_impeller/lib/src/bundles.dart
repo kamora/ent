@@ -40,9 +40,10 @@ int _copy(Builder builder, BufferContext context, int offset, List<Object> schem
   // The fields' strings, vectors and tables first: a builder writes no object while a table is open.
   final values = [
     for (var i = 0; i < schema.length; i++)
-      identical(schema, _shader) && i > 0 && !kept.contains(backends[i - 1])
-          ? null
-          : _read(builder, context, offset, 4 + 2 * i, schema[i], kept),
+      if (identical(schema, _shader) && i > 0 && !kept.contains(backends[i - 1]))
+        null
+      else
+        _read(builder, context, offset, 4 + 2 * i, schema[i], kept),
   ];
   builder.startTable(schema.length);
 

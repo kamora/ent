@@ -172,7 +172,12 @@ class FlutterImagePlatform implements ImagePlatform {
   static int _roundHalfEven(double v) {
     final floor = v.floorToDouble();
     final diff = v - floor;
-    return (diff > 0.5 || (diff == 0.5 && floor % 2 == 1) ? floor + 1 : floor).clamp(0, 255).toInt();
+
+    if (diff > 0.5 || (diff == 0.5 && floor % 2 == 1)) {
+      return (floor + 1).clamp(0, 255).toInt();
+    }
+
+    return floor.clamp(0, 255).toInt();
   }
 
   // An uncompressed-filter PNG (color type 6, 8 bits) with a zlib stream from dart:io.

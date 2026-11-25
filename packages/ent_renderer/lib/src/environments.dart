@@ -182,16 +182,15 @@ class GpuEnvironments {
     final environment = GpuEnvironment(
       target,
       gpu.SamplerOptions(
-        minFilter:
-            texture.minFilter == NearestFilter ||
-                texture.minFilter == NearestMipmapNearestFilter ||
-                texture.minFilter == NearestMipmapLinearFilter
-            ? gpu.MinMagFilter.nearest
-            : gpu.MinMagFilter.linear,
+        minFilter: switch (texture.minFilter) {
+          NearestFilter || NearestMipmapNearestFilter || NearestMipmapLinearFilter => gpu.MinMagFilter.nearest,
+          _ => gpu.MinMagFilter.linear,
+        },
         magFilter: texture.magFilter == NearestFilter ? gpu.MinMagFilter.nearest : gpu.MinMagFilter.linear,
-        mipFilter: texture.minFilter == NearestMipmapLinearFilter || texture.minFilter == LinearMipmapLinearFilter
-            ? gpu.MipFilter.linear
-            : gpu.MipFilter.nearest,
+        mipFilter: switch (texture.minFilter) {
+          NearestMipmapLinearFilter || LinearMipmapLinearFilter => gpu.MipFilter.linear,
+          _ => gpu.MipFilter.nearest,
+        },
       ),
       mapping: texture.mapping == EquirectangularRefractionMapping ? CubeRefractionMapping : CubeReflectionMapping,
     );
@@ -406,7 +405,16 @@ class GpuEnvironments {
 
   static int? _height(Texture texture) {
     final height = _size(texture.image)?.$2;
-    return height != null && height > 0 ? height : null;
+
+    if (height == null) {
+      return null;
+    }
+
+    if (height <= 0) {
+      return null;
+    }
+
+    return height;
   }
 
   // The width and height of a ready image (a decoded FlutterImage, a DataImage, a DataTexture's image).

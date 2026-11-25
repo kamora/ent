@@ -67,6 +67,8 @@ const Map<String, String> swiftShader = {
   'khronos_clearcoat': 'SwiftShader differs (234 wrong, 65/255); checked on Metal within [mipmaps]',
   'khronos_transmission': 'SwiftShader differs (569 wrong, 185/255); checked on Metal within [mipmaps]',
   'khronos_cesium_man': 'SwiftShader differs (214–287 wrong per frame, up to 170/255); checked on Metal',
+  'map_anisotropy': 'SwiftShader differs (1189 wrong, 23/255, its own anisotropic filter); checked on Metal',
+  'cube_camera_transmission': 'SwiftShader differs (2 wrong, 3/255); checked on Metal',
 };
 
 // Our frame's texture bytes as they are (Flutter treats GPU images as premultiplied and returns them

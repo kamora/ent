@@ -163,9 +163,11 @@ class GpuTextures {
     final texture = target.texture;
     final cube = target is WebGLCubeRenderTarget;
     final depth = target.depthTexture is DepthTexture && !cube && target.depth == 1;
-    final samples = target.samples > 0 && !cube && !depth && target.depth == 1 && _context.doesSupportOffscreenMSAA
-        ? 4
-        : 1;
+    var samples = 1;
+
+    if (target.samples > 0 && !cube && !depth && target.depth == 1 && _context.doesSupportOffscreenMSAA) {
+      samples = 4;
+    }
 
     for (final (unsupported, option) in [
       (target.samples > 0 && samples == 1, 'samples (MSAA) of a cube, 3D or array target or without offscreen MSAA'),
@@ -208,6 +210,18 @@ class GpuTextures {
       levels = _context.maxMipLevelCount(target.width, target.height);
     }
 
+    gpu.Texture? replay;
+
+    if (depth && !readsDepth) {
+      replay = _context.createTexture(
+        gpu.StorageMode.devicePrivate,
+        target.width,
+        target.height,
+        format: _context.defaultDepthStencilFormat,
+        enableShaderReadUsage: false,
+      );
+    }
+
     return _targets[target] = GpuTarget(
       _context.createTexture(
         gpu.StorageMode.devicePrivate,
@@ -235,15 +249,7 @@ class GpuTextures {
               format: gpu.PixelFormat.r32Float,
             )
           : null,
-      replay: depth && !readsDepth
-          ? _context.createTexture(
-              gpu.StorageMode.devicePrivate,
-              target.width,
-              target.height,
-              format: _context.defaultDepthStencilFormat,
-              enableShaderReadUsage: false,
-            )
-          : null,
+      replay: replay,
       samples: samples == 1
           ? null
           : _context.createTexture(
@@ -397,13 +403,14 @@ class GpuTextures {
 
     // The reference applies anisotropy only to linear-mipmap minification with a linear magnification filter;
     // Flutter GPU further needs all three filters linear.
-    final anisotropy =
-        texture.anisotropy > 1 &&
-            mag == gpu.MinMagFilter.linear &&
-            min == gpu.MinMagFilter.linear &&
-            mip == gpu.MipFilter.linear
-        ? math.min(texture.anisotropy.floor(), _context.maxSamplerAnisotropy)
-        : 1;
+    var anisotropy = 1;
+
+    if (texture.anisotropy > 1 &&
+        mag == gpu.MinMagFilter.linear &&
+        min == gpu.MinMagFilter.linear &&
+        mip == gpu.MipFilter.linear) {
+      anisotropy = math.min(texture.anisotropy.floor(), _context.maxSamplerAnisotropy);
+    }
 
     return gpu.SamplerOptions(
       magFilter: mag,

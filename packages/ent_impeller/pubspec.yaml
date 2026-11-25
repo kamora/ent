@@ -2,7 +2,7 @@ name: ent_impeller
 description: >-
   The shader toolchain of Ent Engine's renderers on Impeller's shader compiler: compiles the shaders of ent_shaders
   with impellerc when an app is built, keeps the GPU backends a renderer draws with, and reads the bundle back.
-version: 0.1.0-dev.1
+version: 0.1.0-dev.2
 repository: https://github.com/kamora/ent/tree/master/packages/ent_impeller
 issue_tracker: https://github.com/kamora/ent/issues
 topics:
