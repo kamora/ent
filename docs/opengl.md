@@ -92,8 +92,8 @@ The parity scenes are the same as Flutter GPU's, compared with the same referenc
 
 ```sh
 (cd packages/ent_opengl && flutter test --enable-impeller --enable-flutter-gpu)
-(cd packages/ent_opengl/example && flutter build macos --debug)
-(cd packages/ent_opengl/example && flutter test integration_test/parity_test.dart -d macos)
+(cd examples/opengl && flutter build macos --debug)
+(cd examples/opengl && flutter test integration_test/parity_test.dart -d macos)
 ```
 
 The host tests compare GL frames with Flutter GPU's (hence the flags) and run the parity scenes on ANGLE inside

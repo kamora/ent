@@ -10,8 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   ent: ^0.1.0-dev.1
-  ent_opengl:
-    path: ..
+  ent_opengl: ^0.1.0-dev.1
   ent_renderer: ^0.1.0-dev.1
 
 dev_dependencies:
@@ -20,7 +19,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  ent_flutter: ^0.1.0-dev.1
+  ent_flutter: ^0.1.0-dev.2
   vector_math: ^2.4.4
 
 flutter:
@@ -45,4 +44,4 @@ flutter:
 hooks:
   user_defines:
     ent_opengl:
-      shaders: ../../ent_flutter/test/ent_shaders.json
+      shaders: ../../packages/ent_flutter/test/ent_shaders.json

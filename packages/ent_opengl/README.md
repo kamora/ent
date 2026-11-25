@@ -63,8 +63,8 @@ where Impeller falls back to OpenGL ES.
 
    `EntView` shows the frames in a Flutter `Texture` widget. It does not own the renderer: the app disposes it.
 
-`example/lib/main.dart` is this as a whole app. Flutter's widgets define `Color` and `Texture` too: import them with
-`hide Color, Texture`.
+`example/main.dart` is this as a whole app, and the repository's [`examples/opengl`][example] is a bigger one, with
+the integration tests. Flutter's widgets define `Color` and `Texture` too: import them with `hide Color, Texture`.
 
 How it draws, which way its rows run, how frames reach the screen and how it compares with the reference frames is in
 [`docs/opengl.md`][opengl].
@@ -73,7 +73,7 @@ How it draws, which way its rows run, how frames reach the screen and how it com
 
 ```sh
 flutter test --enable-impeller --enable-flutter-gpu
-cd example && flutter build macos --debug && flutter test integration_test/parity_test.dart -d macos
+cd ../../examples/opengl && flutter build macos --debug && flutter test integration_test/parity_test.dart -d macos
 ```
 
 The host tests compare its frames with Flutter GPU's, which needs the flags, and run the parity scenes on ANGLE.
@@ -87,3 +87,4 @@ MIT, © 2026 KAMORA Ltd.; see `LICENSE`.
 [wrangle]: https://pub.dev/packages/wrangle
 [getting_started]: https://github.com/kamora/ent/tree/master/packages/ent_flutter#getting-started
 [opengl]: https://github.com/kamora/ent/blob/master/docs/opengl.md
+[example]: https://github.com/kamora/ent/tree/master/examples/opengl

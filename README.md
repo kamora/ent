@@ -66,6 +66,13 @@ A smaller start, a lit cube you can tap and orbit:
 flutter run -t lib/getting_started.dart -d macos
 ```
 
+The OpenGL ES renderer has its own example, a turning cube (macOS, or an Android phone):
+
+```sh
+cd ../opengl
+flutter run -d macos
+```
+
 To draw in your own app, follow the [setup guide](packages/ent_flutter/README.md#getting-started): enable Flutter
 GPU and list the shader variants your materials need.
 
@@ -109,6 +116,7 @@ where it does not (see Platforms). The scene code is the same for both.
 (cd packages/ent_flutter && flutter test --enable-impeller --enable-flutter-gpu)
 (cd examples/worm && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
 (cd packages/ent_opengl && flutter test --enable-impeller --enable-flutter-gpu)
+(cd examples/opengl && flutter test integration_test/parity_test.dart -d macos)
 ```
 
 The device tests and what they need are in the [example's README](examples/worm/README.md).

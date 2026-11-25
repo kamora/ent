@@ -16,7 +16,7 @@ import 'package:ent_opengl/ent_opengl.dart';
 import 'package:flutter/services.dart';
 import 'package:integration_test/integration_test.dart';
 
-import '../../../ent_flutter/test/parity.dart';
+import '../../../packages/ent_flutter/test/parity.dart';
 
 const only = String.fromEnvironment('PARITY_ONLY');
 

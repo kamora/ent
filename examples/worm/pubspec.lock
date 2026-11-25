@@ -58,39 +58,44 @@ packages:
     source: hosted
     version: "3.0.8"
   ent:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../../packages/ent"
-      relative: true
-    source: path
+      name: ent
+      sha256: "4963475473b9a60647b07f255fee85459915f171c4b3da13e01509fbc2ea67aa"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0-dev.1"
   ent_flutter:
     dependency: "direct main"
     description:
-      path: "../../packages/ent_flutter"
-      relative: true
-    source: path
+      name: ent_flutter
+      sha256: "2009ac731893462915c2e4add5c6a842ab1f721d22b9f1aaf06484618f7e6ddb"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0-dev.2"
   ent_impeller:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../../packages/ent_impeller"
-      relative: true
-    source: path
+      name: ent_impeller
+      sha256: b5ae432044ea01bb6c1ff093670c53b7fb3549e310d64bf073ec29fe55ffd957
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0-dev.1"
   ent_renderer:
     dependency: "direct dev"
     description:
-      path: "../../packages/ent_renderer"
-      relative: true
-    source: path
+      name: ent_renderer
+      sha256: "47c624524846bd634cc9314b15ef3268508f924cd7b02449d6110210b6e3790a"
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0-dev.1"
   ent_shaders:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../../packages/ent_shaders"
-      relative: true
-    source: path
+      name: ent_shaders
+      sha256: fde93c28adc4474f11276946fec14af58fd527e2140ffad531933b80e983c33c
+      url: "https://pub.dev"
+    source: hosted
     version: "0.1.0-dev.2"
   fake_async:
     dependency: transitive

@@ -44,8 +44,9 @@ pushed or posted without Kai's go-ahead for that step. Small jobs, in this order
 3. P3, licenses and metadata. Licenses done: MIT, © KAMORA Ltd., in the root and every package; each package's
    `THIRD_PARTY_NOTICES.md` holds the reference's notice (and earcut's in `ent`); the Khronos models' attribution stays
    with the models in `fixtures/gltf/khronos/`. Metadata done: descriptions, topics, CHANGELOGs, version `0.1.0-dev.1`,
-   caret ranges, and `ent_flutter` asking for `ent` and `ent_shaders` from pub.dev (the repository resolves them from
-   their path through `pubspec_overrides.yaml`, which pub does not upload). `dart pub publish --dry-run` warns only of
+   caret ranges, and every package and example asking for the others from pub.dev: the repository has no path
+   dependencies or overrides (Kai, 2026-11-25), so its tests and CI run against the published versions, and a change
+   to one package reaches the others once it is published. `dart pub publish --dry-run` warns only of
    uncommitted files. The repository is `github.com/kamora/ent` (public): every pubspec names it, and the READMEs link
    into it, so the links work on pub.dev. `ent` and `ent_shaders` must be published before `ent_flutter` (`ent_shaders`
    was free on 2026-11-23). `ent` and `ent_flutter` were free on pub.dev on 2026-11-10; a name is held only by its first
