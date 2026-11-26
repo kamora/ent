@@ -10,6 +10,8 @@ import 'dart:typed_data';
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
+import '../support/dispatch.dart';
+
 const String _path = '../../fixtures/values/animation_scenarios.json';
 
 final LibraryMirror _library = reflectClass(MathUtils).owner as LibraryMirror;
@@ -210,28 +212,28 @@ void _scenario(Map<String, Object?> scenario) {
           rest.length > 3 ? rest[3] as int? : null,
         )!;
       case 'call':
-        reflect(actions[rest[0]]!).invoke(Symbol(rest[1] as String), rest.sublist(2).map(arg).toList());
+        invoke(actions[rest[0]]!, rest[1] as String, rest.sublist(2).map(arg).toList());
       case 'throws':
         var threw = false;
 
         try {
-          reflect(actions[rest[0]]!).invoke(Symbol(rest[1] as String), rest.sublist(2).map(arg).toList());
+          invoke(actions[rest[0]]!, rest[1] as String, rest.sublist(2).map(arg).toList());
         } catch (_) {
           threw = true;
         }
 
         throwsLog.add(threw);
       case 'set':
-        reflect(actions[rest[0]]!).setField(Symbol(rest[0 + 1] as String), arg(rest[2]));
+        setField(actions[rest[0]]!, rest[1] as String, arg(rest[2]));
       case 'mixer':
         final method = rest[0] as String;
         final args = rest.sublist(1).map((a) => method.startsWith('uncache') ? clips[a] ?? objects[a] : arg(a));
-        reflect(mixer).invoke(Symbol(method), args.toList());
+        invoke(mixer, method, args.toList());
         snapshot();
       case 'mixerSet':
-        reflect(mixer).setField(Symbol(rest[0] as String), arg(rest[1]));
+        setField(mixer, rest[0] as String, arg(rest[1]));
       case 'clip':
-        reflect(clips[rest[0]]!).invoke(Symbol(rest[1] as String), rest.sublist(2).map(arg).toList());
+        invoke(clips[rest[0]]!, rest[1] as String, rest.sublist(2).map(arg).toList());
       case 'additive':
         final referenceClip = rest[2] == null ? null : clips[rest[2]];
         AnimationUtils.makeClipAdditive(

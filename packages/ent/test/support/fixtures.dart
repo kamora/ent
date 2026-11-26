@@ -1,16 +1,17 @@
 // Replays reference fixtures written by tool/reference/js/generate.mjs against the Dart port. Each case calls the
-// method by its reference name through dart:mirrors, so a renamed or missing method fails here the same way a wrong
+// method by its reference name through dispatch.dart, so a renamed or missing method fails here the same way a wrong
 // result does.
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:mirrors';
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 import 'codecs.dart';
+import 'dispatch.dart';
+import 'library.g.dart';
 
 /// Rebuilds a value type from its fixture state and reads that state back.
 class Codec {
@@ -31,8 +32,6 @@ const double tolerance = 1e-9;
 
 /// Counts how numbers matched, over the whole run.
 final Map<String, int> numberMatches = {'exact': 0, 'tolerance': 0};
-
-final LibraryMirror _library = reflectClass(MathUtils).owner as LibraryMirror;
 
 const String fixtureDir = '../../fixtures/specs';
 
@@ -123,16 +122,10 @@ Object? decode(Object? json) {
 
 /// The registered type name of [value]: its class or the nearest superclass with a codec.
 String? _typeOf(Object value) {
-  ClassMirror? type = reflect(value).type;
-
-  while (type != null) {
-    final name = MirrorSystem.getName(type.simpleName);
-
+  for (final name in classChain(value)) {
     if (codecs.containsKey(name)) {
       return name;
     }
-
-    type = type.superclass;
   }
 
   return null;
@@ -243,21 +236,18 @@ void _case(String name, bool isStatic, String method, Map<String, Object?> c, St
   final self = isStatic ? null : decode(c['self']);
   final args = (c['args'] as List<Object?>).map(decode).toList();
   final out = c['out'] as Map<String, Object?>;
-  final symbol = Symbol(method);
   Object? result;
 
   try {
     if (isStatic) {
-      final type = _library.declarations[Symbol(name)];
-
-      if (type is! ClassMirror) {
+      if (!statics.containsKey(name)) {
         errors.add('$at: class $name is missing');
         return;
       }
 
-      result = type.invoke(symbol, args).reflectee;
+      result = invokeStatic(name, method, args);
     } else {
-      result = reflect(self).invoke(symbol, args).reflectee;
+      result = invoke(self!, method, args);
     }
   } on NoSuchMethodError catch (e) {
     errors.add('$at: $name.$method is missing or has another signature: $e');
