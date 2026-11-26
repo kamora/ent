@@ -81,6 +81,7 @@ GPU and list the shader variants your materials need.
 | Package | What it is |
 | --- | --- |
 | [`ent`](packages/ent) | The engine in pure Dart: scenes, loaders, controls and post-processing. No Flutter needed. |
+| [`ent_engine`](packages/ent_engine) | The game layer, in pure Dart: a game loop with pause and time scale, and timers owned by scene objects. Not published yet. |
 | [`ent_shaders`](packages/ent_shaders) | The shaders every renderer shares. |
 | [`ent_impeller`](packages/ent_impeller) | The toolchain that compiles them for both renderers when the app is built. |
 | [`ent_renderer`](packages/ent_renderer) | The renderer core both renderers share, and `EntView`. |
