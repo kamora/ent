@@ -58,6 +58,47 @@ EntView(
 - Controls: `OrbitControls` and `MapControls`.
 - Post-processing: `EffectComposer` with `RenderPass`, `OutputPass`, `CopyPass`, `FXAAPass`, `VignettePass` and
   `TuningPass` (bloom).
+- A game layer: a game loop, timers and tweens owned by scene objects, and an input map (below).
+
+## Game layer
+
+Ent's own design, not part of the reference: a `Game` over a scene that a frame tick drives, with timers, tweens and
+input in game time.
+
+```dart
+import 'package:ent_flutter/ent_flutter.dart';
+
+final scene = Scene();
+final game = Game(scene);
+
+final door = Mesh(BoxGeometry(1, 2, 0.1), MeshStandardMaterial());
+scene.add(door);
+
+// Two seconds into the game the door slides open; while it is in the scene.
+game.after(2, () => game.move(door, Vector3(1.2, 0, 0), 1.5, easing: Ease.inOutCubic), owner: door);
+
+game.input
+  ..bind('jump', ['Space', 'GamepadA'])
+  ..bindAxis('moveX', negative: ['KeyA', 'ArrowLeft'], positive: ['KeyD', 'ArrowRight'], analog: ['LeftStickX']);
+
+// In the widget tree, EntView drives the game:
+EntView(renderer: renderer, scene: scene, camera: camera, onFrame: game.frame);
+```
+
+- The loop: `Game.update(delta)` advances game time by `delta` real seconds times `timeScale`; nothing moves while
+  `paused`. `Game.frame(elapsed)` does the same from a running total, as `EntView`'s `onFrame` passes it.
+  `Game.mixers` advance by game time, so animations pause and slow down with the game.
+- Tasks: `after`, `every` and `everyFrame` run code in game time. A task with an `owner` runs while that object is in
+  the scene and ends the first frame it is not, so removing an object ends what it scheduled. `Task.cancel` and
+  `Game.cancelAll(owner)` end tasks early; `Task.done` completes `true` when a task ran to its end, `false` otherwise.
+- Tweens: `move`, `turn`, `face`, `resize` (scale), `fade` (a material's opacity) and `tween` (any number) change a
+  value over game time, after an optional `delay`, along an `Ease` curve or your own. Each reads its start value when
+  it starts; a new tween of the same kind on the same target replaces the running one (`turn` and `face` are one
+  kind). `await game.move(...).done` waits for it.
+- Input: game code reads actions (`isDown`, `wasPressed`, `wasReleased`) and axes (`axis`, from -1 to 1) by name.
+  Sources are names too: keys by their W3C `KeyboardEvent.code` (`'KeyW'`, `'Space'`), gamepad and joystick parts by
+  the names an adapter gives them; an adapter reports them with `press`, `release` and `move`. `Game.update` ends the
+  input frame, also while paused, so `wasPressed` holds for exactly one frame.
 
 ## Platform services
 

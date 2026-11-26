@@ -1,3 +1,5 @@
+part of '../../ent.dart';
+
 /// An input map: named actions and axes bound to input sources, read by game code each frame. An adapter (for
 /// Flutter, the keyboard, gamepads and an on-screen joystick) reports what the sources do through [press], [release]
 /// and [move]; the game asks [isDown], [wasPressed], [wasReleased] and [axis] by action or axis name.

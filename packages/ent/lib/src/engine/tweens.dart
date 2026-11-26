@@ -1,4 +1,4 @@
-part of 'game.dart';
+part of '../../ent.dart';
 
 /// A curve over a tween's progress: from 0 at its start to 1 at its end.
 typedef Easing = double Function(double t);

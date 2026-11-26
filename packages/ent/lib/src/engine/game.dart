@@ -1,11 +1,4 @@
-import 'dart:async';
-import 'dart:math' as math;
-
-import 'package:ent/ent.dart';
-
-import 'input.dart';
-
-part 'tweens.dart';
+part of '../../ent.dart';
 
 /// A game loop over [scene]. The app's frame tick calls [update] with the real seconds since the last frame (in
 /// Flutter, from `EntView`'s `onFrame`); the game then advances its [time] by that much times [timeScale], unless it

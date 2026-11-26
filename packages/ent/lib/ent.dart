@@ -236,3 +236,6 @@ part 'src/postprocessing/render_pass.dart';
 part 'src/postprocessing/tuning_pass.dart';
 part 'src/utils/buffer_geometry_utils.dart';
 part 'src/utils/skeleton_utils.dart';
+part 'src/engine/game.dart';
+part 'src/engine/tweens.dart';
+part 'src/engine/input.dart';

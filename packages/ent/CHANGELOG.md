@@ -1,3 +1,10 @@
+## 0.1.0-dev.4
+
+- A game layer, Ent's own design: `Game`, a game loop driven by a frame tick, with pause and time scale; `Task`s
+  (`after`, `every`, `everyFrame`) owned by scene objects; tweens (`move`, `turn`, `face`, `resize`, `fade`, `tween`)
+  with delays and `Ease` curves; `Input`, an input map of actions and axes over named sources.
+- Every public member has a doc comment.
+
 ## 0.1.0-dev.3
 
 - Internal: conditional expressions test one condition each (a JS `value || fallback` on numbers is one helper);

@@ -130,6 +130,8 @@ DynamicCopyUsage
 DynamicDrawUsage
 DynamicReadUsage
 Earcut
+Ease
+Easing
 EdgesGeometry
 EffectComposer
 EffectComposerRenderer
@@ -176,6 +178,7 @@ GLTFParserOptions
 GLTFPluginCallback
 GLTFRefCache
 GLTFRegistry
+Game
 GeometryFromJSON
 GeometryGroup
 GreaterCompare
@@ -205,6 +208,7 @@ ImageSize
 ImageUtils
 IncrementStencilOp
 IncrementWrapStencilOp
+Input
 InstancedBufferAttribute
 InstancedBufferGeometry
 InstancedInterleavedBuffer
@@ -468,6 +472,7 @@ SubtractEquation
 SubtractiveBlending
 TOUCH
 TangentSpaceNormalMap
+Task
 TetrahedronGeometry
 Texture
 TextureLoader
@@ -484,6 +489,7 @@ TriangleStripDrawMode
 TrianglesDrawMode
 TubeGeometry
 TuningPass
+Tweens
 UVMapping
 Uint16BufferAttribute
 Uint32BufferAttribute

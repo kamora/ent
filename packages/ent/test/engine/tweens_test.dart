@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:ent/ent.dart';
-import 'package:ent_engine/ent_engine.dart';
 import 'package:test/test.dart';
 
 // A scene with one object in it, and a game over it.
