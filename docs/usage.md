@@ -4,6 +4,18 @@ How to use the parts of `ent` that need a platform or a renderer: camera control
 post-processing. In Flutter, each renderer package (`package:ent_flutter/ent_flutter.dart` for Flutter GPU,
 `package:ent_opengl/ent_opengl.dart` for OpenGL ES) exports all of `ent`, and the code below is the same for both.
 
+## Platforms
+
+Where each renderer draws today. An app may use one renderer on some platforms and the other elsewhere; its shader
+registry's `renderers` map says which draws where (see Shader variants).
+
+| Platform | `ent_flutter` (Flutter GPU) | `ent_opengl` (OpenGL ES) |
+| --- | --- | --- |
+| macOS | Yes, on Metal; verified on an M1 and GitHub's macOS runner | Yes, ANGLE on Metal (`wrangle`); verified on an M1 and GitHub's macOS runner |
+| iOS | Yes, on Metal; verified on an iPhone 11 and the simulator | No |
+| Android | Only where Impeller runs on Vulkan; elsewhere `create()` throws (flutter/flutter#196045). Verified on a Galaxy S10 forced to Vulkan | Yes, the system's OpenGL ES; verified on a Galaxy S10 (Mali-G76) |
+| Windows, Linux, web | No | No |
+
 ## Controls without a DOM
 
 The reference's controls listen on an HTML element. Here the element is a `ControlsElement` the platform keeps sized,

@@ -94,10 +94,10 @@ where it does not (see Platforms). The scene code is the same for both.
 
 | Platform | `ent_flutter` (Flutter GPU) | `ent_opengl` (OpenGL ES) |
 | --- | --- | --- |
-| macOS | Verified on an M1 (Metal) | Verified on an M1 (ANGLE on Metal) |
-| iOS | Verified on an iPhone 11 and the simulator | Not yet |
-| Android | Needs a device where Impeller runs on Vulkan; not verified by default | Verified on a Galaxy S10 |
-| Web, Windows, Linux | Not supported in this release | Not supported in this release |
+| macOS | Yes, on Metal; verified on an M1 and GitHub's macOS runner | Yes, ANGLE on Metal (`wrangle`); verified on an M1 and GitHub's macOS runner |
+| iOS | Yes, on Metal; verified on an iPhone 11 and the simulator | No |
+| Android | Only where Impeller runs on Vulkan; elsewhere `create()` throws (flutter/flutter#196045). Verified on a Galaxy S10 forced to Vulkan | Yes, the system's OpenGL ES; verified on a Galaxy S10 (Mali-G76) |
+| Windows, Linux, web | No | No |
 
 ## Learn more
 
