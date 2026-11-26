@@ -120,9 +120,11 @@ class BufferGeometryLoader extends Loader<BufferGeometry> {
         final itemSize = _loaderInt(attribute['itemSize']);
         final normalized = attribute['normalized'] as bool? ?? false;
 
-        bufferAttribute = instanced && attribute['isInstancedBufferAttribute'] == true
-            ? InstancedBufferAttribute(typedArray, itemSize, normalized)
-            : BufferAttribute(typedArray, itemSize, normalized);
+        if (instanced && attribute['isInstancedBufferAttribute'] == true) {
+          bufferAttribute = InstancedBufferAttribute(typedArray, itemSize, normalized);
+        } else {
+          bufferAttribute = BufferAttribute(typedArray, itemSize, normalized);
+        }
       }
 
       if (attribute['name'] != null) {

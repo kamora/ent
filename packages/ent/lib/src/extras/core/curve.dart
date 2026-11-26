@@ -32,7 +32,11 @@ bool _curveEquals(Object a, Object b) {
 /// A list element as JavaScript reads it: `NaN` (in the reference: `undefined`, which turns arithmetic into NaN) for an
 /// index outside the list.
 double _curveAt(List<double> list, int index) {
-  return index >= 0 && index < list.length ? list[index] : double.nan;
+  if (index < 0 || index >= list.length) {
+    return double.nan;
+  }
+
+  return list[index];
 }
 
 /// An abstract base class for creating an analytic curve object that contains methods for interpolation.

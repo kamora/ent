@@ -462,7 +462,11 @@ class AnimationAction {
         return time;
       }
 
-      return (pingPong && (_jsToInt32(loopCount) & 1) == 1) ? duration - time : time;
+      if (pingPong && (_jsToInt32(loopCount) & 1) == 1) {
+        return duration - time;
+      }
+
+      return time;
     }
 
     if (loop == LoopOnce) {

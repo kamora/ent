@@ -148,12 +148,20 @@ List<num> _typedArrayOfLength(List<num> array, int length) {
 /// `array[ index ]` with JS typed-array read semantics in numeric use: an index out of range reads `undefined` in the
 /// reference, which arithmetic turns into NaN (exception E-ARRAY).
 double _typedArrayGet(List<num> array, int index) {
-  return index >= 0 && index < array.length ? array[index].toDouble() : double.nan;
+  if (index < 0 || index >= array.length) {
+    return double.nan;
+  }
+
+  return array[index].toDouble();
 }
 
 /// `ToInt32( array[ index ] )`: an index out of range reads `undefined`, which is `0` in bit operations.
 int _typedArrayGetInt(List<num> array, int index) {
-  return index >= 0 && index < array.length ? array[index].toInt() : 0;
+  if (index < 0 || index >= array.length) {
+    return 0;
+  }
+
+  return array[index].toInt();
 }
 
 /// `array[ index ] = value` with JS typed-array store semantics: an index out of range is ignored; float
@@ -235,8 +243,21 @@ class BufferAttribute extends EventDispatcher implements BufferAttributeLike {
     : id = _bufferAttributeId++,
       array = _bufferAttributeArray(array),
       itemSize = itemSize ?? 0,
-      count = array == null || itemSize == null || itemSize == 0 ? 0 : array.length ~/ itemSize,
+      count = _count(array, itemSize),
       _normalizationScale = array == null ? null : MathUtils.getNormalizationScale(array);
+
+  // The vertex count: 0 without an array or an item size.
+  static int _count(List<num>? array, int? itemSize) {
+    if (array == null) {
+      return 0;
+    }
+
+    if (itemSize == null || itemSize == 0) {
+      return 0;
+    }
+
+    return array.length ~/ itemSize;
+  }
 
   /// This flag can be used for type testing.
   @override

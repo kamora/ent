@@ -1,3 +1,8 @@
+## 0.1.0-dev.3
+
+- Internal: conditional expressions test one condition each (a JS `value || fallback` on numbers is one helper);
+  behaviour unchanged, every fixture number the same.
+
 ## 0.1.0-dev.2
 
 - Test-only members, marked `@visibleForTesting` (new dependency: `package:meta`), where the tests read state the

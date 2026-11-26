@@ -2,12 +2,20 @@ part of '../../ent.dart';
 
 /// `array[ index ]` where JS would read `undefined` past either end: `null`.
 double? _interpolantAt(List<double> array, int index) {
-  return index >= 0 && index < array.length ? array[index] : null;
+  if (index < 0 || index >= array.length) {
+    return null;
+  }
+
+  return array[index];
 }
 
 /// `array[ index ]` used in arithmetic, where an `undefined` read becomes NaN.
 double _interpolantValue(List<double> array, int index) {
-  return index >= 0 && index < array.length ? array[index] : double.nan;
+  if (index < 0 || index >= array.length) {
+    return double.nan;
+  }
+
+  return array[index];
 }
 
 /// `a < b` with `b` possibly `undefined` (JS: always false).

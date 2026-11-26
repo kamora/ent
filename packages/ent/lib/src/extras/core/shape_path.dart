@@ -148,7 +148,12 @@ class ShapePath {
   List<Shape> toShapes() {
     // Resolve fill-rule. Defaults to 'nonzero'.
     final style = userData['style'];
-    final rule = _shapePathTruthy(style) && style is Map ? style['fillRule'] : null;
+    Object? rule;
+
+    if (_shapePathTruthy(style) && style is Map) {
+      rule = style['fillRule'];
+    }
+
     Object? fillRule = _shapePathTruthy(rule) ? rule : 'nonzero';
 
     if (fillRule != 'nonzero' && fillRule != 'evenodd') {
@@ -249,7 +254,11 @@ class ShapePath {
         continue;
       }
 
-      entry.role = (entry.container == null || entry.container!.role == 'hole') ? 'outer' : 'hole';
+      if (entry.container == null || entry.container!.role == 'hole') {
+        entry.role = 'outer';
+      } else {
+        entry.role = 'hole';
+      }
     }
 
     // Build Shapes for outers first, then attach holes to their container's

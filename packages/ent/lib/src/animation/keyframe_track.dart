@@ -39,7 +39,11 @@ class KeyframeTrack {
     this.times = AnimationUtils.convertArray(times, TimeBufferType)! as List<double>;
     this.values = AnimationUtils.convertArray(values, ValueBufferType)!;
 
-    setInterpolation(interpolation == null || interpolation == 0 ? DefaultInterpolation : interpolation);
+    if (interpolation == null || interpolation == 0) {
+      setInterpolation(DefaultInterpolation);
+    } else {
+      setInterpolation(interpolation);
+    }
   }
 
   /// The track's name can refer to morph targets or bones or possibly other values within an animated

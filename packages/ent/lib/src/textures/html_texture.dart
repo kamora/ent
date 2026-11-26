@@ -102,5 +102,10 @@ class HTMLTexture extends Texture {
 /// `element ? element.parentNode : null`.
 Object? _htmlTextureParent(Object? element) {
   final platform = HTMLTexture.platform;
-  return element == null || platform == null ? null : platform.parentNode(element);
+
+  if (element == null || platform == null) {
+    return null;
+  }
+
+  return platform.parentNode(element);
 }

@@ -54,7 +54,11 @@ class FrustumArray {
   /// Returns the cached frustum for the sub-camera at the given index, or `null` (`undefined` in the reference) if
   /// there is none.
   Frustum? getFrustum(int index) {
-    return index >= 0 && index < _frustums.length ? _frustums[index] : null;
+    if (index < 0 || index >= _frustums.length) {
+      return null;
+    }
+
+    return _frustums[index];
   }
 
   /// Returns `true` if the 3D object's bounding sphere is intersecting any cached frustum.

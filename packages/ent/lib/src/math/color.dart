@@ -89,7 +89,11 @@ String _colorNumberString(double v) {
     return v > 0 ? 'Infinity' : '-Infinity';
   }
 
-  return v == v.truncateToDouble() && v.abs() < 1e21 ? v.toInt().toString() : v.toString();
+  if (v == v.truncateToDouble() && v.abs() < 1e21) {
+    return v.toInt().toString();
+  }
+
+  return v.toString();
 }
 
 /// JavaScript's `number.toFixed( digits )`: `-0` prints without a sign, as in JS.

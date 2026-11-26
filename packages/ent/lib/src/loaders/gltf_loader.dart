@@ -926,7 +926,7 @@ class _GLTFMaterialsVolumeExtension extends _GLTFPhysicalExtension {
 
     // `extension.attenuationDistance || Infinity`: a missing or zero distance is infinite.
     final distance = extension['attenuationDistance'] != null ? _gltfNum(extension['attenuationDistance']) : 0.0;
-    materialParams['attenuationDistance'] = distance != 0 && !distance.isNaN ? distance : double.infinity;
+    materialParams['attenuationDistance'] = _jsOr(distance, double.infinity);
 
     final colorArray = (extension['attenuationColor'] as List<Object?>?) ?? const [1, 1, 1];
     materialParams['attenuationColor'] = Color().setRGB(
@@ -2360,9 +2360,11 @@ class GLTFParser extends GLTFLoaderPlugin {
 
             final samplers = _gltfList(json['samplers']);
             final index = textureDef['sampler'];
-            final sampler = index is int && index < samplers.length
-                ? _gltfMap(samplers[index])
-                : const <String, Object?>{};
+            var sampler = const <String, Object?>{};
+
+            if (index is int && index < samplers.length) {
+              sampler = _gltfMap(samplers[index]);
+            }
 
             texture.magFilter = _gltfFilters[sampler['magFilter']] ?? LinearFilter;
             texture.minFilter = _gltfFilters[sampler['minFilter']] ?? LinearMipmapLinearFilter;
@@ -2877,7 +2879,11 @@ class GLTFParser extends GLTFLoaderPlugin {
           }
 
           // .isSkinnedMesh isn't in glTF spec. See ._markDefs()
-          mesh = (needsSkinning && hasSkinningAttributes) ? SkinnedMesh(geometry, material) : Mesh(geometry, material);
+          if (needsSkinning && hasSkinningAttributes) {
+            mesh = SkinnedMesh(geometry, material);
+          } else {
+            mesh = Mesh(geometry, material);
+          }
 
           if (mesh is SkinnedMesh) {
             // normalize skin weights to fix malformed assets (see #15319)
@@ -2952,7 +2958,17 @@ class GLTFParser extends GLTFLoaderPlugin {
     }
 
     // `x || d`: a missing or zero value takes the default.
-    double or(Object? v, double d) => v == null || _gltfNum(v) == 0 ? d : _gltfNum(v);
+    double or(Object? v, double d) {
+      if (v == null) {
+        return d;
+      }
+
+      if (_gltfNum(v) == 0) {
+        return d;
+      }
+
+      return _gltfNum(v);
+    }
 
     if (cameraDef['type'] == 'perspective') {
       camera = PerspectiveCamera(
@@ -3786,7 +3802,13 @@ List<Object?> _gltfList(Object? value) => value == null ? const [] : value as Li
 double _gltfNum(Object? value) => (value! as num).toDouble();
 
 /// A string that is truthy in JS (non-empty), or `null`.
-String? _gltfTruthyString(Object? value) => value is String && value.isNotEmpty ? value : null;
+String? _gltfTruthyString(Object? value) {
+  if (value is String && value.isNotEmpty) {
+    return value;
+  }
+
+  return null;
+}
 
 /// A JSON value as JS string concatenation writes it (`undefined` for a missing one).
 String _gltfJs(Object? value) => value == null ? 'undefined' : '$value';

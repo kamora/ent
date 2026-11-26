@@ -366,7 +366,7 @@ class Vector3 {
   Vector3 clampLength(double min, double max) {
     final length = this.length();
 
-    return divideScalar(length == 0 || length.isNaN ? 1 : length).multiplyScalar(MathUtils.clamp(length, min, max));
+    return divideScalar(_jsOr(length, 1)).multiplyScalar(MathUtils.clamp(length, min, max));
   }
 
   /// The components of this vector are rounded down to the nearest integer value.
@@ -442,7 +442,7 @@ class Vector3 {
   Vector3 normalize() {
     final length = this.length();
 
-    return divideScalar(length == 0 || length.isNaN ? 1 : length);
+    return divideScalar(_jsOr(length, 1));
   }
 
   /// Sets this vector to a vector with the same direction as this one, but with the specified length.

@@ -11,7 +11,13 @@ import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 // A number as JavaScript prints it in a template string (1, not 1.0).
-String _js(Object? value) => value is double && value == value.truncateToDouble() ? '${value.toInt()}' : '$value';
+String _js(Object? value) {
+  if (value is double && value == value.truncateToDouble()) {
+    return '${value.toInt()}';
+  }
+
+  return '$value';
+}
 
 // Whether the recorders made from now on keep a target's color between renders, as the reference renderer does (its log
 // unchanged).

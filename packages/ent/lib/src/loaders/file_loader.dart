@@ -183,10 +183,19 @@ class FileLoader extends Loader<Object?> {
     // Nginx needs X-File-Size check
     // https://serverfault.com/questions/482875/why-does-nginx-remove-content-length-header-for-chunked-content
     final fileSize = response.header('X-File-Size');
-    final contentLength = fileSize != null && fileSize != '' ? fileSize : response.header('Content-Length');
+    var contentLength = response.header('Content-Length');
+
+    if (fileSize != null && fileSize != '') {
+      contentLength = fileSize;
+    }
 
     // parseInt: leading digits; a value with none is NaN, which still counts as computable but reports 0
-    final parsed = contentLength == null || contentLength == '' ? 0 : _fileLoaderParseInt(contentLength);
+    int? parsed = 0;
+
+    if (contentLength != null && contentLength != '') {
+      parsed = _fileLoaderParseInt(contentLength);
+    }
+
     final total = parsed ?? 0;
     final lengthComputable = parsed != 0;
     var loaded = 0;
@@ -220,9 +229,11 @@ class FileLoader extends Loader<Object?> {
   ) {
     switch (responseType) {
       case 'arraybuffer':
-        return bytes.offsetInBytes == 0 && bytes.buffer.lengthInBytes == bytes.length
-            ? bytes.buffer
-            : Uint8List.fromList(bytes).buffer;
+        if (bytes.offsetInBytes == 0 && bytes.buffer.lengthInBytes == bytes.length) {
+          return bytes.buffer;
+        }
+
+        return Uint8List.fromList(bytes).buffer;
 
       case 'blob':
         return platform.createBlob(bytes, response.header('Content-Type') ?? '');
@@ -239,7 +250,11 @@ class FileLoader extends Loader<Object?> {
         } else {
           // sniff encoding
           final exec = _fileLoaderCharset.firstMatch(mimeType);
-          final label = exec != null && exec[1] != null && exec[1] != '' ? exec[1]!.toLowerCase() : null;
+          String? label;
+
+          if (exec != null && exec[1] != null && exec[1] != '') {
+            label = exec[1]!.toLowerCase();
+          }
 
           if (label == null || label == 'utf-8' || label == 'utf8' || label == 'unicode-1-1-utf-8') {
             return _fileLoaderUtf8(bytes);
@@ -280,7 +295,13 @@ class FileLoader extends Loader<Object?> {
 
 /// `TextDecoder( 'utf-8' ).decode()`: replaces malformed sequences and drops a leading byte order mark.
 String _fileLoaderUtf8(Uint8List bytes) {
-  final start = bytes.length >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf ? 3 : 0;
+  var start = 0;
+
+  // A byte order mark is skipped.
+  if (bytes.length >= 3 && bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf) {
+    start = 3;
+  }
+
   return utf8.decode(Uint8List.sublistView(bytes, start), allowMalformed: true);
 }
 

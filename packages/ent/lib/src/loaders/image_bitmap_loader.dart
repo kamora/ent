@@ -94,10 +94,16 @@ class ImageBitmapLoader extends Loader<Object> {
     }
 
     final platform = _loaderPlatform('fetch()');
+    var credentials = 'same-origin';
+
+    if (withCredentials || crossOrigin != 'anonymous') {
+      credentials = 'include';
+    }
+
     final request = LoaderRequest(
       url: resolved,
       headers: requestHeader,
-      credentials: withCredentials || crossOrigin != 'anonymous' ? 'include' : 'same-origin',
+      credentials: credentials,
       priority: priority,
       cache: cache,
       signal: AbortSignal.any([_abortController.signal, manager.abortController.signal]),

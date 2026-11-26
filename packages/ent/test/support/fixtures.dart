@@ -82,7 +82,11 @@ Object? decode(Object? json) {
     final json = (map['array'] as List<Object?>);
     final items = json.map(decode).toList();
     final types = json.map((j) => j is Map ? j['type'] : null).toSet();
-    final list = types.length == 1 && types.first != null ? codecs[types.first]?.list : null;
+    List<Object> Function(List<Object?> items)? list;
+
+    if (types.length == 1 && types.first != null) {
+      list = codecs[types.first]?.list;
+    }
 
     if (items.isNotEmpty && list != null) {
       return list(items);

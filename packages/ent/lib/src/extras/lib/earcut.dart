@@ -878,7 +878,11 @@ double _earcutDeviation(List<num> data, List<int>? holeIndices, int dim, List<in
         ((data[a] - data[c]) * (data[b + 1] - data[a + 1]) - (data[a] - data[b]) * (data[c + 1] - data[a + 1])).abs();
   }
 
-  return polygonArea == 0 && trianglesArea == 0 ? 0 : ((trianglesArea - polygonArea) / polygonArea).abs();
+  if (polygonArea == 0 && trianglesArea == 0) {
+    return 0;
+  }
+
+  return ((trianglesArea - polygonArea) / polygonArea).abs();
 }
 
 double _earcutSignedArea(List<num> data, int start, int end, int dim) {

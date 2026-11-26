@@ -13,7 +13,11 @@ Object? _animationGet(Object? target, Object? key) {
 
   if (target is List) {
     final index = key is int ? key : int.tryParse('$key');
-    return index != null && index >= 0 && index < target.length ? target[index] : null;
+    if (index == null || index < 0 || index >= target.length) {
+      return null;
+    }
+
+    return target[index];
   }
 
   if (target is Map) {
@@ -520,7 +524,11 @@ class PropertyBinding implements PropertyBindingLike {
     };
 
     final nodeName = results['nodeName'] as String?;
-    final lastDot = nodeName == null || nodeName.isEmpty ? -1 : nodeName.lastIndexOf('.');
+    var lastDot = -1;
+
+    if (nodeName != null && nodeName.isNotEmpty) {
+      lastDot = nodeName.lastIndexOf('.');
+    }
 
     if (lastDot != -1) {
       final objectName = nodeName!.substring(lastDot + 1);

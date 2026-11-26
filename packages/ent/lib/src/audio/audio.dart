@@ -211,9 +211,13 @@ class Audio extends Object3D {
         // ensure _progress does not exceed duration with looped audios
 
         final duration = this.duration;
-        _progress = _progress.remainder(
-          duration == null || duration == 0 || duration.isNaN ? buffer!.duration : duration,
-        );
+
+        // `this.duration || this.buffer.duration`: the buffer is read only when the duration is falsy.
+        if (duration == null || duration == 0 || duration.isNaN) {
+          _progress = _progress.remainder(buffer!.duration);
+        } else {
+          _progress = _progress.remainder(duration);
+        }
       }
 
       final source = this.source as WebAudioBufferSourceNode;

@@ -170,13 +170,12 @@ class CurvePath<T extends Object> extends Curve<T> {
 
       // `Object` so `is` promotes: SplineCurve is a Curve<Vector2>, not a subtype of Curve<T>.
       final Object kind = curve;
-      final resolution = kind is EllipseCurve
-          ? divisions * 2
-          : (kind is LineCurve || kind is LineCurve3)
-          ? 1
-          : kind is SplineCurve
-          ? divisions * kind.points.length
-          : divisions;
+      final resolution = switch (kind) {
+        EllipseCurve() => divisions * 2,
+        LineCurve() || LineCurve3() => 1,
+        SplineCurve(:final points) => divisions * points.length,
+        _ => divisions,
+      };
 
       final pts = curve.getPoints(resolution);
 

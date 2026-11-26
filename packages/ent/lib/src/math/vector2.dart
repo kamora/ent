@@ -258,7 +258,7 @@ class Vector2 {
   Vector2 clampLength(double min, double max) {
     final length = this.length();
 
-    return divideScalar(length == 0 || length.isNaN ? 1 : length).multiplyScalar(MathUtils.clamp(length, min, max));
+    return divideScalar(_jsOr(length, 1)).multiplyScalar(MathUtils.clamp(length, min, max));
   }
 
   /// The components of this vector are rounded down to the nearest integer value.
@@ -334,7 +334,7 @@ class Vector2 {
   Vector2 normalize() {
     final length = this.length();
 
-    return divideScalar(length == 0 || length.isNaN ? 1 : length);
+    return divideScalar(_jsOr(length, 1));
   }
 
   /// Computes the angle in radians of this vector with respect to the positive x-axis.

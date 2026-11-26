@@ -146,7 +146,11 @@ abstract final class ColorManagement {
   static String getToneMappingMode(String colorSpace) {
     final mode = (spaces[colorSpace]!['outputColorSpaceConfig'] as Map<String, Object?>)['toneMappingMode'] as String?;
 
-    return mode == null || mode.isEmpty ? 'standard' : mode;
+    if (mode == null || mode.isEmpty) {
+      return 'standard';
+    }
+
+    return mode;
   }
 
   /// Writes the luminance coefficients of the given color space (default: the working color space) into

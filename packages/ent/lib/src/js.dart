@@ -31,7 +31,28 @@ double _jsRound(double x) {
   final r = x - floor >= 0.5 ? floor + 1 : floor;
 
   // Math.round( -0.4 ) is -0, as is Math.round( -0 ).
-  return r == 0 && (x < 0 || x.isNegative) ? -0.0 : r;
+  if (r == 0 && (x < 0 || x.isNegative)) {
+    return -0.0;
+  }
+
+  return r;
+}
+
+/// `value || fallback` for a JS number: [fallback] where [value] is falsy (`undefined`, `0`, `-0` or NaN).
+double _jsOr(double? value, double fallback) {
+  if (value == null) {
+    return fallback;
+  }
+
+  if (value == 0) {
+    return fallback;
+  }
+
+  if (value.isNaN) {
+    return fallback;
+  }
+
+  return value;
 }
 
 /// `ToUint32( x )`, as used by `>>>` and typed-array stores.

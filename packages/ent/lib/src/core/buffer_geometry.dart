@@ -874,7 +874,13 @@ class BufferGeometry extends EventDispatcher {
     // standard BufferGeometry serialization
 
     data['uuid'] = uuid;
-    data['type'] = (parameters != null && _transformed == true) ? 'BufferGeometry' : type;
+    data['type'] = type;
+
+    // A parametric geometry that was transformed is written as plain BufferGeometry data.
+    if (parameters != null && _transformed == true) {
+      data['type'] = 'BufferGeometry';
+    }
+
     data['name'] = name;
 
     if (userData.isNotEmpty) {
@@ -1050,7 +1056,7 @@ class BufferGeometry extends EventDispatcher {
 /// Reads `point.x, point.y, point.z || 0` from a Vector2, Vector3 or Vector4 (exception E-UNION).
 (double, double, double) _bufferGeometryPoint(Object point) {
   // `z || 0`: 0, -0 and NaN all become 0
-  double orZero(double z) => z == 0 || z.isNaN ? 0 : z;
+  double orZero(double z) => _jsOr(z, 0);
 
   return switch (point) {
     Vector2() => (point.x, point.y, 0.0),

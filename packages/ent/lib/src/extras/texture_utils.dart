@@ -21,7 +21,11 @@ double _textureUtilsImageAspect(Texture texture) {
     height = size?.height;
   }
 
-  return width != null && width != 0 ? width / (height ?? double.nan) : 1;
+  if (width == null || width == 0) {
+    return 1;
+  }
+
+  return width / (height ?? double.nan);
 }
 
 /// A class containing utility functions for textures.

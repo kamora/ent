@@ -11,7 +11,20 @@ class InterleavedBuffer {
   InterleavedBuffer([List<num>? array, int? stride])
     : array = array ?? Float32List(0),
       stride = stride ?? 0,
-      count = array == null || stride == null || stride == 0 ? 0 : array.length ~/ stride;
+      count = _count(array, stride);
+
+  // The vertex count: 0 without an array or a stride.
+  static int _count(List<num>? array, int? stride) {
+    if (array == null) {
+      return 0;
+    }
+
+    if (stride == null || stride == 0) {
+      return 0;
+    }
+
+    return array.length ~/ stride;
+  }
 
   /// This flag can be used for type testing.
   bool get isInterleavedBuffer => true;

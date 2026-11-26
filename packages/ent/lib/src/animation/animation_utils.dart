@@ -6,7 +6,11 @@ part of '../../ent.dart';
 /// The constructor name of [array] as the reference's `array.constructor` would name it: a typed-array name for a
 /// `dart:typed_data` list, `'Array'` for any other list.
 String _animationArrayType(List<Object?> array) {
-  return array is List<num> && isTypedArray(array) ? _typedArrayName(array) : 'Array';
+  if (array is List<num> && isTypedArray(array)) {
+    return _typedArrayName(array);
+  }
+
+  return 'Array';
 }
 
 /// The utils `isTypedArray`, reachable inside [AnimationUtils], whose static of the same name shadows it.
@@ -98,7 +102,12 @@ abstract final class AnimationUtils {
     // Array.prototype.sort is stable; Dart's sort is not, so ties keep their original order explicitly.
     result.sort((i, j) {
       final d = times[i] - times[j];
-      return d == 0 || d.isNaN ? i - j : d.sign.toInt();
+
+      if (d == 0 || d.isNaN) {
+        return i - j;
+      }
+
+      return d.sign.toInt();
     });
 
     return result;
@@ -107,9 +116,13 @@ abstract final class AnimationUtils {
   /// Sorts the given array by the previously computed order via [getKeyframeOrder].
   static List<Object?> sortedArray(List<Object?> values, int stride, List<int> order) {
     final nValues = values.length;
-    final List<Object?> result = values is List<num> && _animationIsTypedArray(values)
-        ? _typedArrayOfLength(values, nValues)
-        : List<Object?>.filled(nValues, null, growable: true);
+    final List<Object?> result;
+
+    if (values is List<num> && _animationIsTypedArray(values)) {
+      result = _typedArrayOfLength(values, nValues);
+    } else {
+      result = List<Object?>.filled(nValues, null, growable: true);
+    }
 
     for (var i = 0, dstOffset = 0; dstOffset != nValues; ++i) {
       final srcOffset = order[i] * stride;

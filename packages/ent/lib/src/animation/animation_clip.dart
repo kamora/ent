@@ -45,7 +45,7 @@ class AnimationClip {
     final tracks = <KeyframeTrack>[];
     final jsonTracks = json['tracks'] as List<Object?>;
     final fps = json['fps'] as num?;
-    final frameTime = 1.0 / (fps == null || fps == 0 || fps.isNaN ? 1.0 : fps);
+    final frameTime = 1.0 / _jsOr(fps?.toDouble(), 1);
 
     for (var i = 0, n = jsonTracks.length; i != n; ++i) {
       tracks.add(_animationClipParseKeyframeTrack(jsonTracks[i] as Map<String, Object?>).scale(frameTime));
@@ -65,7 +65,13 @@ class AnimationClip {
     }
 
     final userData = json['userData'] as String?;
-    clip.userData = jsonDecode(userData == null || userData.isEmpty ? '{}' : userData) as Map<String, Object?>;
+
+    // `JSON.parse( json.userData || '{}' )`.
+    if (userData == null || userData.isEmpty) {
+      clip.userData = {};
+    } else {
+      clip.userData = jsonDecode(userData) as Map<String, Object?>;
+    }
 
     return clip;
   }

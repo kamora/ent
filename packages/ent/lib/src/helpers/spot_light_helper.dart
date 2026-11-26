@@ -95,7 +95,7 @@ class SpotLightHelper extends Object3D {
     matrixWorldNeedsUpdate = true;
 
     // the reference: `this.light.distance ? this.light.distance : 1000` (0 and NaN are falsy)
-    final coneLength = light.distance == 0 || light.distance.isNaN ? 1000.0 : light.distance;
+    final coneLength = _jsOr(light.distance, 1000);
     final coneWidth = coneLength * math.tan(light.angle);
 
     cone.scale.set(coneWidth, coneWidth, coneLength);
