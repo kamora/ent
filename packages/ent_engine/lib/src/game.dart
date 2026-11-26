@@ -3,6 +3,8 @@ import 'dart:math' as math;
 
 import 'package:ent/ent.dart';
 
+import 'input.dart';
+
 part 'tweens.dart';
 
 /// A game loop over [scene]. The app's frame tick calls [update] with the real seconds since the last frame (in
@@ -27,6 +29,10 @@ class Game {
   /// The animation mixers advanced by game time each frame, after the tasks.
   final List<AnimationMixer> mixers = [];
 
+  /// The input map the game's code reads; each [update] ends its frame, also while [paused], so a pause screen can
+  /// read it too.
+  final Input input = Input();
+
   final List<Task> _tasks = [];
 
   // The running tween of each kind on each target, which a new one of that kind replaces.
@@ -41,11 +47,14 @@ class Game {
 
   /// Advances the game by [delta] real seconds. Tasks scheduled while it runs start on the next frame.
   void update(double delta) {
-    if (paused) {
-      return;
+    if (!paused) {
+      _advance(delta * timeScale);
     }
 
-    final step = delta * timeScale;
+    input.endFrame();
+  }
+
+  void _advance(double step) {
     _time += step;
 
     for (final task in List.of(_tasks)) {
