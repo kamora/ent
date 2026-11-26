@@ -1,16 +1,13 @@
 // Tests of TextureUtils against values computed by the reference source (reference/extras_reference.mjs). The reference
 // has no TextureUtils test.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
+import '../support/library.g.dart';
 import 'support.dart';
 
-final LibraryMirror _library = reflectClass(TextureUtils).owner as LibraryMirror;
-
-int _constant(String name) => _library.getField(Symbol(name)).reflectee as int;
+int _constant(String name) => constants[name]! as int;
 
 void main() {
   group('Extras', () {

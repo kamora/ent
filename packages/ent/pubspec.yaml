@@ -16,5 +16,7 @@ environment:
   sdk: ^3.13.5
 
 dev_dependencies:
+  analyzer: ^14.7.0
+  dart_style: ^3.1.14
   lints: ^6.0.0
   test: ^1.25.6

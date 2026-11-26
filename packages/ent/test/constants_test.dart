@@ -7,20 +7,10 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:mirrors';
 
 import 'package:test/test.dart';
-import 'package:ent/ent.dart';
 
-final LibraryMirror _library = reflectClass(MathUtils).owner as LibraryMirror;
-
-/// The static constants of an object-valued export (`MOUSE`, `TimestampQuery`, ...), by name.
-Map<String, Object?> staticValues(ClassMirror type) {
-  return {
-    for (final MapEntry(:key, :value) in type.declarations.entries)
-      if (value is VariableMirror && value.isStatic) MirrorSystem.getName(key): type.getField(key).reflectee,
-  };
-}
+import 'support/library.g.dart';
 
 /// Whether two maps of numbers and strings hold the same entries.
 bool sameEntries(Map<String, Object?> a, Map<Object?, Object?> b) {
@@ -36,22 +26,22 @@ void main() {
       final errors = <String>[];
 
       for (final MapEntry(key: name, :value) in expected.entries) {
-        final declaration = _library.declarations[Symbol(name)];
-
         if (value is Map) {
-          if (declaration is! ClassMirror) {
+          final type = constantClasses[name];
+
+          if (type == null) {
             errors.add('$name: missing (expected an object of constants)');
-          } else if (!sameEntries(staticValues(declaration), value)) {
-            errors.add('$name: ${staticValues(declaration)} != $value');
+          } else if (!sameEntries(type, value)) {
+            errors.add('$name: $type != $value');
           }
 
           continue;
         }
 
-        if (declaration is! VariableMirror || !declaration.isConst) {
+        if (!constants.containsKey(name)) {
           errors.add('$name: missing (expected a const)');
-        } else if (_library.getField(Symbol(name)).reflectee != value) {
-          errors.add('$name: ${_library.getField(Symbol(name)).reflectee} != $value');
+        } else if (constants[name] != value) {
+          errors.add('$name: ${constants[name]} != $value');
         }
       }
 
