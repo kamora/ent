@@ -1,4 +1,4 @@
-package dev.ent.ent_opengl_example
+package dev.ent.cube
 
 import io.flutter.embedding.android.FlutterActivity
 

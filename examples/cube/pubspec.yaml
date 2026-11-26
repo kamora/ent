@@ -1,4 +1,4 @@
-name: ent_opengl_example
+name: cube
 description: Shows a scene drawn by ent_opengl's OpenGlRenderer in a macOS window.
 publish_to: none
 version: 1.0.0

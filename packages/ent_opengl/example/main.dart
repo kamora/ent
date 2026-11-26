@@ -1,6 +1,6 @@
 // A lit cube turning in an EntView, drawn with OpenGL ES; drag to orbit, scroll or pinch to zoom. The app around it
 // registers the one shader variant it draws with, "physical" (MeshStandardMaterial), under ent_opengl (README,
-// Getting started). The repository's examples/opengl is a whole app around this renderer.
+// Getting started). The repository's examples/cube is a whole app around this renderer.
 
 import 'package:ent_opengl/ent_opengl.dart';
 import 'package:material_ui/material_ui.dart' hide Color, Texture;

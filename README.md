@@ -116,7 +116,7 @@ where it does not (see Platforms). The scene code is the same for both.
 (cd packages/ent_flutter && flutter test --enable-impeller --enable-flutter-gpu)
 (cd examples/worm && flutter test integration_test/parity_metal_test.dart -d macos --enable-flutter-gpu)
 (cd packages/ent_opengl && flutter test --enable-impeller --enable-flutter-gpu)
-(cd examples/opengl && flutter test integration_test/parity_test.dart -d macos)
+(cd examples/cube && flutter test integration_test/parity_test.dart -d macos)
 ```
 
 The device tests and what they need are in the [example's README](examples/worm/README.md).
