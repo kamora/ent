@@ -84,7 +84,7 @@ More usage, for controls, GLTFLoader and post-processing, is in [`docs/usage.md`
 
 ## Status
 
-Version `0.1.0-dev.1`, a preview: the API may still change before 0.1.0. The API is listed in `test/api.txt`,
+Version `0.1.0-dev.2`, a preview: the API may still change before 0.1.0. The API is listed in `test/api.txt`,
 which `test/api_test.dart` checks, so every change to it is deliberate.
 
 ```sh
