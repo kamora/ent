@@ -79,7 +79,8 @@ The parity scenes are the same as Flutter GPU's, compared with the same referenc
   on the same phone (`tool/reference/render/render.mjs` with `REMOTE`; the example's `PARITY_REFERENCE`). The
   differences left against the M1 are the GPU's: our frame and Chrome's on the phone differ from the M1 alike
   (`khronos_normal_tangent_mirror`, `khronos_clearcoat`, `khronos_transmission`, which is within 15/255 of Chrome on
-  the phone). Chrome on the phone draws some scenes wrong itself (`hdr_environment_aces` black,
+  the phone; `map_anisotropy`, 1185 pixels off the M1 and equal to Chrome on the phone: the GPU's own anisotropic
+  filter, 2026-11-26). `cube_camera_transmission` passes against the M1. Chrome on the phone draws some scenes wrong itself (`hdr_environment_aces` black,
   `hdr_environment_mirror`, `hdr_environment_sphere`, `khronos_alpha_blend_mode`, `standard_grid_environment`,
   `standard_grid_light`), so it is no yardstick for them.
 
