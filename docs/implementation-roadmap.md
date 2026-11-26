@@ -26,8 +26,8 @@ platform parity are reported separately. Where Ent differs from the reference on
   system's OpenGL ES on Android (`docs/opengl.md`). It passes the same scenes on the M1 with no `mipmaps` allowances,
   and on a Galaxy S10 differs from the M1 only where Chrome on that phone differs alike.
 - Android: `ent_opengl` draws on OpenGL ES devices (checked on the Galaxy S10). Flutter GPU needs a device where
-  Impeller runs on Vulkan and draws nothing on its OpenGL ES fallback (flutter/flutter#196045); no such device has
-  been tested.
+  Impeller runs on Vulkan and draws nothing on its OpenGL ES fallback (flutter/flutter#196045). No tested phone picks
+  Vulkan by default; a Galaxy S10 forced to Vulkan (debug builds only) passes the getting-started and render tests.
 
 ## Next milestone: ready for others
 
@@ -83,9 +83,10 @@ Rendering:
 
 Devices:
 
-- Flutter GPU on Android has run nothing by default; a Vulkan device is needed. Both test phones fall back to
-  OpenGL ES (Galaxy A22, MediaTek; Galaxy S10, Exynos 9820), and Flutter never picks Vulkan on an emulator. They run
-  `ent_opengl` instead; the A22 has not run it yet.
+- Flutter GPU on Android has run nothing by default; a phone where Impeller picks Vulkan is needed. Both test phones
+  fall back to OpenGL ES (Galaxy A22, MediaTek; Galaxy S10, Exynos 9820), and Flutter never picks Vulkan on an
+  emulator; the S10 forced to Vulkan (debug builds only) draws correctly. They run `ent_opengl` instead; the A22 has
+  not run it yet.
 
 Performance, for when an app needs more than a few hundred separate draws at 60 fps on the iPhone 11 (one
 InstancedMesh holds 60 fps at 2000):
