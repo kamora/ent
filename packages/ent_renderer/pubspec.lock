@@ -45,10 +45,10 @@ packages:
     dependency: "direct main"
     description:
       name: ent
-      sha256: "4963475473b9a60647b07f255fee85459915f171c4b3da13e01509fbc2ea67aa"
+      sha256: "06a2f59b5a61eed99fb78b880ff072fe0a23b83733b5465fe3d7ac9fafdd5368"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.1"
+    version: "0.1.0-dev.2"
   ent_shaders:
     dependency: "direct main"
     description:
