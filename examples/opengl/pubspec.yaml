@@ -10,8 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   ent: ^0.1.0-dev.1
-  ent_opengl: ^0.1.0-dev.2
-  ent_renderer: ^0.1.0-dev.2
+  ent_opengl: ^0.1.0-dev.3
+  ent_renderer: ^0.1.0-dev.3
 
 dev_dependencies:
   flutter_test:
