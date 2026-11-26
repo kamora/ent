@@ -3,7 +3,7 @@
 // Getting started). The repository's examples/opengl is a whole app around this renderer.
 
 import 'package:ent_opengl/ent_opengl.dart';
-import 'package:flutter/material.dart' hide Color, Texture;
+import 'package:material_ui/material_ui.dart' hide Color, Texture;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

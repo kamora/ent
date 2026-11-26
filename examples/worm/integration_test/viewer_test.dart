@@ -8,7 +8,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart' hide Matrix4;
-import 'package:flutter/material.dart' hide Material;
+import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';

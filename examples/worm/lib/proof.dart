@@ -4,7 +4,7 @@
 
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:ent_flutter/ent_flutter.dart';
 
 /// The demo scene; `rotate(seconds)` turns the cube as the frame callback does.

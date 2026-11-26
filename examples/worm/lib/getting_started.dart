@@ -3,7 +3,7 @@
 //
 // flutter run -t lib/getting_started.dart -d macos
 
-import 'package:flutter/material.dart' hide Color;
+import 'package:material_ui/material_ui.dart' hide Color;
 import 'package:ent_flutter/ent_flutter.dart';
 
 /// The scene, its camera and controls, and what a frame and a tap do to them.

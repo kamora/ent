@@ -37,6 +37,7 @@ dev_dependencies:
     sdk: flutter
   ent_shaders: ^0.1.0-dev.2
   flutter_lints: ^6.0.0
+  material_ui: ^1.11.1
 
 # The shader variants this package's own tests draw with.
 hooks:

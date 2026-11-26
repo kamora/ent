@@ -6,7 +6,7 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart' hide Material;
+import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:flutter/services.dart';
 import 'package:ent_flutter/ent_flutter.dart';
 

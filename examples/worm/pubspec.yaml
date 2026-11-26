@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   ent_flutter: ^0.1.0-dev.3
+  material_ui: ^1.11.1
 
 dev_dependencies:
   flutter_driver:

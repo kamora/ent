@@ -8,7 +8,7 @@ the Flutter installed here unless it is marked as a guess; nothing is assumed fr
 
 | | |
 |---|---|
-| Flutter | 3.47.6 (stable), Dart 3.13.5, at `/opt/homebrew/share/flutter` |
+| Flutter | 3.50.1 (stable), Dart 3.14.0, at `/opt/homebrew/share/flutter` |
 | `flutter_gpu` | ships in the SDK (`bin/cache/pkg/flutter_gpu`), imported as `flutter_gpu: sdk: flutter` |
 | Shader compiler | `impellerc` in `bin/cache/artifacts/engine/darwin-x64`, run by `ent_impeller` from `ent_flutter`'s build hook (`hooks` 2.2.0, BSD-3-Clause) |
 | Machine | macOS 26.5.2 (25F84), Apple M1 (8-core GPU, Metal 4) |

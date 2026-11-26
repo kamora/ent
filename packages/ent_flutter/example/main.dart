@@ -2,7 +2,7 @@
 // (README, Requirements) and registers the one shader variant it draws with, "physical" (MeshStandardMaterial). More
 // examples, a glTF viewer with shadows and animation among them, are in the repository's examples/worm.
 
-import 'package:flutter/material.dart' hide Color;
+import 'package:material_ui/material_ui.dart' hide Color;
 import 'package:ent_flutter/ent_flutter.dart';
 
 Future<void> main() async {

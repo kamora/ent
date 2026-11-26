@@ -1,7 +1,7 @@
 // The animation loop: two skinned bars driven by an AnimationMixer in a EntView, the scene of the parity test
 // `anim_skinned` (tool/reference/render/scenes.mjs). Run with `flutter run -t lib/animation.dart`.
 
-import 'package:flutter/material.dart' hide Material;
+import 'package:material_ui/material_ui.dart' hide Material;
 import 'package:ent_flutter/ent_flutter.dart';
 
 /// `anim_skinned`: the left bar (attached, MeshBasicMaterial) plays `bend` at weight 0.7 and `lift` at 0.6; the
