@@ -56,6 +56,13 @@ class Interpolant {
   /// A cache index.
   int _cachedIndex = 0;
 
+  /// For tests: the cache index, which the fixtures save and restore.
+  @visibleForTesting
+  int get cachedIndex => _cachedIndex;
+
+  @visibleForTesting
+  set cachedIndex(int value) => _cachedIndex = value;
+
   /// The result buffer.
   List<double> resultBuffer;
 

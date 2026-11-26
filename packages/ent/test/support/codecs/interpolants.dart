@@ -1,19 +1,10 @@
 // Fixture codecs for the interpolants group; state layouts follow tool/reference/js/types/interpolants.mjs.
 
-import 'dart:mirrors';
 import 'dart:typed_data';
 
 import 'package:ent/ent.dart';
 
 import '../fixtures.dart';
-
-final LibraryMirror _library = reflectClass(Interpolant).owner as LibraryMirror;
-
-Symbol _private(String name) => MirrorSystem.getSymbol(name, _library);
-
-Object? _get(Object o, String name) => reflect(o).getField(_private(name)).reflectee;
-
-void _set(Object o, String name, Object? value) => reflect(o).setField(_private(name), value);
 
 List<double> _array(String kind, List<double> values) {
   return switch (kind) {
@@ -43,7 +34,7 @@ Codec _codec(_Factory create) {
       final start = next();
       final end = next();
 
-      _set(interpolant, '_cachedIndex', cached);
+      interpolant.cachedIndex = cached;
 
       if (start != null || end != null) {
         interpolant.settings = {'endingStart': (start as double?)?.toInt(), 'endingEnd': (end as double?)?.toInt()};
@@ -52,10 +43,11 @@ Codec _codec(_Factory create) {
       final weights = [next(), next(), next(), next()];
 
       if (interpolant is CubicInterpolant) {
-        _set(interpolant, '_weightPrev', weights[0]);
-        _set(interpolant, '_offsetPrev', (weights[1] as double).toInt());
-        _set(interpolant, '_weightNext', weights[2]);
-        _set(interpolant, '_offsetNext', (weights[3] as double).toInt());
+        interpolant
+          ..weightPrev = weights[0]! as double
+          ..offsetPrev = (weights[1] as double).toInt()
+          ..weightNext = weights[2]! as double
+          ..offsetNext = (weights[3] as double).toInt();
       }
 
       List<double>? tangents() {
@@ -92,16 +84,16 @@ Codec _codec(_Factory create) {
       return [
         kind,
         v.valueSize,
-        _get(v, '_cachedIndex'),
+        v.cachedIndex,
         ...list(v.parameterPositions),
         ...list(v.sampleValues),
         ...list(v.resultBuffer),
         v.settings?['endingStart'],
         v.settings?['endingEnd'],
-        cubic ? _get(v, '_weightPrev') : null,
-        cubic ? _get(v, '_offsetPrev') : null,
-        cubic ? _get(v, '_weightNext') : null,
-        cubic ? _get(v, '_offsetNext') : null,
+        cubic ? v.weightPrev : null,
+        cubic ? v.offsetPrev : null,
+        cubic ? v.weightNext : null,
+        cubic ? v.offsetNext : null,
         ...(bezier ? list(v.inTangents) : [-1]),
         ...(bezier ? list(v.outTangents) : [-1]),
       ];

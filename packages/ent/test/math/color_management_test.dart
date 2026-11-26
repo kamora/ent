@@ -1,19 +1,9 @@
 // The reference unit tests of ColorManagement.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 import '../support/math_constants.dart';
-
-// `_getMatrix` is library-private in the port (exception E-PRIVATE); the test reaches it through mirrors.
-final ClassMirror _colorManagement = reflectClass(ColorManagement);
-
-Matrix3 getMatrix(Matrix3 target, String source, String destination) {
-  final symbol = MirrorSystem.getSymbol('_getMatrix', _colorManagement.owner as LibraryMirror);
-  return _colorManagement.invoke(symbol, [target, source, destination]).reflectee as Matrix3;
-}
 
 void main() {
   group('Maths', () {
@@ -68,7 +58,7 @@ void main() {
         ];
 
         for (final [source, target] in conversions) {
-          getMatrix(matrix, source, target);
+          ColorManagement.getMatrix(matrix, source, target);
 
           for (final rgb in [
             [1, 1, 1],

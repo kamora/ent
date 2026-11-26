@@ -1,25 +1,10 @@
 // The reference unit tests of BatchedMesh, plus Dart regression tests whose expected values were printed from the
 // reference source in Node.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 import 'skeleton_test.dart' show expectNumbers;
-
-/// Reads a library-private member, as the reference tests read `_multiDrawStarts` (exception E-PRIVATE).
-Object? private(Object object, String name) {
-  final library = reflectClass(BatchedMesh).owner as LibraryMirror;
-  return reflect(object).getField(MirrorSystem.getSymbol(name, library)).reflectee;
-}
-
-/// Calls the library-private `_updateDrawParameters`.
-void updateDrawParameters(BatchedMesh mesh, Camera camera, Material material, String format) {
-  final library = reflectClass(BatchedMesh).owner as LibraryMirror;
-  reflect(mesh)
-      .invoke(MirrorSystem.getSymbol('_updateDrawParameters', library), [camera, mesh.geometry, material, format]);
-}
 
 List<num> head(Object? list, int length) => (list as List<num>).sublist(0, length);
 
@@ -96,11 +81,7 @@ void main() {
         batchedMesh.onBeforeRender(Object(), null, camera, batchedMesh.geometry, material, null);
 
         final start = batchedMesh.getGeometryRangeAt(geometryId).start;
-        expect(
-          (private(batchedMesh, '_multiDrawStarts') as List<int>)[0],
-          start * 4,
-          reason: 'draw offsets are updated for the new index type',
-        );
+        expect(batchedMesh.multiDrawStarts[0], start * 4, reason: 'draw offsets are updated for the new index type');
 
         expect(
           () => batchedMesh.setGeometrySize(10, 2000),
@@ -180,12 +161,12 @@ void main() {
         s.mesh.updateMatrixWorld();
 
         s.mesh.onBeforeRender(Object(), null, camera, s.mesh.geometry, s.material, null);
-        expect(private(s.mesh, '_multiDrawCount'), 3);
-        expect(head(private(s.mesh, '_multiDrawStarts'), 5), [72, 0, 96, 0, 0]);
-        expect(head(private(s.mesh, '_multiDrawCounts'), 5), [6, 36, 36, 0, 0]);
-        expect(private(s.mesh, '_multiDrawBytesPerElement'), 2);
+        expect(s.mesh.multiDrawCount, 3);
+        expect(head(s.mesh.multiDrawStarts, 5), [72, 0, 96, 0, 0]);
+        expect(head(s.mesh.multiDrawCounts, 5), [6, 36, 36, 0, 0]);
+        expect(s.mesh.multiDrawBytesPerElement, 2);
 
-        final indirect = private(s.mesh, '_indirectTexture') as DataTexture;
+        final indirect = s.mesh.indirectTexture;
         expect(head((indirect.image as DataImage).data, 5), [1, 0, 2, 0, 0]);
 
         s.material.transparent = true;
@@ -193,15 +174,15 @@ void main() {
           ..setVisibleAt(s.instances[0], false)
           ..setVisibleAt(s.instances[0], true);
         s.mesh.onBeforeRender(Object(), null, camera, s.mesh.geometry, s.material, null);
-        expect(private(s.mesh, '_multiDrawCount'), 3);
+        expect(s.mesh.multiDrawCount, 3);
         expect(head((indirect.image as DataImage).data, 5), [2, 0, 1, 0, 0]);
 
         // nothing changed, no culling, no sorting: the merged pass returns early
         s.mesh
           ..sortObjects = false
           ..perObjectFrustumCulled = false;
-        updateDrawParameters(s.mesh, camera, s.material, 'merged');
-        expect(private(s.mesh, '_mergedDrawCount'), 0);
+        s.mesh.updateDrawParameters(camera, s.mesh.geometry, s.material, 'merged');
+        expect(s.mesh.mergedDrawCount, 0);
       });
 
       test('setCustomSort', () {
@@ -217,7 +198,7 @@ void main() {
         s.mesh.onBeforeRender(Object(), null, camera, s.mesh.geometry, s.material, null);
 
         expect(seen.length, 3);
-        final indirect = private(s.mesh, '_indirectTexture') as DataTexture;
+        final indirect = s.mesh.indirectTexture;
         expect(head((indirect.image as DataImage).data, 3), [2, 1, 0]);
       });
 
@@ -226,9 +207,9 @@ void main() {
         final camera = PerspectiveCamera(60, 1, 0.1, 100)..updateMatrixWorld();
 
         s.mesh.onBeforeShadow(Object(), null, null, camera, s.mesh.geometry, s.material, null);
-        expect(private(s.mesh, '_multiDrawCount'), 3);
+        expect(s.mesh.multiDrawCount, 3);
 
-        final indirect = private(s.mesh, '_indirectTexture') as DataTexture;
+        final indirect = s.mesh.indirectTexture;
         final version = indirect.version;
         s.mesh.onBeforeRender(_WebGPURenderer(), null, camera, s.mesh.geometry, s.material, null);
         expect(indirect.version, version + 1, reason: 'only flags the texture');
@@ -248,8 +229,6 @@ void main() {
         final s = batched();
         s.mesh.deleteGeometry(s.geometries[1]);
         expect(s.mesh.instanceCount, 3);
-        expect(private(s.mesh, '_availableGeometryIds'), [1]);
-        expect(private(s.mesh, '_availableInstanceIds'), [1]);
         expect(s.mesh.deleteGeometry(s.geometries[1]), same(s.mesh), reason: 'already deleted');
 
         s.mesh.optimize();
@@ -261,6 +240,7 @@ void main() {
         expect(s.mesh.geometry.index!.array.sublist(36, 42), [24, 26, 25, 26, 27, 25]);
 
         expect(s.mesh.addGeometry(PlaneGeometry()), 1, reason: 'the freed id is reused');
+        expect(s.mesh.addInstance(1), 1, reason: 'the freed instance id is reused');
         expect(() => s.mesh.getGeometryRangeAt(7), throwsA(isA<EntError>()));
       });
 
@@ -307,9 +287,10 @@ void main() {
       test('dispose', () {
         final s = batched();
         s.mesh.dispose();
-        expect(private(s.mesh, '_matricesTexture'), isNull);
-        expect(private(s.mesh, '_indirectTexture'), isNull);
-        expect(private(s.mesh, '_colorsTexture'), isNull);
+        // The reference reads the private textures; their getters throw once they are released (E-PRIVATE).
+        expect(() => s.mesh.matricesTexture, throwsA(isA<TypeError>()));
+        expect(() => s.mesh.indirectTexture, throwsA(isA<TypeError>()));
+        expect(s.mesh.colorsTexture, isNull);
       });
 
       test('toJSON', () {

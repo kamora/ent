@@ -66,6 +66,14 @@ class AnimationAction {
   // it's set back to 'null' upon start of the action
   double? _startTime;
 
+  /// For tests: the loops completed, -1 before the first.
+  @visibleForTesting
+  double get loopCount => _loopCount;
+
+  /// For tests: the mixer time the action is to start at, `null` once started.
+  @visibleForTesting
+  double? get startTime => _startTime;
+
   /// The local time of this action (in seconds, starting with `0`). The value gets clamped or wrapped to
   /// `[0,clip.duration]` (according to the loop state).
   double time = 0;

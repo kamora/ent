@@ -48,6 +48,31 @@ class StereoCamera {
 
   final _StereoCameraCache _cache = _StereoCameraCache();
 
+  /// For tests: the values [update] last used (focus, fov, aspect, near, far, zoom, eyeSep), which the fixtures save
+  /// and restore.
+  @visibleForTesting
+  List<double?> get cache => [
+    _cache.focus,
+    _cache.fov,
+    _cache.aspect,
+    _cache.near,
+    _cache.far,
+    _cache.zoom,
+    _cache.eyeSep,
+  ];
+
+  @visibleForTesting
+  set cache(List<double?> values) {
+    _cache
+      ..focus = values[0]
+      ..fov = values[1]
+      ..aspect = values[2]
+      ..near = values[3]
+      ..far = values[4]
+      ..zoom = values[5]
+      ..eyeSep = values[6];
+  }
+
   /// Updates the stereo camera based on the given perspective camera.
   void update(PerspectiveCamera camera) {
     final cache = _cache;

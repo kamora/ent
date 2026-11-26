@@ -80,7 +80,8 @@ Each module gets two kinds of tests in `packages/ent/test/`:
    edge cases (exceptions log).
 2. Reference fixtures: a spec in `tool/reference/js/specs/<Name>.mjs` drives the pinned reference
    source in Node to write `fixtures/specs/<Name>.json`; the Dart test
-   `test/fixtures_test.dart` replays every case through `dart:mirrors` (call by the reference's method name) and
+   `test/fixtures_test.dart` replays every case through `test/support/dispatch.dart` (call by the reference's method
+   name, from the table `tool/generate.dart` writes into `test/support/library.g.dart`) and
    compares receiver state, argument state and return value. See `tool/reference/js/README.md`.
 
 Tolerance for fixture numbers: exact match first; otherwise `|a − b| ≤ 1e-9 · max(1, |a|, |b|)`. V8 and the

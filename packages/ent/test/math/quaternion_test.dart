@@ -1,7 +1,6 @@
 // The reference unit tests of Quaternion.
 
 import 'dart:math' as math;
-import 'dart:mirrors';
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
@@ -15,21 +14,9 @@ const double epsilon = 2.220446049250313e-16;
 const List<String> orders = ['XYZ', 'YXZ', 'ZXY', 'ZYX', 'YZX', 'XZY'];
 final Euler eulerAngles = Euler(0.1, -0.3, 0.25);
 
-// `_onChange` and `_onChangeCallback` are library-private in the port (exception E-PRIVATE); the reference
-// tests that call them reach them through mirrors.
-final LibraryMirror _library = reflectClass(Quaternion).owner as LibraryMirror;
-
-void onChange(Object target, void Function() callback) {
-  reflect(target).invoke(MirrorSystem.getSymbol('_onChange', _library), [callback]);
-}
-
-Object? onChangeCallback(Object target) {
-  return reflect(target).getField(MirrorSystem.getSymbol('_onChangeCallback', _library)).reflectee;
-}
-
-void setOnChangeCallback(Object target, void Function() callback) {
-  reflect(target).setField(MirrorSystem.getSymbol('_onChangeCallback', _library), callback);
-}
+// `_onChange` and `_onChangeCallback` are library-private in the port (exception E-PRIVATE); the tests register
+// their callbacks through the test-only `onChangeCallback`.
+void onChange(Quaternion target, void Function() callback) => target.onChangeCallback = callback;
 
 Quaternion qSub(Quaternion a, Quaternion b) {
   final result = Quaternion();
@@ -640,20 +627,6 @@ void main() {
         numEqual(a.w, .7, 'index 2, component w');
       });
 
-      test('_onChange', () {
-        var b = false;
-        void f() {
-          b = true;
-        }
-
-        final a = Quaternion(11, 12, 13, 1);
-        onChange(a, f);
-        expect(onChangeCallback(a), same(f));
-
-        (onChangeCallback(a) as void Function())();
-        expect(b, isTrue);
-      });
-
       test('_onChangeCallback', () {
         var b = false;
         final a = Quaternion(11, 12, 13, 1);
@@ -663,10 +636,10 @@ void main() {
           b = true;
         }
 
-        setOnChangeCallback(a, f);
-        expect(onChangeCallback(a), same(f));
+        a.onChangeCallback = f;
+        expect(a.onChangeCallback, same(f));
 
-        (onChangeCallback(a) as void Function())();
+        a.onChangeCallback();
         expect(b, isTrue);
       });
 

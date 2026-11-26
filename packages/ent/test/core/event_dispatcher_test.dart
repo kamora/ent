@@ -1,16 +1,7 @@
 // The reference unit tests of EventDispatcher, plus Dart-specific cases.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
-
-/// Reads the library-private `_listeners` map, which the reference tests inspect directly (E-PRIVATE).
-Map<String, List<EventListener>>? listenersOf(EventDispatcher dispatcher) {
-  final library = reflectClass(EventDispatcher).owner as LibraryMirror;
-  return reflect(dispatcher).getField(MirrorSystem.getSymbol('_listeners', library)).reflectee
-      as Map<String, List<EventListener>>?;
-}
 
 void main() {
   group('Core', () {
@@ -22,23 +13,25 @@ void main() {
       });
 
       // PUBLIC
+
+      // The reference reads the private listeners map; the port checks what the map decides: which listeners an
+      // event reaches (E-PRIVATE).
       test('addEventListener', () {
         final eventDispatcher = EventDispatcher();
+        var calls = 0;
 
-        void listener(Event event) {}
+        void listener(Event event) {
+          calls++;
+        }
+
         eventDispatcher.addEventListener('anyType', listener);
-
-        expect(listenersOf(eventDispatcher)!['anyType']!.length, 1, reason: 'listener with unknown type was added');
-        expect(listenersOf(eventDispatcher)!['anyType']![0], listener, reason: 'listener with unknown type was added');
+        eventDispatcher.dispatchEvent(Event('anyType'));
+        expect(calls, 1, reason: 'listener with unknown type was added');
 
         eventDispatcher.addEventListener('anyType', listener);
-
-        expect(
-          listenersOf(eventDispatcher)!['anyType']!.length,
-          1,
-          reason: "can't add one listener twice to same type",
-        );
-        expect(listenersOf(eventDispatcher)!['anyType']![0], listener, reason: 'listener is still there');
+        eventDispatcher.dispatchEvent(Event('anyType'));
+        expect(calls, 2, reason: "can't add one listener twice to same type");
+        expect(eventDispatcher.hasEventListener('anyType', listener), isTrue, reason: 'listener is still there');
       });
 
       test('hasEventListener', () {
@@ -57,26 +50,31 @@ void main() {
 
       test('removeEventListener', () {
         final eventDispatcher = EventDispatcher();
+        var calls = 0;
 
-        void listener(Event event) {}
+        void listener(Event event) {
+          calls++;
+        }
 
-        expect(listenersOf(eventDispatcher), isNull, reason: 'there are no listeners by default');
+        expect(eventDispatcher.hasEventListener('anyType', listener), isFalse, reason: 'no listeners by default');
 
         eventDispatcher.addEventListener('anyType', listener);
-        expect(
-          listenersOf(eventDispatcher)!.length == 1 && listenersOf(eventDispatcher)!['anyType']!.length == 1,
-          isTrue,
-          reason: 'if a listener was added, there is a new key',
-        );
+        expect(eventDispatcher.hasEventListener('anyType', listener), isTrue, reason: 'a listener was added');
 
         eventDispatcher.removeEventListener('anyType', listener);
-        expect(listenersOf(eventDispatcher)!['anyType']!.length, 0, reason: 'listener was deleted');
+        eventDispatcher.dispatchEvent(Event('anyType'));
+        expect(eventDispatcher.hasEventListener('anyType', listener), isFalse, reason: 'listener was deleted');
+        expect(calls, 0, reason: 'a deleted listener is not called');
 
         eventDispatcher.removeEventListener('unknownType', listener);
-        expect(listenersOf(eventDispatcher)!['unknownType'], isNull, reason: 'unknown types will be ignored');
+        expect(eventDispatcher.hasEventListener('unknownType', listener), isFalse, reason: 'unknown types are ignored');
 
         eventDispatcher.removeEventListener('anyType', null);
-        expect(listenersOf(eventDispatcher)!['anyType']!.length, 0, reason: 'undefined listeners are ignored');
+        expect(
+          eventDispatcher.hasEventListener('anyType', listener),
+          isFalse,
+          reason: 'undefined listeners are ignored',
+        );
       });
 
       test('dispatchEvent', () {

@@ -1,12 +1,8 @@
 // Fixture codecs for the cameras group; state layouts follow tool/reference/js/types/cameras.mjs.
 
-import 'dart:mirrors';
-
 import 'package:ent/ent.dart';
 
 import '../fixtures.dart';
-
-final LibraryMirror _library = reflectClass(Camera).owner as LibraryMirror;
 
 /// Reads a state list front to back.
 class _Reader {
@@ -79,7 +75,7 @@ void _readCamera(Camera c, _Reader r) {
   c.projectionMatrix.fromArray(r.list(16));
   c.projectionMatrixInverse.fromArray(r.list(16));
   c.coordinateSystem = r.n();
-  reflect(c).setField(MirrorSystem.getSymbol('_reversedDepth', _library), r.b());
+  c.reversedDepth = r.b();
 }
 
 List<Object?> _camera(Camera c) {
@@ -164,21 +160,11 @@ List<Object?> _orthographic(OrthographicCamera c) {
 }
 
 // StereoCamera: aspect, eyeSep, the private cache (7 nullable numbers), then cameraL and cameraR.
-const List<Symbol> _cacheFields = [#focus, #fov, #aspect, #near, #far, #zoom, #eyeSep];
-
-InstanceMirror _stereoCache(StereoCamera s) {
-  return reflect(reflect(s).getField(MirrorSystem.getSymbol('_cache', _library)).reflectee);
-}
-
 StereoCamera _newStereo(List<Object?> s) {
   final stereo = StereoCamera()
     ..aspect = s[0] as double
-    ..eyeSep = s[1] as double;
-  final cache = _stereoCache(stereo);
-
-  for (final (k, field) in _cacheFields.indexed) {
-    cache.setField(field, s[2 + k]);
-  }
+    ..eyeSep = s[1] as double
+    ..cache = s.sublist(2, 9).cast<double?>();
 
   _readPerspective(stereo.cameraL, _Reader(s, 9));
   _readPerspective(stereo.cameraR, _Reader(s, 9 + _perspectiveLength));
@@ -186,15 +172,7 @@ StereoCamera _newStereo(List<Object?> s) {
 }
 
 List<Object?> _stereo(StereoCamera s) {
-  final cache = _stereoCache(s);
-
-  return [
-    s.aspect,
-    s.eyeSep,
-    for (final field in _cacheFields) cache.getField(field).reflectee,
-    ..._perspective(s.cameraL),
-    ..._perspective(s.cameraR),
-  ];
+  return [s.aspect, s.eyeSep, ...s.cache, ..._perspective(s.cameraL), ..._perspective(s.cameraR)];
 }
 
 // CubeCamera: coordinateSystem (or null), activeMipmapLevel, its own Object3D state, then 6 children.

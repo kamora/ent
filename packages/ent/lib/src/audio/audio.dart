@@ -90,6 +90,10 @@ class Audio extends Object3D {
 
   double _startedAt = 0;
   double _progress = 0;
+
+  /// For tests: the playback position kept while paused, in seconds.
+  @visibleForTesting
+  double get progress => _progress;
   bool _connected = false;
 
   /// Can be used to apply a variety of low-order filters to create more complex sound effects e.g. via

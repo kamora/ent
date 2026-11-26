@@ -1,18 +1,11 @@
 // The reference unit tests of Audio, plus a scenario replaying the call log the reference audio classes produce on a
 // fake Web Audio context in Node (scenario_log.dart).
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 import 'fake_web_audio.dart';
 import 'scenario_log.dart';
-
-double _progress(Audio audio) {
-  final library = reflectClass(Audio).owner as LibraryMirror;
-  return reflect(audio).getField(MirrorSystem.getSymbol('_progress', library)).reflectee as double;
-}
 
 void main() {
   group('Audios', () {
@@ -70,7 +63,7 @@ void main() {
         audio.play();
         ctx.currentTime = 4;
         audio.pause();
-        audioLog.add('progress ${js(_progress(audio))}');
+        audioLog.add('progress ${js(audio.progress)}');
         final filter = FakeNode('filter1');
         audio.setFilters([filter]);
         audio.setLoop(true);
@@ -78,7 +71,7 @@ void main() {
         audio.play();
         ctx.currentTime = 20;
         audio.pause();
-        audioLog.add('progress ${js(_progress(audio))}');
+        audioLog.add('progress ${js(audio.progress)}');
         audio.stop(2);
         audioLog.add('filter ${identical(audio.getFilter(), filter)}');
         audio.setFilter();

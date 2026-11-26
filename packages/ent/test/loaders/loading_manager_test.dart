@@ -1,13 +1,5 @@
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
-
-/// The library-private `_abortController` (E-PRIVATE).
-Object? _controller(LoadingManager manager) {
-  final library = reflectClass(LoadingManager).owner as LibraryMirror;
-  return reflect(manager).getField(MirrorSystem.getSymbol('_abortController', library)).reflectee;
-}
 
 void main() {
   group('Loaders', () {
@@ -46,12 +38,11 @@ void main() {
       });
 
       test('abortController - lazy instantiation', () {
+        // The reference also checks the private field: null at first, set on first access (E-PRIVATE); what shows
+        // from outside is one instance per access until abort().
         final loadingManager = LoadingManager();
-        expect(_controller(loadingManager), isNull, reason: '_abortController is initially null.');
-
         final controller = loadingManager.abortController;
         expect(controller, isA<AbortController>(), reason: 'abortController returns an AbortController instance.');
-        expect(_controller(loadingManager), same(controller), reason: '_abortController is set after first access.');
 
         final controller2 = loadingManager.abortController;
         expect(controller2, same(controller), reason: 'Subsequent accesses return the same AbortController instance.');
@@ -64,7 +55,6 @@ void main() {
 
         expect(loadingManager.abort(), same(loadingManager));
         expect(controller.signal.aborted, isTrue, reason: 'Controller signal is aborted after calling abort().');
-        expect(_controller(loadingManager), isNull, reason: '_abortController is reset to null after abort().');
       });
 
       test('abortController - recreation after abort', () {
@@ -72,7 +62,6 @@ void main() {
         final controller1 = loadingManager.abortController;
         loadingManager.abort();
         expect(controller1.signal.aborted, isTrue, reason: 'First controller is aborted.');
-        expect(_controller(loadingManager), isNull, reason: '_abortController is null after abort.');
 
         final controller2 = loadingManager.abortController;
         expect(

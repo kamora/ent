@@ -31,13 +31,16 @@ class Camera extends Object3D {
   int coordinateSystem = WebGLCoordinateSystem;
 
   // Set by the renderers, which are not ported yet.
-  // ignore: prefer_final_fields
   bool _reversedDepth = false;
 
   /// The flag that indicates whether the camera uses a reversed depth buffer.
   bool get reversedDepth {
     return _reversedDepth;
   }
+
+  /// For tests: sets [reversedDepth], as a renderer with a reversed depth buffer does.
+  @visibleForTesting
+  set reversedDepth(bool value) => _reversedDepth = value;
 
   @override
   Camera copy(covariant Camera source, [bool? recursive]) {

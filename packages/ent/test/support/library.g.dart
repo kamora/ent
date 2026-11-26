@@ -934,6 +934,7 @@ final Map<String, Map<String, Function Function(Object)>> methods = {
     'dispose': (o) => (o as AxesHelper).dispose,
   },
   'BatchedMesh': {
+    'updateDrawParameters': (o) => (o as BatchedMesh).updateDrawParameters,
     'validateInstanceId': (o) => (o as BatchedMesh).validateInstanceId,
     'validateGeometryId': (o) => (o as BatchedMesh).validateGeometryId,
     'setCustomSort': (o) => (o as BatchedMesh).setCustomSort,
@@ -1689,6 +1690,7 @@ final Map<String, Map<String, Function Function(Object)>> methods = {
     'getCamera': (o) => (o as LightShadow).getCamera,
     'getFrustum': (o) => (o as LightShadow).getFrustum,
     'updateMatrices': (o) => (o as LightShadow).updateMatrices,
+    'updateMatrix': (o) => (o as LightShadow).updateMatrix,
     'getViewport': (o) => (o as LightShadow).getViewport,
     'getFrameExtents': (o) => (o as LightShadow).getFrameExtents,
     'dispose': (o) => (o as LightShadow).dispose,
@@ -2758,6 +2760,7 @@ final Map<String, Map<String, Function>> statics = {
     'getToneMappingMode': ColorManagement.getToneMappingMode,
     'getLuminanceCoefficients': ColorManagement.getLuminanceCoefficients,
     'define': ColorManagement.define,
+    'getMatrix': ColorManagement.getMatrix,
   },
   'Compatibility': {},
   'CompressedArrayTexture': {},
@@ -2797,7 +2800,7 @@ final Map<String, Map<String, Function>> statics = {
   'DiscreteInterpolant': {},
   'DodecahedronGeometry': {'fromJSON': DodecahedronGeometry.fromJSON},
   'DrawRange': {},
-  'Earcut': {'triangulate': Earcut.triangulate},
+  'Earcut': {'triangulate': Earcut.triangulate, 'deviation': Earcut.deviation, 'flatten': Earcut.flatten},
   'EdgesGeometry': {},
   'EffectComposer': {},
   'EffectComposerRenderer': {},
@@ -3224,6 +3227,7 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
     'projectionMatrix': (o, v) => (o as Camera).projectionMatrix = v as Matrix4,
     'projectionMatrixInverse': (o, v) => (o as Camera).projectionMatrixInverse = v as Matrix4,
     'coordinateSystem': (o, v) => (o as Camera).coordinateSystem = v as int,
+    'reversedDepth': (o, v) => (o as Camera).reversedDepth = v as bool,
   },
   'CameraHelper': {
     'camera': (o, v) => (o as CameraHelper).camera = v as Camera,
@@ -3319,7 +3323,12 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
     'v2': (o, v) => (o as CubicBezierCurve3).v2 = v as Vector3,
     'v3': (o, v) => (o as CubicBezierCurve3).v3 = v as Vector3,
   },
-  'CubicInterpolant': {},
+  'CubicInterpolant': {
+    'weightPrev': (o, v) => (o as CubicInterpolant).weightPrev = v as double,
+    'offsetPrev': (o, v) => (o as CubicInterpolant).offsetPrev = v as int,
+    'weightNext': (o, v) => (o as CubicInterpolant).weightNext = v as double,
+    'offsetNext': (o, v) => (o as CubicInterpolant).offsetNext = v as int,
+  },
   'Curve': {
     'type': (o, v) => (o as Curve<dynamic>).type = v as String,
     'arcLengthDivisions': (o, v) => (o as Curve<dynamic>).arcLengthDivisions = v as int,
@@ -3401,6 +3410,7 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
   },
   'EntError': {},
   'Euler': {
+    'onChangeCallback': (o, v) => (o as Euler).onChangeCallback = v as void Function(),
     'x': (o, v) => (o as Euler).x = v as double,
     'y': (o, v) => (o as Euler).y = v as double,
     'z': (o, v) => (o as Euler).z = v as double,
@@ -3439,7 +3449,10 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
   },
   'FramebufferTexture': {},
   'Frustum': {'planes': (o, v) => (o as Frustum).planes = v as List<Plane>},
-  'FrustumArray': {'coordinateSystem': (o, v) => (o as FrustumArray).coordinateSystem = v as int},
+  'FrustumArray': {
+    'coordinateSystem': (o, v) => (o as FrustumArray).coordinateSystem = v as int,
+    'count': (o, v) => (o as FrustumArray).count = v as int,
+  },
   'FullScreenQuad': {'material': (o, v) => (o as FullScreenQuad).material = v as Material},
   'GLBufferAttribute': {
     'name': (o, v) => (o as GLBufferAttribute).name = v as String,
@@ -3560,6 +3573,7 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
   },
   'Interpolant': {
     'parameterPositions': (o, v) => (o as Interpolant).parameterPositions = v as List<double>,
+    'cachedIndex': (o, v) => (o as Interpolant).cachedIndex = v as int,
     'resultBuffer': (o, v) => (o as Interpolant).resultBuffer = v as List<double>,
     'sampleValues': (o, v) => (o as Interpolant).sampleValues = v as List<double>,
     'valueSize': (o, v) => (o as Interpolant).valueSize = v as int,
@@ -4154,6 +4168,7 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
     'v2': (o, v) => (o as QuadraticBezierCurve3).v2 = v as Vector3,
   },
   'Quaternion': {
+    'onChangeCallback': (o, v) => (o as Quaternion).onChangeCallback = v as void Function(),
     'x': (o, v) => (o as Quaternion).x = v as double,
     'y': (o, v) => (o as Quaternion).y = v as double,
     'z': (o, v) => (o as Quaternion).z = v as double,
@@ -4311,6 +4326,7 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
     'eyeSep': (o, v) => (o as StereoCamera).eyeSep = v as double,
     'cameraL': (o, v) => (o as StereoCamera).cameraL = v as PerspectiveCamera,
     'cameraR': (o, v) => (o as StereoCamera).cameraR = v as PerspectiveCamera,
+    'cache': (o, v) => (o as StereoCamera).cache = v as List<double?>,
   },
   'StringKeyframeTrack': {},
   'TOUCH': {},

@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart' show visibleForTesting;
+
 part 'src/js.dart';
 part 'src/constants.dart';
 part 'src/utils.dart';

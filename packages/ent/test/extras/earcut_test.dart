@@ -1,19 +1,10 @@
 // Tests of Earcut and the vendored earcut library against triangulations computed by the reference source
 // (reference/extras_reference.mjs). The reference has no Earcut test.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 import 'support.dart';
-
-final LibraryMirror _library = reflectClass(Earcut).owner as LibraryMirror;
-
-/// Calls a library-private function of the vendored earcut file.
-Object? _private(String name, List<Object?> args) {
-  return _library.invoke(MirrorSystem.getSymbol(name, _library), args).reflectee;
-}
 
 void main() {
   group('Extras', () {
@@ -29,7 +20,7 @@ void main() {
           final triangles = Earcut.triangulate(data, holes, dim);
           expect(triangles, c['triangles'], reason: 'same triangles, same order');
 
-          final deviation = _private('_earcutDeviation', [data, holes, dim, triangles]) as double;
+          final deviation = Earcut.deviation(data, holes, dim, triangles);
           final expected = c['deviation'];
 
           if (expected is String) {
@@ -41,20 +32,18 @@ void main() {
       }
 
       test('flatten', () {
-        final result = _private('_earcutFlatten', [
+        final result = Earcut.flatten([
           [
-            [
-              [0, 0],
-              [10, 0],
-              [10, 10],
-            ],
-            [
-              [1, 1],
-              [2, 1],
-              [1, 2],
-            ],
+            [0, 0],
+            [10, 0],
+            [10, 10],
           ],
-        ]) as ({List<num> vertices, List<int> holes, int dimensions});
+          [
+            [1, 1],
+            [2, 1],
+            [1, 2],
+          ],
+        ]);
 
         final expected = reference['flatten'] as Map<String, Object?>;
         expect(result.vertices, expected['vertices']);

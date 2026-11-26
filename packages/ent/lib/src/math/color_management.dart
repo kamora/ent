@@ -162,10 +162,12 @@ abstract final class ColorManagement {
     spaces.addAll(colorSpaces);
   }
 
-  // Internal APIs, used by the renderers (later milestones) and reached by the tests through mirrors.
+  // Internal APIs, used by the renderers (later milestones).
 
-  // ignore: unused_element
-  static Matrix3 _getMatrix(Matrix3 targetMatrix, String sourceColorSpace, String targetColorSpace) {
+  /// For tests: [targetMatrix] set to the matrix that converts linear colors from [sourceColorSpace] to
+  /// [targetColorSpace].
+  @visibleForTesting
+  static Matrix3 getMatrix(Matrix3 targetMatrix, String sourceColorSpace, String targetColorSpace) {
     return targetMatrix
         .copy(spaces[targetColorSpace]!['fromXYZ'] as Matrix3)
         .multiply(spaces[sourceColorSpace]!['toXYZ'] as Matrix3);

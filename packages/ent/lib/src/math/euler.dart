@@ -60,6 +60,13 @@ class Euler {
   /// Called whenever a component changes; set through [_onChange]. The reference's default is an empty method.
   void Function() _onChangeCallback = _eulerNoop;
 
+  /// For tests: the callback run after each change, which Object3D sets to keep its rotation and quaternion in sync.
+  @visibleForTesting
+  void Function() get onChangeCallback => _onChangeCallback;
+
+  @visibleForTesting
+  set onChangeCallback(void Function() value) => _onChangeCallback = value;
+
   /// The angle of the x axis in radians.
   double get x => _x;
 

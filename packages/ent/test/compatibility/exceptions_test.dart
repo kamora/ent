@@ -1,11 +1,12 @@
 // One test per entry of docs/compatibility-exceptions.md: each pins the Dart behaviour that differs from the reference,
 // so a change to it is a deliberate change to the exceptions log.
 
-import 'dart:mirrors';
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
+
+import '../support/library.g.dart';
 
 class _Point extends Vector3 {
   _Point([super.x, super.y, super.z]);
@@ -13,11 +14,9 @@ class _Point extends Vector3 {
 
 void main() {
   group('E-PRIVATE', () {
-    test('underscore members exist but are private to the library', () {
-      final library = reflectClass(Quaternion).owner as LibraryMirror;
-      final symbol = MirrorSystem.getSymbol('_onChange', library);
-      expect(reflectClass(Quaternion).declarations.containsKey(symbol), isTrue);
-      expect(reflectClass(Quaternion).declarations.containsKey(#onChange), isFalse);
+    test('underscore members are private to the library', () {
+      expect(methods['Quaternion'], isNot(contains('onChange')), reason: 'the reference _onChange is not public');
+      expect(methods['Quaternion'], contains('setFromEuler'), reason: 'public methods are listed');
     });
   });
 

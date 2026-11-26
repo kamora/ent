@@ -3,7 +3,6 @@
 // in that script.
 
 import 'dart:math' as math;
-import 'dart:mirrors';
 
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
@@ -121,10 +120,8 @@ void main() {
       ortho.updateProjectionMatrix();
       expectCamera(CameraHelper(ortho), 'cameraOrthoWebGPU');
 
-      // Node sets the private `_reversedDepth` that renderers set; the test reaches it through mirrors.
-      final reversed = PerspectiveCamera(70, 0.8, 1, 50);
-      final library = reflectClass(Camera).owner! as LibraryMirror;
-      reflect(reversed).setField(MirrorSystem.getSymbol('_reversedDepth', library), true);
+      // Node sets the private `_reversedDepth` that renderers set; the test sets it through the test-only setter.
+      final reversed = PerspectiveCamera(70, 0.8, 1, 50)..reversedDepth = true;
       reversed.updateProjectionMatrix();
       expectCamera(CameraHelper(reversed), 'cameraReversed');
     });

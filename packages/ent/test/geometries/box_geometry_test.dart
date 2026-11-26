@@ -1,17 +1,9 @@
 // The reference unit tests of BoxGeometry.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 import 'geometry_helpers.dart';
-
-/// `geometry._transformed`, library-private in Dart (exception E-PRIVATE).
-bool _transformed(BufferGeometry geometry) {
-  final library = reflectClass(BufferGeometry).owner as LibraryMirror;
-  return reflect(geometry).getField(MirrorSystem.getSymbol('_transformed', library)).reflectee as bool;
-}
 
 void main() {
   group('Geometries', () {
@@ -49,11 +41,12 @@ void main() {
         runStdGeometryTests(geometries, BoxGeometry.fromJSON);
       });
 
+      // The reference also reads the private `_transformed`; the port checks what it decides, the type toJSON
+      // writes (E-PRIVATE).
       test('toJSON: parametric serialization for untransformed geometry', () {
         final geometry = BoxGeometry(10, 20, 30);
         final json = geometry.toJSON();
 
-        expect(_transformed(geometry), isFalse, reason: '_transformed defaults to false');
         expect(json['type'], 'BoxGeometry', reason: 'type is preserved');
         expect(json['width'], 10, reason: 'width is serialized');
         expect(json['height'], 20, reason: 'height is serialized');
@@ -66,7 +59,6 @@ void main() {
         geometry.translate(1, 2, 3);
         final json = geometry.toJSON();
 
-        expect(_transformed(geometry), isTrue, reason: '_transformed is true after translate()');
         expect(json['type'], 'BufferGeometry', reason: 'type is downgraded to BufferGeometry');
         expect(json.containsKey('width'), isFalse, reason: 'parameters are not serialized');
         expect(
@@ -82,7 +74,6 @@ void main() {
         final clone = source.clone();
         final json = clone.toJSON();
 
-        expect(_transformed(clone), isTrue, reason: '_transformed propagates through copy()');
         expect(json['type'], 'BufferGeometry', reason: 'cloned type is downgraded to BufferGeometry');
         expect(
           ((json['data'] as Map?)?['attributes'] as Map?)?['position'],

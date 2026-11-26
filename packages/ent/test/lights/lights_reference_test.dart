@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:mirrors';
 
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
@@ -121,13 +120,7 @@ void main() {
       v.shadow.camera.updateMatrixWorld();
 
       final vm = Matrix4();
-      final library = reflectClass(LightShadow).owner as LibraryMirror;
-      reflect(v.shadow).invoke(MirrorSystem.getSymbol('_updateMatrix', library), [
-        v.shadow.camera,
-        vm,
-        Frustum(),
-        Vector4(1, 0.5, 2, 1),
-      ]);
+      v.shadow.updateMatrix(v.shadow.camera, vm, Frustum(), Vector4(1, 0.5, 2, 1));
 
       expectClose(vm.elements.toList(), ref['viewportMatrix'], 'matrix');
     });

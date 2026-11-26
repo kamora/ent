@@ -1,7 +1,5 @@
 // The reference unit tests of Euler.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
@@ -11,21 +9,9 @@ final Euler eulerZero = Euler(0, 0, 0, 'XYZ');
 final Euler eulerAxyz = Euler(1, 0, 0, 'XYZ');
 final Euler eulerAzyx = Euler(0, 1, 0, 'ZYX');
 
-// `_onChange` and `_onChangeCallback` are library-private in the port (exception E-PRIVATE); the reference
-// tests that call them reach them through mirrors.
-final LibraryMirror _library = reflectClass(Euler).owner as LibraryMirror;
-
-void onChange(Object target, void Function() callback) {
-  reflect(target).invoke(MirrorSystem.getSymbol('_onChange', _library), [callback]);
-}
-
-Object? onChangeCallback(Object target) {
-  return reflect(target).getField(MirrorSystem.getSymbol('_onChangeCallback', _library)).reflectee;
-}
-
-void setOnChangeCallback(Object target, void Function() callback) {
-  reflect(target).setField(MirrorSystem.getSymbol('_onChangeCallback', _library), callback);
-}
+// `_onChange` and `_onChangeCallback` are library-private in the port (exception E-PRIVATE); the tests register
+// their callbacks through the test-only `onChangeCallback`.
+void onChange(Euler target, void Function() callback) => target.onChangeCallback = callback;
 
 bool matrixEquals4(Matrix4 a, Matrix4 b, [double tolerance = 0.0001]) {
   if (a.elements.length != b.elements.length) {
@@ -300,14 +286,6 @@ void main() {
         expect(steps, List.filled(2, 'onChange called'));
       });
 
-      test('_onChange', () {
-        void f() {}
-
-        final a = Euler(11, 12, 13, 'XYZ');
-        onChange(a, f);
-        expect(onChangeCallback(a), same(f));
-      });
-
       test('_onChangeCallback', () {
         var b = false;
         final a = Euler(11, 12, 13, 'XYZ');
@@ -317,10 +295,10 @@ void main() {
           b = true;
         }
 
-        setOnChangeCallback(a, f);
-        expect(onChangeCallback(a), same(f));
+        a.onChangeCallback = f;
+        expect(a.onChangeCallback, same(f));
 
-        (onChangeCallback(a) as void Function())();
+        a.onChangeCallback();
         expect(b, isTrue);
       });
 

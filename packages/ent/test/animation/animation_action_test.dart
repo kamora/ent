@@ -4,17 +4,10 @@
 // function to prove they are called; Dart methods cannot be replaced, so those halves are covered by isScheduled()
 // instead.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
 /// Reads a library-private field (the reference tests read `_loopCount` and `_startTime` directly; E-PRIVATE).
-Object? _private(Object object, String name) {
-  final library = reflectClass(MathUtils).owner as LibraryMirror;
-  return reflect(object).getField(MirrorSystem.getSymbol(name, library)).reflectee;
-}
-
 ({Object3D root, AnimationMixer mixer, NumberKeyframeTrack track, AnimationClip clip, AnimationAction animationAction})
 _createAnimation() {
   final root = Object3D();
@@ -77,8 +70,8 @@ void main() {
         expect(animationAction2.paused, false, reason: 'AnimationAction.reset() sets paused false');
         expect(animationAction2.enabled, true, reason: 'AnimationAction.reset() sets enabled true');
         expect(animationAction2.time, 0, reason: 'AnimationAction.reset() resets time.');
-        expect(_private(animationAction2, '_loopCount'), -1, reason: 'AnimationAction.reset() resets loopcount.');
-        expect(_private(animationAction2, '_startTime'), null, reason: 'AnimationAction.reset() removes starttime.');
+        expect(animationAction2.loopCount, -1, reason: 'AnimationAction.reset() resets loopcount.');
+        expect(animationAction2.startTime, null, reason: 'AnimationAction.reset() removes starttime.');
       });
 
       test('isRunning', () {

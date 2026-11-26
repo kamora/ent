@@ -402,6 +402,26 @@ class BatchedMesh extends Mesh {
   /// read by the renderers (the reference's `_multiDrawStarts`); the first [multiDrawCount] are set.
   Int32List get multiDrawStarts => _multiDrawStarts;
 
+  /// For tests: the index buffer's bytes per element that the multi draw ranges are counted in.
+  @visibleForTesting
+  int get multiDrawBytesPerElement => _multiDrawBytesPerElement;
+
+  /// For tests: the number of merged draws the last `'merged'` update produced.
+  @visibleForTesting
+  int get mergedDrawCount => _mergedDrawCount;
+
+  /// For tests: updates the draw ranges for [camera] as a render does; [drawFormat] `'merged'` is the renderers' merged
+  /// path, which onBeforeRender does not take.
+  @visibleForTesting
+  void updateDrawParameters(
+    Camera camera,
+    BufferGeometry geometry,
+    Object? material, [
+    String drawFormat = 'multiDraw',
+  ]) {
+    _updateDrawParameters(camera, geometry, material, drawFormat);
+  }
+
   /// The draw ranges' index or vertex counts (the reference's `_multiDrawCounts`).
   Int32List get multiDrawCounts => _multiDrawCounts;
 

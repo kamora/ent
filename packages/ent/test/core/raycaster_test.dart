@@ -1,8 +1,6 @@
 // The reference unit tests of Raycaster. Dart tests also cover the traversal, sorting, layer filtering and propagation
 // through a test object whose raycast() reports its own world position.
 
-import 'dart:mirrors';
-
 import 'package:test/test.dart';
 import 'package:ent/ent.dart';
 
@@ -38,8 +36,6 @@ class _Target extends Object3D {
     return result;
   }
 }
-
-final LibraryMirror _library = reflectClass(Raycaster).owner as LibraryMirror;
 
 Raycaster getRaycaster() {
   return Raycaster(Vector3(0, 0, 0), Vector3(0, 0, -1), 1, 100);
@@ -254,7 +250,7 @@ void main() {
 
       test('intersectObject (Perspective, reversed depth)', () {
         final camera = PerspectiveCamera(90, 1, 0.1, 100);
-        reflect(camera).setField(MirrorSystem.getSymbol('_reversedDepth', _library), true);
+        camera.reversedDepth = true;
         camera.updateProjectionMatrix();
 
         final front = getSphere();
@@ -282,7 +278,7 @@ void main() {
 
       test('intersectObject (Orthographic, reversed depth)', () {
         final camera = OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
-        reflect(camera).setField(MirrorSystem.getSymbol('_reversedDepth', _library), true);
+        camera.reversedDepth = true;
         camera.updateProjectionMatrix();
 
         final front = getSphere();

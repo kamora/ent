@@ -106,6 +106,12 @@ class LightShadow {
     _updateMatrix(shadowCamera, matrix, _frustum);
   }
 
+  /// For tests: [_updateMatrix], whose [viewport] path the renderers take (PointLightShadow's faces).
+  @visibleForTesting
+  void updateMatrix(Camera shadowCamera, Matrix4 shadowMatrix, Frustum frustum, [Vector4? viewport]) {
+    _updateMatrix(shadowCamera, shadowMatrix, frustum, viewport);
+  }
+
   /// Updates a shadow projection matrix and its corresponding frustum.
   void _updateMatrix(Camera shadowCamera, Matrix4 shadowMatrix, Frustum frustum, [Vector4? viewport]) {
     _lightShadowProjScreenMatrix.multiplyMatrices(shadowCamera.projectionMatrix, shadowCamera.matrixWorldInverse);

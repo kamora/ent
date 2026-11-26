@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:mirrors';
 import 'dart:typed_data';
 
 import 'package:test/test.dart';
@@ -13,8 +12,6 @@ import 'package:ent/ent.dart';
 import '../support/dispatch.dart';
 
 const String _path = '../../fixtures/values/animation_scenarios.json';
-
-final LibraryMirror _library = reflectClass(MathUtils).owner as LibraryMirror;
 
 double _number(Object? v) {
   return switch (v) {
@@ -125,7 +122,7 @@ Map<String, Object?> _actionState(AnimationAction a) {
     'effectiveTimeScale': a.getEffectiveTimeScale(),
     'enabled': a.enabled,
     'paused': a.paused,
-    'loopCount': reflect(a).getField(MirrorSystem.getSymbol('_loopCount', _library)).reflectee,
+    'loopCount': a.loopCount,
     'running': a.isRunning(),
     'scheduled': a.isScheduled(),
   };

@@ -18,6 +18,17 @@ class FrustumArray {
   /// The number of frustums in [_frustums] that are currently in use.
   int _count = 0;
 
+  /// For tests: the pool of frustums.
+  @visibleForTesting
+  List<Frustum> get frustums => _frustums;
+
+  /// For tests: the number of frustums in use.
+  @visibleForTesting
+  int get count => _count;
+
+  @visibleForTesting
+  set count(int value) => _count = value;
+
   /// Computes and caches a frustum for each camera of the given array camera.
   FrustumArray setFromArrayCamera(ArrayCamera cameraArray) {
     final cameras = cameraArray.cameras;

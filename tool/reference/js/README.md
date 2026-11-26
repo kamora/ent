@@ -79,7 +79,7 @@ value types: `{ "type": "Vector3", "value": [...] }`.
 
 ## Comparison
 
-The Dart side (`test/support/fixtures.dart`) calls each method by its upstream name through `dart:mirrors`,
-so a renamed or missing member fails like a wrong result. Numbers must match exactly or within
-`1e-9 · max(1, |a|, |b|)`; the run prints how many matched each way. Identity is checked for `this` and
-`arg` returns, which also verifies chaining.
+The Dart side (`test/support/fixtures.dart`) calls each method by its upstream name through
+`test/support/dispatch.dart`, so a renamed or missing member fails like a wrong result. Numbers must match
+exactly or within `1e-9 · max(1, |a|, |b|)`; the run prints how many matched each way. Identity is checked for
+`this` and `arg` returns, which also verifies chaining.
