@@ -1,7 +1,7 @@
 name: ent_engine
 description: >-
   The game layer of Ent Engine, in pure Dart: a game loop with pause and time scale, timers and updates owned by
-  scene objects.
+  scene objects, and tweens.
 version: 0.1.0-dev.1
 publish_to: none
 repository: https://github.com/kamora/ent/tree/master/packages/ent_engine

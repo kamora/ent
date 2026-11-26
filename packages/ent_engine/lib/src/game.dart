@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:ent/ent.dart';
+
+part 'tweens.dart';
 
 /// A game loop over [scene]. The app's frame tick calls [update] with the real seconds since the last frame (in
 /// Flutter, from `EntView`'s `onFrame`); the game then advances its [time] by that much times [timeScale], unless it
@@ -23,6 +28,9 @@ class Game {
   final List<AnimationMixer> mixers = [];
 
   final List<Task> _tasks = [];
+
+  // The running tween of each kind on each target, which a new one of that kind replaces.
+  final Map<(Object, String), Task> _tweens = {};
 
   double _time = 0;
 
@@ -131,13 +139,28 @@ class Task {
 
   bool _active = true;
 
-  /// Whether the task will still run: false once cancelled, once a one-time timer has run, or once its owner left
-  /// the scene.
+  final Completer<bool> _done = Completer();
+
+  /// Whether the task will still run: false once cancelled, once a one-time timer has run, once a tween has reached
+  /// its end, or once its owner left the scene.
   bool get active => _active;
+
+  /// Completes when the task ends: `true` when it ran to its end (a one-time timer ran, a tween arrived), `false` when
+  /// it was cancelled or its owner left the scene.
+  Future<bool> get done => _done.future;
 
   /// Ends the task; it does not run again.
   void cancel() {
+    _end(false);
+  }
+
+  void _end(bool finished) {
+    if (!_active) {
+      return;
+    }
+
     _active = false;
+    _done.complete(finished);
   }
 
   void _advance(double step, double time) {
@@ -152,7 +175,7 @@ class Task {
       if (_interval case final interval?) {
         _due = _due! + interval;
       } else {
-        _active = false;
+        _end(true);
       }
     }
   }
