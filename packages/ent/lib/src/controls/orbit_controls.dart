@@ -237,6 +237,7 @@ class OrbitControls extends Controls {
     }
   }
 
+  /// The visual representation of the cursor: 'auto' or 'grab'.
   String get cursorStyle => _cursorStyle;
 
   @override

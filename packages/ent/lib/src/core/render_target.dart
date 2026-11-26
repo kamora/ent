@@ -199,6 +199,7 @@ class RenderTarget extends EventDispatcher {
     _depthTexture = current;
   }
 
+  /// The texture the depth is saved in, instead of a renderbuffer; `null` when the depth stays in a renderbuffer.
   Texture? get depthTexture {
     return _depthTexture;
   }

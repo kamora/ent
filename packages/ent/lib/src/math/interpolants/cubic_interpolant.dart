@@ -16,25 +16,29 @@ class CubicInterpolant extends Interpolant {
   double _weightNext = -0.0;
   int _offsetNext = 0;
 
-  /// For tests: the interval's weights and offsets, which the fixtures save and restore.
+  /// For tests: the weight of the sample before the interval. The fixtures save and restore these weights and
+  /// offsets.
   @visibleForTesting
   double get weightPrev => _weightPrev;
 
   @visibleForTesting
   set weightPrev(double value) => _weightPrev = value;
 
+  /// For tests: the offset of the sample before the interval, in values.
   @visibleForTesting
   int get offsetPrev => _offsetPrev;
 
   @visibleForTesting
   set offsetPrev(int value) => _offsetPrev = value;
 
+  /// For tests: the weight of the sample after the interval.
   @visibleForTesting
   double get weightNext => _weightNext;
 
   @visibleForTesting
   set weightNext(double value) => _weightNext = value;
 
+  /// For tests: the offset of the sample after the interval, in values.
   @visibleForTesting
   int get offsetNext => _offsetNext;
 
