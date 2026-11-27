@@ -2693,6 +2693,7 @@ final Map<String, Map<String, Function Function(Object)>> methods = {
     'update': (o) => (o as VoxelWorld).update,
     'pick': (o) => (o as VoxelWorld).pick,
     'removeSphere': (o) => (o as VoxelWorld).removeSphere,
+    'addHeightmap': (o) => (o as VoxelWorld).addHeightmap,
     'dispose': (o) => (o as VoxelWorld).dispose,
   },
   'WebAudioAnalyserNode': {'getByteFrequencyData': (o) => (o as WebAudioAnalyserNode).getByteFrequencyData},

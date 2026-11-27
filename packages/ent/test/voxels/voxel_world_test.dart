@@ -368,4 +368,75 @@ void main() {
     world.update();
     expect(drawn(world), expected(voxels));
   });
+
+  group('addHeightmap', () {
+    // A 3 × 2 image, RGBA bytes row by row.
+    Uint8List image(List<List<int>> pixels) => Uint8List.fromList(pixels.expand((pixel) => pixel).toList());
+
+    test('fills columns from the red channel, row 0 at the smallest z, at an offset', () {
+      final world = VoxelWorld(palette: palette, chunkSize: 4)
+        ..addHeightmap(
+          image([
+            [255, 0, 0, 255], [0, 0, 0, 255], [128, 128, 128, 255], //
+            [64, 9, 9, 0], [8, 8, 8, 255], [191, 191, 191, 255], //
+          ]),
+          3,
+          maxHeight: 8,
+          value: 2,
+          x: -1,
+          y: 3,
+          z: 5,
+        );
+
+      // 255 → 8, 0 → 0, 128 → 4.02 → 4, 64 → 2.01 → 2, 8 → 0.25 → 0, 191 → 5.99 → 6.
+      final heights = {(-1, 5): 8, (0, 5): 0, (1, 5): 4, (-1, 6): 2, (0, 6): 0, (1, 6): 6};
+      final voxels = <(int, int, int), int>{};
+
+      for (final MapEntry(key: (x, z), value: height) in heights.entries) {
+        for (var y = 3; y < 3 + height; y++) {
+          voxels[(x, y, z)] = 2;
+        }
+      }
+
+      for (var x = -3; x < 4; x++) {
+        for (var y = 0; y < 14; y++) {
+          for (var z = 3; z < 9; z++) {
+            expect(world.getVoxel(x, y, z), voxels[(x, y, z)] ?? 0, reason: '($x, $y, $z)');
+          }
+        }
+      }
+
+      world.update();
+      expect(drawn(world), expected(voxels));
+    });
+
+    test('colors each column with the nearest palette color', () {
+      final world = VoxelWorld(palette: palette)
+        ..addHeightmap(
+          image([
+            [255, 0, 0, 255], [255, 0, 0, 255], [255, 0, 0, 255], //
+            [255, 0, 0, 255], [255, 0, 0, 255], [255, 0, 0, 255], //
+          ]),
+          3,
+          maxHeight: 2,
+          colors: image([
+            [250, 10, 0, 255], [10, 240, 30, 0], [60, 100, 190, 255], //
+            [230, 230, 230, 255], [0, 0, 0, 255], [128, 0, 0, 255], //
+          ]),
+        );
+
+      // Index 0 (empty) never matches: black takes the nearest real color, 0x3366cc.
+      expect([for (var x = 0; x < 3; x++) world.getVoxel(x, 1, 0)], [1, 2, 3]);
+      expect([for (var x = 0; x < 3; x++) world.getVoxel(x, 0, 1)], [4, 3, 1]);
+    });
+
+    test('rejects bytes that are not whole rows, and colors of another size', () {
+      final world = VoxelWorld(palette: palette);
+
+      expect(() => world.addHeightmap(Uint8List(20), 3), throwsArgumentError);
+      expect(() => world.addHeightmap(Uint8List(24), 0), throwsArgumentError);
+      expect(() => world.addHeightmap(Uint8List(24), 3, colors: Uint8List(20)), throwsArgumentError);
+      expect(world.chunkCount, 0);
+    });
+  });
 }

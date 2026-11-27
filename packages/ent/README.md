@@ -108,7 +108,8 @@ EntView(renderer: renderer, scene: scene, camera: camera, onFrame: game.frame);
   frames: `game.everyFrame((_) => world.update(budget: const Duration(milliseconds: 4)))`. `pick(ray)` finds the
   first voxel along a world-space ray (`Raycaster.ray`) with the face it entered, reading the voxels, so it sees
   changes not yet drawn; `removeSphere(center, radius)` empties a ball of voxels and returns them, for craters and
-  debris.
+  debris. `addHeightmap(rgba, width)` builds terrain from a decoded image's raw RGBA bytes: each pixel's red channel
+  is a column's height, and an optional color image picks each column's nearest palette color.
 
 ## Platform services
 

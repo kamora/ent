@@ -247,6 +247,47 @@ class VoxelWorld extends Object3D {
     return removed;
   }
 
+  /// Fills solid columns from a heightmap: [heights] holds RGBA bytes, 4 per pixel, row by row, [width] pixels a row
+  /// (a decoded image's raw RGBA, such as Flutter's `Image.toByteData(format: ImageByteFormat.rawRgba)`). The pixel
+  /// in column c of row r makes the column of voxels at (x + c, z + r) from [y] up, as many as its red channel scaled
+  /// from 0–255 to 0–[maxHeight], rounded; a grey image reads the same. Row 0 lies at the smallest z. Each voxel gets
+  /// the palette index nearest to the same pixel of [colors] (RGBA bytes of the same size; alpha ignored), or
+  /// [value] without them. Columns replace nothing above their height.
+  void addHeightmap(
+    Uint8List heights,
+    int width, {
+    int maxHeight = 32,
+    Uint8List? colors,
+    int value = 1,
+    int x = 0,
+    int y = 0,
+    int z = 0,
+  }) {
+    if (width < 1 || heights.length % (width * 4) != 0) {
+      throw ArgumentError('heights must hold whole rows of $width RGBA pixels, not ${heights.length} bytes');
+    }
+
+    if (colors != null && colors.length != heights.length) {
+      throw ArgumentError('colors must be as large as heights: ${colors.length} bytes, not ${heights.length}');
+    }
+
+    final nearest = <int, int>{};
+
+    for (var pixel = 0; pixel < heights.length ~/ 4; pixel++) {
+      final height = (heights[pixel * 4] * maxHeight / 255).round();
+      var index = value;
+
+      if (colors != null) {
+        final rgb = colors[pixel * 4] << 16 | colors[pixel * 4 + 1] << 8 | colors[pixel * 4 + 2];
+        index = nearest[rgb] ??= _nearest(rgb);
+      }
+
+      for (var level = 0; level < height; level++) {
+        setVoxel(x + pixel % width, y + level, z + pixel ~/ width, index);
+      }
+    }
+  }
+
   /// Disposes every chunk's geometry and [material], which the world owns, then fires the `dispose` event.
   @override
   void dispose() {
@@ -256,6 +297,26 @@ class VoxelWorld extends Object3D {
 
     material.dispose();
     super.dispose();
+  }
+
+  // The palette index (from 1) whose color is nearest to the 0xRRGGBB [rgb], by squared distance in sRGB; the first
+  // of equals.
+  int _nearest(int rgb) {
+    var best = 1;
+    var distance = 1 << 30;
+
+    for (var index = 1; index < palette.length; index++) {
+      final dr = (palette[index] >> 16 & 0xff) - (rgb >> 16 & 0xff);
+      final dg = (palette[index] >> 8 & 0xff) - (rgb >> 8 & 0xff);
+      final db = (palette[index] & 0xff) - (rgb & 0xff);
+
+      if (dr * dr + dg * dg + db * db < distance) {
+        distance = dr * dr + dg * dg + db * db;
+        best = index;
+      }
+    }
+
+    return best;
   }
 
   // The chunk holding (x, y, z), whose coordinates within it are [local].
