@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:ent/ent.dart';
 import 'package:test/test.dart';
 
@@ -111,6 +113,38 @@ void main() {
 
       game.update(0.1);
       expect(game.input.wasPressed('quit'), isFalse);
+    });
+
+    test('pointer is the PointerX and PointerY sources together, until reset', () {
+      final input = Input();
+      expect(input.pointer, isNull);
+
+      input.move('PointerX', -0.5);
+      expect(input.pointer, isNull, reason: 'only one coordinate reported');
+
+      input.move('PointerY', 0.25);
+      expect(input.pointer!.toArray(), [-0.5, 0.25]);
+
+      input
+        ..bind('fire', ['Pointer'])
+        ..press('Pointer');
+      expect(input.wasPressed('fire'), isTrue);
+
+      input.reset();
+      expect(input.pointer, isNull);
+      expect(input.isDown('fire'), isFalse);
+    });
+
+    test('pointer aims a raycaster through the camera, as setFromCamera takes it', () {
+      final camera = PerspectiveCamera(90, 1, 0.1, 100)..updateMatrixWorld();
+      final input = Input()
+        ..move('PointerX', 1)
+        ..move('PointerY', 0);
+      final ray = (Raycaster()..setFromCamera(input.pointer!, camera)).ray;
+
+      // At the right edge of a 90° view the ray leaves at 45° to the right.
+      expect(ray.direction.x, closeTo(math.sqrt1_2, 1e-12));
+      expect(ray.direction.z, closeTo(-math.sqrt1_2, 1e-12));
     });
   });
 }

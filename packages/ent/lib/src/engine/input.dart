@@ -5,8 +5,11 @@ part of '../../ent.dart';
 /// and [move]; the game asks [isDown], [wasPressed], [wasReleased] and [axis] by action or axis name.
 ///
 /// Sources are names: keyboard keys by their W3C `KeyboardEvent.code` (`'KeyW'`, `'Space'`, `'ArrowLeft'`), gamepad
-/// buttons and sticks and joystick parts by names the adapter gives them (`'GamepadA'`, `'LeftStickX'`). A frame
-/// ends with [endFrame], which `Game.update` calls, so [wasPressed] and [wasReleased] hold for one frame.
+/// buttons and sticks and joystick parts by names the adapter gives them (`'GamepadA'`, `'LeftStickX'`). A pointer
+/// (mouse or touch) is the buttons `'Pointer'` (the primary button or a touch), `'PointerSecondary'` and
+/// `'PointerMiddle'`, and the analog sources `'PointerX'` and `'PointerY'`, its position in normalized device
+/// coordinates, -1 to 1 from left to right and from bottom to top, read together as [pointer]. A frame ends with
+/// [endFrame], which `Game.update` calls, so [wasPressed] and [wasReleased] hold for one frame.
 class Input {
   /// Analog values within this distance of 0 count as 0, so a resting stick does not drift.
   double deadZone = 0.1;
@@ -80,6 +83,24 @@ class Input {
 
   /// Whether a source of the action [name] went up in this frame.
   bool wasReleased(String name) => _sources(name).any(_released.contains);
+
+  /// The pointer's position in normalized device coordinates (the sources `'PointerX'` and `'PointerY'`), as
+  /// [Raycaster.setFromCamera] takes it; `null` until an adapter reports one, and again after [reset]. It keeps the
+  /// last position when the pointer is lifted or leaves the view.
+  Vector2? get pointer {
+    final x = _analog['PointerX'];
+    final y = _analog['PointerY'];
+
+    if (x == null) {
+      return null;
+    }
+
+    if (y == null) {
+      return null;
+    }
+
+    return Vector2(x, y);
+  }
 
   /// The axis [name], from -1 to 1; 0 for an axis that is not bound.
   double axis(String name) {

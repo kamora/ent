@@ -1,4 +1,5 @@
 import 'package:ent_renderer/ent_renderer.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -126,6 +127,140 @@ void main() {
 
       await gesture.up();
       expect([input.isDown('fire'), input.wasReleased('fire')], [false, true]);
+    });
+  });
+
+  group('PointerInput', () {
+    // A 200 × 100 view at the top left, with a tap counter inside to see that events still reach it.
+    Future<List<int>> view(WidgetTester tester, Input input) async {
+      final taps = [0];
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: PointerInput(
+              input: input,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => taps[0]++,
+                child: const SizedBox(width: 200, height: 100),
+              ),
+            ),
+          ),
+        ),
+      );
+      return taps;
+    }
+
+    Input pointers() => Input()
+      ..deadZone = 0
+      ..bindAxis('x', analog: ['PointerX'])
+      ..bindAxis('y', analog: ['PointerY'])
+      ..bind('fire', ['Pointer'])
+      ..bind('alt', ['PointerSecondary'])
+      ..bind('middle', ['PointerMiddle']);
+
+    testWidgets('reports a hovering mouse in normalized device coordinates, y up', (tester) async {
+      final input = pointers();
+      await view(tester, input);
+
+      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+      await mouse.addPointer(location: const Offset(150, 25));
+      await mouse.moveTo(const Offset(150, 25));
+      expect([input.axis('x'), input.axis('y')], [0.5, 0.5]);
+
+      await mouse.moveTo(const Offset(0, 99));
+      expect(input.axis('x'), -1);
+      expect(input.axis('y'), closeTo(-0.98, 1e-12));
+      expect(input.isDown('fire'), isFalse);
+      await mouse.removePointer();
+    });
+
+    testWidgets('presses each mouse button as its source and releases it', (tester) async {
+      final input = pointers();
+      final taps = await view(tester, input);
+
+      final mouse = await tester.startGesture(const Offset(50, 50), kind: PointerDeviceKind.mouse);
+      expect([input.wasPressed('fire'), input.axis('x'), input.axis('y')], [true, -0.5, 0]);
+
+      await mouse.up();
+      expect([input.isDown('fire'), input.wasReleased('fire')], [false, true]);
+      expect(taps[0], 1, reason: 'the view below gets the tap too');
+
+      input.endFrame();
+      final right = await tester.startGesture(
+        const Offset(10, 10),
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryMouseButton,
+      );
+      expect([input.isDown('alt'), input.isDown('fire')], [true, false]);
+      await right.up();
+      expect(input.isDown('alt'), isFalse);
+
+      final middle = await tester.startGesture(
+        const Offset(10, 10),
+        kind: PointerDeviceKind.mouse,
+        buttons: kMiddleMouseButton,
+      );
+      expect(input.isDown('middle'), isTrue);
+      await middle.cancel();
+      expect(input.isDown('middle'), isFalse, reason: 'a cancelled pointer lets go');
+    });
+
+    testWidgets('a button pressed while another is held, then lifted alone', (tester) async {
+      final input = pointers();
+      await view(tester, input);
+
+      // Moves pointer 7 to [x] holding [buttons], which TestGesture.moveTo cannot change.
+      Future<void> move(TestGesture mouse, double x, int buttons) => mouse.updateWithCustomEvent(
+        PointerMoveEvent(pointer: 7, kind: PointerDeviceKind.mouse, position: Offset(x, 50), buttons: buttons),
+      );
+
+      final mouse = await tester.startGesture(const Offset(50, 50), kind: PointerDeviceKind.mouse, pointer: 7);
+      await move(mouse, 60, kPrimaryButton | kSecondaryButton);
+      expect([input.isDown('fire'), input.isDown('alt')], [true, true]);
+
+      await move(mouse, 70, kPrimaryButton);
+      expect([input.isDown('fire'), input.isDown('alt'), input.wasReleased('alt')], [true, false, true]);
+      await mouse.up();
+    });
+
+    testWidgets('Pointer stays down while any touch holds it, and goes up once', (tester) async {
+      final input = pointers();
+      await view(tester, input);
+
+      final first = await tester.startGesture(const Offset(20, 20));
+      final second = await tester.startGesture(const Offset(180, 80), pointer: 2);
+      input.endFrame();
+
+      await first.up();
+      expect([input.isDown('fire'), input.wasReleased('fire')], [true, false]);
+      expect([input.axis('x'), input.axis('y')], [-0.8, 0.6], reason: 'the last pointer that moved');
+
+      await second.up();
+      expect([input.isDown('fire'), input.wasReleased('fire')], [false, true]);
+    });
+
+    testWidgets('removing the widget releases what its pointers hold', (tester) async {
+      final input = pointers();
+      await view(tester, input);
+
+      final mouse = await tester.startGesture(const Offset(20, 20), kind: PointerDeviceKind.mouse, pointer: 7);
+      await tester.pumpWidget(const SizedBox());
+      expect(input.isDown('fire'), isFalse);
+
+      // The pointer still reaches the gone widget's listener; a button it presses now must not go down.
+      await mouse.updateWithCustomEvent(
+        const PointerMoveEvent(
+          pointer: 7,
+          kind: PointerDeviceKind.mouse,
+          position: Offset(30, 20),
+          buttons: kPrimaryButton | kSecondaryButton,
+        ),
+      );
+      expect(input.isDown('alt'), isFalse);
+      await mouse.up();
     });
   });
 }

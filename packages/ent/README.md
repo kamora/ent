@@ -99,8 +99,13 @@ EntView(renderer: renderer, scene: scene, camera: camera, onFrame: game.frame);
   Sources are names too: keys by their W3C `KeyboardEvent.code` (`'KeyW'`, `'Space'`), gamepad and joystick parts by
   the names an adapter gives them; an adapter reports them with `press`, `release` and `move`. `Game.update` ends the
   input frame, also while paused, so `wasPressed` holds for exactly one frame.
+- Pointers: mouse buttons and touches are the sources `'Pointer'` (primary button or touch), `'PointerSecondary'` and
+  `'PointerMiddle'`; the position is `'PointerX'` and `'PointerY'` in normalized device coordinates, read together as
+  `input.pointer`, so picking is `raycaster.setFromCamera(game.input.pointer!, camera)`, then
+  `world.pick(raycaster.ray)` or `raycaster.intersectObjects(...)`.
 - In Flutter, the renderer packages bring the adapter: wrap the view in `KeyboardInput(input: game.input, child: ...)`
-  for the keyboard (and gamepad buttons the platform sends as keys), and add a `Joystick` (sources `'JoystickX'` and
+  for the keyboard (and gamepad buttons the platform sends as keys) and in `PointerInput(input: game.input, child: ...)`
+  for the mouse and touch, and add a `Joystick` (sources `'JoystickX'` and
   `'JoystickY'`) or `TouchButton`s on touch screens.
 - Voxels: `VoxelWorld` is an object holding palette indices on an unbounded grid, split into chunks (16 voxels a
   side by default), each drawn as one greedy mesh with vertex colors. `setVoxel` marks the chunks a change affects;

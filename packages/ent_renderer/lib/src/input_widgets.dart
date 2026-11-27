@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ent/ent.dart' show Input;
@@ -125,6 +126,106 @@ final Map<int, String> _keyCodes = {
   PhysicalKeyboardKey.gameButtonThumbLeft.usbHidUsage: 'GamepadLeftStick',
   PhysicalKeyboardKey.gameButtonThumbRight.usbHidUsage: 'GamepadRightStick',
 };
+
+/// Feeds the mouse and touch over [child] to an [Input]: the pointer's position as the analog sources `'PointerX'` and
+/// `'PointerY'` in normalized device coordinates (-1 to 1 from left to right and from bottom to top, as
+/// `Raycaster.setFromCamera` takes them; `Input.pointer` reads both), and its buttons as `'Pointer'` (the primary
+/// button or a touch), `'PointerSecondary'` and `'PointerMiddle'`, each down while any pointer holds it. The position
+/// follows a hovering mouse too, and stays where the last pointer left. Events also reach the widgets below, so it
+/// can wrap an `OrbitControlsListener`.
+class PointerInput extends StatefulWidget {
+  /// Feeds the pointers over [child] to [input].
+  const PointerInput({super.key, required this.input, required this.child});
+
+  /// The input map the pointers go to, usually `Game.input`.
+  final Input input;
+
+  /// The view the pointers act on, usually a `EntView`.
+  final Widget child;
+
+  @override
+  State<PointerInput> createState() => _PointerInputState();
+}
+
+class _PointerInputState extends State<PointerInput> {
+  // The button sources each pointer holds.
+  final Map<int, Set<String>> _held = {};
+
+  @override
+  void dispose() {
+    for (final source in _held.values.expand((sources) => sources).toSet()) {
+      widget.input.release(source);
+    }
+
+    super.dispose();
+  }
+
+  // A pointer that went down here keeps sending its events to this widget's listener after the widget is gone; they
+  // are ignored then (dispose released what it held).
+  void _point(PointerEvent event) {
+    if (!mounted) {
+      return;
+    }
+
+    final size = (context.findRenderObject()! as RenderBox).size;
+
+    widget.input
+      ..move('PointerX', event.localPosition.dx / size.width * 2 - 1)
+      ..move('PointerY', 1 - event.localPosition.dy / size.height * 2);
+  }
+
+  // Sets what the pointer of [event] holds to [buttons] (a bit mask, as `PointerEvent.buttons`), pressing the sources
+  // no pointer held before and releasing those no pointer holds now.
+  void _hold(PointerEvent event, int buttons) {
+    if (!mounted) {
+      return;
+    }
+
+    final before = _held.values.expand((sources) => sources).toSet();
+
+    _held[event.pointer] = {
+      if (buttons & kPrimaryButton != 0) 'Pointer',
+      if (buttons & kSecondaryButton != 0) 'PointerSecondary',
+      if (buttons & kMiddleMouseButton != 0) 'PointerMiddle',
+    };
+
+    if (_held[event.pointer]!.isEmpty) {
+      _held.remove(event.pointer);
+    }
+
+    final after = _held.values.expand((sources) => sources).toSet();
+
+    for (final source in after.difference(before)) {
+      widget.input.press(source);
+    }
+
+    for (final source in before.difference(after)) {
+      widget.input.release(source);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      behavior: HitTestBehavior.translucent,
+      onPointerHover: _point,
+      onPointerDown: (event) {
+        _point(event);
+        _hold(event, event.buttons);
+      },
+      onPointerMove: (event) {
+        _point(event);
+        _hold(event, event.buttons);
+      },
+      onPointerUp: (event) {
+        _point(event);
+        _hold(event, 0);
+      },
+      onPointerCancel: (event) => _hold(event, 0),
+      child: widget.child,
+    );
+  }
+}
 
 /// An on-screen stick that reports its position to an [Input] as two analog sources, [x] and [y], each from -1 to 1:
 /// right and down are positive, as on a gamepad's stick. It springs back to the center, reporting 0, when released.

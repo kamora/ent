@@ -1,3 +1,9 @@
+## 0.1.0-dev.5
+
+- `PointerInput` feeds the mouse and touch over its child to an `Input`: the position as `'PointerX'` and `'PointerY'`
+  in normalized device coordinates, the buttons as `'Pointer'`, `'PointerSecondary'` and `'PointerMiddle'`, each down
+  while any pointer holds it.
+
 ## 0.1.0-dev.4
 
 - Needs `ent` 0.1.0-dev.4. The Flutter side of `ent`'s input map: `KeyboardInput` feeds keys (by their W3C

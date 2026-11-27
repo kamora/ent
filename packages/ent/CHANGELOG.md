@@ -1,3 +1,9 @@
+## 0.1.0-dev.6
+
+- `Input.pointer`: the pointer's position from the sources `'PointerX'` and `'PointerY'`, in normalized device
+  coordinates for `Raycaster.setFromCamera`; the pointer's buttons are the sources `'Pointer'`, `'PointerSecondary'`
+  and `'PointerMiddle'`.
+
 ## 0.1.0-dev.5
 
 - `VOXLoader`, the reference's loader for MagicaVoxel files: models (`VOXChunk`) and version 200 scene graphs, with

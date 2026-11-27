@@ -2,8 +2,8 @@
 
 The renderer core of Ent Engine, shared by its renderers: render lists, programs and uniforms, lights, shadows,
 textures, environment maps, passes and post-processing, plus `EntView`, `OrbitControlsListener`, the Flutter
-platform services of [`ent`][ent], and the Flutter side of its game layer's input map (`KeyboardInput`, `Joystick`,
-`TouchButton`).
+platform services of [`ent`][ent], and the Flutter side of its game layer's input map (`KeyboardInput`, `PointerInput`,
+`Joystick`, `TouchButton`).
 
 An app does not depend on this package directly. It depends on a renderer package, which exports what an app needs
 from here:
