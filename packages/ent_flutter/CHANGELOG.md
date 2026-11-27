@@ -1,3 +1,8 @@
+## 0.1.0-dev.5
+
+- Needs `ent_renderer` 0.1.0-dev.5 and `ent` 0.1.0-dev.6: exports `PointerInput`, the mouse and touch for `ent`'s
+  input map, and `ent`'s voxels (`VOXLoader`, `VoxelWorld`, `VoxelDebris`).
+
 ## 0.1.0-dev.4
 
 - Needs `ent_renderer` 0.1.0-dev.4 and `ent` 0.1.0-dev.4: exports `ent`'s game layer (`Game`, tweens, `Input`) and the

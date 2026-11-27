@@ -69,10 +69,10 @@ packages:
     dependency: "direct main"
     description:
       name: ent
-      sha256: ba30bfbfcc6795087b3e418387473d2c1d512ad695010501dcd9d4cfa244019e
+      sha256: "3d84c2b3085d3035c158dbfb52f777fe6ba057558b492e70b1d551fb8957874c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.5"
+    version: "0.1.0-dev.6"
   ent_impeller:
     dependency: "direct main"
     description:
@@ -85,10 +85,10 @@ packages:
     dependency: "direct main"
     description:
       name: ent_renderer
-      sha256: "2e8de92e4526cf533b7f5ee6286a198350b5fcc825ace37d48b80d571b684012"
+      sha256: c6671270232e21abff8d514761336bc85bf203ad389ad57bdf3ee43afb78b5cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.4"
+    version: "0.1.0-dev.5"
   ent_shaders:
     dependency: "direct dev"
     description:

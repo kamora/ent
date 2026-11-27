@@ -13,6 +13,7 @@ export 'package:ent_renderer/ent_renderer.dart'
         Joystick,
         KeyboardInput,
         OrbitControlsListener,
+        PointerInput,
         ShadowMap,
         TouchButton,
         keyCode;
