@@ -114,7 +114,10 @@ EntView(renderer: renderer, scene: scene, camera: camera, onFrame: game.frame);
   first voxel along a world-space ray (`Raycaster.ray`) with the face it entered, reading the voxels, so it sees
   changes not yet drawn; `removeSphere(center, radius)` empties a ball of voxels and returns them, for craters and
   debris. `addHeightmap(rgba, width)` builds terrain from a decoded image's raw RGBA bytes: each pixel's red channel
-  is a column's height, and an optional color image picks each column's nearest palette color.
+  is a column's height, and an optional color image picks each column's nearest palette color. `VoxelDebris` turns
+  removed voxels into flying pieces: `world.add(debris)`, `debris.spawn(world.removeSphere(center, 4), center)` and
+  `game.everyFrame(debris.update)`; the pieces fall, bounce off the world's voxels and shrink away, all in one
+  instanced draw.
 
 ## Platform services
 

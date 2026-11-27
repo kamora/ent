@@ -3,6 +3,8 @@
 - `Input.pointer`: the pointer's position from the sources `'PointerX'` and `'PointerY'`, in normalized device
   coordinates for `Raycaster.setFromCamera`; the pointer's buttons are the sources `'Pointer'`, `'PointerSecondary'`
   and `'PointerMiddle'`.
+- `VoxelDebris`: removed voxels as flying pieces, one instanced mesh, falling and bouncing off a `VoxelWorld`'s voxels
+  and shrinking away.
 
 ## 0.1.0-dev.5
 

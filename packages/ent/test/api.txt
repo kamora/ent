@@ -517,6 +517,7 @@ VideoTexture
 VideoTexturePlatform
 VignetteMaterial
 VignettePass
+VoxelDebris
 VoxelHit
 VoxelWorld
 WebAudioAnalyserNode
