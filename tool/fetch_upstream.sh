@@ -12,7 +12,7 @@ if [ ! -d "$dir/.git" ]; then
 fi
 
 # Set on every run, so an existing checkout picks up paths added here (fetching their blobs at the pinned commit).
-git -C "$dir" sparse-checkout set --no-cone '/src/' '/test/unit/' '/examples/jsm/lights/' '/examples/jsm/controls/' '/examples/jsm/postprocessing/' '/examples/jsm/shaders/' '/examples/jsm/loaders/GLTFLoader.js' '/examples/jsm/loaders/HDRLoader.js' '/examples/jsm/loaders/RGBELoader.js' '/examples/jsm/utils/BufferGeometryUtils.js' '/examples/jsm/utils/SkeletonUtils.js' '/LICENSE' '/package.json'
+git -C "$dir" sparse-checkout set --no-cone '/src/' '/test/unit/' '/examples/jsm/lights/' '/examples/jsm/controls/' '/examples/jsm/postprocessing/' '/examples/jsm/shaders/' '/examples/jsm/loaders/GLTFLoader.js' '/examples/jsm/loaders/HDRLoader.js' '/examples/jsm/loaders/RGBELoader.js' '/examples/jsm/loaders/VOXLoader.js' '/examples/jsm/utils/BufferGeometryUtils.js' '/examples/jsm/utils/SkeletonUtils.js' '/LICENSE' '/package.json'
 
 actual="$(git -C "$dir" rev-parse HEAD)"
 

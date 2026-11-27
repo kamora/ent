@@ -504,6 +504,9 @@ UnsignedShort4444Type
 UnsignedShort5551Type
 UnsignedShortType
 UpdateRange
+VOXChunk
+VOXLoader
+VOXResult
 VSMShadowMap
 Vector2
 Vector3

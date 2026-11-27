@@ -211,6 +211,7 @@ part 'src/loaders/data_texture_loader.dart';
 part 'src/loaders/file_loader.dart';
 part 'src/loaders/gltf_loader.dart';
 part 'src/loaders/hdr_loader.dart';
+part 'src/loaders/vox_loader.dart';
 part 'src/loaders/image_bitmap_loader.dart';
 part 'src/loaders/image_loader.dart';
 part 'src/loaders/loader.dart';

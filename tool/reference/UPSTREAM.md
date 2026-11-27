@@ -15,7 +15,7 @@ The tag was verified with `git ls-remote --tags` before cloning; no other releas
 
 `third_party/three.js/` is a sparse, read-only checkout of `src/`, `test/unit/`, `examples/jsm/lights/`,
 `examples/jsm/controls/`, `examples/jsm/loaders/GLTFLoader.js`, `examples/jsm/loaders/HDRLoader.js`,
-`examples/jsm/loaders/RGBELoader.js`, `examples/jsm/utils/BufferGeometryUtils.js`,
+`examples/jsm/loaders/RGBELoader.js`, `examples/jsm/loaders/VOXLoader.js`, `examples/jsm/utils/BufferGeometryUtils.js`,
 `examples/jsm/utils/SkeletonUtils.js`, `LICENSE` and `package.json`. It is git-ignored; `tool/fetch_upstream.sh`
 recreates it, sets the sparse paths on every run (so an existing checkout picks up added ones, fetching their blobs
 at the pinned commit) and fails if the checkout is not at the pinned commit. `tool/reference/js/generate.mjs`
@@ -33,6 +33,8 @@ refuses to run against any other tag. Each path serves a port or a reference:
 - `HDRLoader.js` and `RGBELoader.js` (r187's deprecated alias of it, a subclass that only warns): `HDRLoader` and
   `RGBELoader` in `packages/ent` (`lib/src/loaders/hdr_loader.dart`), checked by
   `node tool/reference/js/hdr_loader.mjs` the same way and by the `hdr_environment` reference scenes.
+- `VOXLoader.js`: `VOXLoader` in `packages/ent` (`lib/src/loaders/vox_loader.dart`), checked by
+  `node tool/reference/js/vox_loader.mjs` the same way.
 
 ## Data derived from the checkout
 

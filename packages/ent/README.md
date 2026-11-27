@@ -53,8 +53,8 @@ EntView(
 - Core, math, cameras, the built-in geometries and curves, every mesh, line, points and sprite material, lights and
   shadows, `InstancedMesh`, `BatchedMesh`, `SkinnedMesh`, morph targets, `LOD`, fog and the animation system.
 - Loaders: `ObjectLoader` (the JSON format), `GLTFLoader` (glTF 2.0 and GLB, with most `KHR_materials_*`
-  extensions; not Draco, meshopt, KTX2 or GPU instancing), `HDRLoader`, `TextureLoader`, `FileLoader` and the
-  other core loaders.
+  extensions; not Draco, meshopt, KTX2 or GPU instancing), `HDRLoader`, `VOXLoader` (MagicaVoxel models and scene
+  graphs, built into meshes), `TextureLoader`, `FileLoader` and the other core loaders.
 - Controls: `OrbitControls` and `MapControls`.
 - Post-processing: `EffectComposer` with `RenderPass`, `OutputPass`, `CopyPass`, `FXAAPass`, `VignettePass` and
   `TuningPass` (bloom).

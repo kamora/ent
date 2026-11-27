@@ -36,6 +36,11 @@ and commit.
   `flat.hdr`); deterministic, no downloads, no three.js. `hdr_loader.mjs` parses them with r187's `HDRLoader` in
   Node (HalfFloatType and FloatType) and writes `fixtures/values/hdr_loader.json`, which
   `packages/ent/test/loaders/hdr_loader_test.dart` compares exactly.
+- `vox_files.mjs`: writes the MagicaVoxel test files in `fixtures/vox/` (`single.vox`, `palette.vox`, `black.vox`
+  and `scene.vox`, a version 200 scene graph); deterministic, built from the format byte by byte, no downloads, no
+  three.js. `vox_loader.mjs` parses them with r187's `VOXLoader` in Node and writes `fixtures/values/vox_loader.json`
+  (chunks, scene graph, the mesh and the 3D texture of each chunk), which
+  `packages/ent/test/loaders/vox_loader_test.dart` compares exactly.
 - `worm_glb.mjs`: writes `examples/worm/assets/worm.glb`, the example viewer's model (a textured tube skinned
   to 5 bones with a looping `wiggle` clip); deterministic, no downloads, no three.js.
 

@@ -1,3 +1,8 @@
+## 0.1.0-dev.5
+
+- `VOXLoader`, the reference's loader for MagicaVoxel files: models (`VOXChunk`) and version 200 scene graphs, with
+  `VOXLoader.buildMesh` (greedy meshing, vertex colors) and `VOXLoader.buildData3DTexture`.
+
 ## 0.1.0-dev.4
 
 - A game layer, Ent's own design: `Game`, a game loop driven by a frame tick, with pause and time scale; `Task`s
