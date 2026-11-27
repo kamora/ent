@@ -99,6 +99,9 @@ EntView(renderer: renderer, scene: scene, camera: camera, onFrame: game.frame);
   Sources are names too: keys by their W3C `KeyboardEvent.code` (`'KeyW'`, `'Space'`), gamepad and joystick parts by
   the names an adapter gives them; an adapter reports them with `press`, `release` and `move`. `Game.update` ends the
   input frame, also while paused, so `wasPressed` holds for exactly one frame.
+- In Flutter, the renderer packages bring the adapter: wrap the view in `KeyboardInput(input: game.input, child: ...)`
+  for the keyboard (and gamepad buttons the platform sends as keys), and add a `Joystick` (sources `'JoystickX'` and
+  `'JoystickY'`) or `TouchButton`s on touch screens.
 
 ## Platform services
 
@@ -125,7 +128,7 @@ More usage, for controls, GLTFLoader and post-processing, is in [`docs/usage.md`
 
 ## Status
 
-Version `0.1.0-dev.3`, a preview: the API may still change before 0.1.0. The API is listed in `test/api.txt`,
+Version `0.1.0-dev.4`, a preview: the API may still change before 0.1.0. The API is listed in `test/api.txt`,
 which `test/api_test.dart` checks, so every change to it is deliberate.
 
 ```sh

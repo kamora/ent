@@ -1,3 +1,10 @@
+## 0.1.0-dev.4
+
+- Needs `ent_renderer` 0.1.0-dev.4 and `ent` 0.1.0-dev.4: exports `ent`'s game layer (`Game`, tweens, `Input`) and the
+  input widgets `KeyboardInput`, `Joystick` and `TouchButton`.
+- The example imports `package:material_ui/material_ui.dart`, the replacement for the deprecated
+  `package:flutter/material.dart`.
+
 ## 0.1.0-dev.3
 
 - Needs `ent_renderer` 0.1.0-dev.2: warnings from the shared core start with `ENT.FlutterGpuRenderer:`.

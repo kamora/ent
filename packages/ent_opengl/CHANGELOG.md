@@ -1,3 +1,11 @@
+## 0.1.0-dev.4
+
+- Needs `ent_renderer` 0.1.0-dev.4 and `ent` 0.1.0-dev.4: exports `ent`'s game layer (`Game`, tweens, `Input`) and the
+  input widgets `KeyboardInput`, `Joystick` and `TouchButton`.
+- The example imports `package:material_ui/material_ui.dart`, the replacement for the deprecated
+  `package:flutter/material.dart`; the repository's example app is now `examples/cube`.
+- The Android plugin's Gradle file asks for the Android Gradle Plugin 9.1.1, which Flutter 3.50.1 requires.
+
 ## 0.1.0-dev.3
 
 - Anisotropic filtering: `texture.anisotropy` applies up to the GPU's limit, read from

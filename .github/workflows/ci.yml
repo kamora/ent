@@ -64,6 +64,9 @@ jobs:
       - name: Analyze ent_renderer
         working-directory: packages/ent_renderer
         run: flutter analyze --fatal-infos
+      - name: ent_renderer tests
+        working-directory: packages/ent_renderer
+        run: flutter test
       - name: ent_flutter tests (Impeller on Vulkan through SwiftShader)
         working-directory: packages/ent_flutter
         run: flutter test --enable-impeller --enable-flutter-gpu

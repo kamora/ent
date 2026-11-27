@@ -13,6 +13,7 @@ export 'src/flutter_platform.dart';
 export 'src/geometries.dart';
 export 'src/gpu_renderer.dart';
 export 'src/host_buffers.dart';
+export 'src/input_widgets.dart';
 export 'src/lights.dart';
 export 'src/ltc_data.dart';
 export 'src/orbit_controls_listener.dart';
