@@ -224,4 +224,148 @@ void main() {
     expect(() => VoxelWorld(palette: palette).setVoxel(0, 0, 0, -1), throwsArgumentError);
     expect(() => VoxelWorld(palette: palette, chunkSize: 0), throwsArgumentError);
   });
+
+  group('pick', () {
+    test('matches the nearest voxel box along random rays, through a moved and scaled world', () {
+      final random = math.Random(11);
+      final world = VoxelWorld(palette: palette, chunkSize: 4)
+        ..position.set(3, -2, 1)
+        ..scale.setScalar(0.5);
+      final voxels = <(int, int, int)>{};
+
+      for (var k = 0; k < 120; k++) {
+        final key = (random.nextInt(12) - 6, random.nextInt(12) - 6, random.nextInt(12) - 6);
+        voxels.add(key);
+        world.setVoxel(key.$1, key.$2, key.$3, 1 + random.nextInt(4));
+      }
+
+      world.updateMatrixWorld();
+      var hits = 0;
+
+      for (var k = 0; k < 300; k++) {
+        final origin = Vector3(
+          random.nextDouble() * 16 - 8,
+          random.nextDouble() * 16 - 8,
+          random.nextDouble() * 16 - 8,
+        );
+        // Aimed at a point of the voxels' area (world x 0 to 6, y -5 to 1, z -2 to 4), so most rays hit.
+        final target = Vector3(random.nextDouble() * 6, random.nextDouble() * 6 - 5, random.nextDouble() * 6 - 2);
+        final ray = Ray(origin, target.sub(origin).normalize());
+
+        // A ray starting inside a voxel hits it at 0, which the boxes below do not show.
+        final local = origin.clone().applyMatrix4(Matrix4().copy(world.matrixWorld).invert());
+
+        if (voxels.contains((local.x.floor(), local.y.floor(), local.z.floor()))) {
+          continue;
+        }
+
+        (int, int, int)? nearest;
+        var best = double.infinity;
+
+        for (final (x, y, z) in voxels) {
+          final box = Box3(Vector3(x.toDouble(), y.toDouble(), z.toDouble()), Vector3(x + 1.0, y + 1.0, z + 1.0))
+            ..applyMatrix4(world.matrixWorld);
+          final point = ray.intersectBox(box, Vector3());
+
+          if (point != null && point.distanceTo(origin) < best) {
+            best = point.distanceTo(origin);
+            nearest = (x, y, z);
+          }
+        }
+
+        final hit = world.pick(ray);
+
+        if (nearest == null) {
+          expect(hit, isNull, reason: 'ray $k');
+          continue;
+        }
+
+        hits++;
+        expect((hit!.x, hit.y, hit.z), nearest, reason: 'ray $k');
+        expect(hit.value, world.getVoxel(hit.x, hit.y, hit.z));
+        expect(hit.distance, closeTo(best, 1e-9), reason: 'ray $k');
+        expect(hit.point.distanceTo(ray.at(best, Vector3())), closeTo(0, 1e-9));
+        expect(
+          world.getVoxel(hit.x + hit.normal.x.toInt(), hit.y + hit.normal.y.toInt(), hit.z + hit.normal.z.toInt()),
+          0,
+        );
+        expect(hit.normal.dot(ray.direction), lessThan(0), reason: 'the normal faces the ray');
+      }
+
+      expect(hits, greaterThan(100));
+    });
+
+    test('through a turned world, sees voxels update has not drawn, and stops at far', () {
+      final world = VoxelWorld(palette: palette)
+        ..setVoxel(0, 0, 2, 3)
+        ..rotation.y = math.pi / 2
+        ..updateMatrixWorld();
+
+      // Turned a quarter around Y, the grid's +z points along world +x and its +x along world -z.
+      final hit = world.pick(Ray(Vector3(-5, 0.5, -0.5), Vector3(1, 0, 0)))!;
+      expect((hit.x, hit.y, hit.z, hit.value), (0, 0, 2, 3));
+      expect(hit.normal.toArray(), [0.0, 0.0, -1.0]);
+      expect(hit.distance, closeTo(7, 1e-12));
+      expect(world.children, isEmpty);
+      expect(world.pick(Ray(Vector3(-5, 0.5, -0.5), Vector3(1, 0, 0)), far: 6.9), isNull);
+    });
+
+    test('misses in an empty direction and an empty world; inside a voxel hits it at 0', () {
+      final world = VoxelWorld(palette: palette)..setVoxel(0, 0, 0, 1);
+
+      expect(VoxelWorld(palette: palette).pick(Ray(Vector3(), Vector3(1, 0, 0))), isNull);
+      expect(world.pick(Ray(Vector3(0.5, 5, 0.5), Vector3(0, 1, 0))), isNull);
+      expect(world.pick(Ray(Vector3(1e6, 0.5, 0.5), Vector3(-1, 0, 0)))!.distance, closeTo(1e6 - 1, 1e-6));
+
+      // A voxel on the last row of the chunks' area, reached from inside it, along each axis and direction.
+      final edges = VoxelWorld(palette: palette, chunkSize: 4)
+        ..setVoxel(3, 1, 1, 2)
+        ..setVoxel(0, 1, 1, 2)
+        ..setVoxel(1, 3, 1, 2)
+        ..setVoxel(1, 1, 3, 2);
+      expect(edges.pick(Ray(Vector3(1.5, 1.5, 1.5), Vector3(1, 0, 0)))?.x, 3);
+      expect(edges.pick(Ray(Vector3(1.5, 1.5, 1.5), Vector3(-1, 0, 0)))?.x, 0);
+      expect(edges.pick(Ray(Vector3(1.5, 1.5, 1.5), Vector3(0, 1, 0)))?.y, 3);
+      expect(edges.pick(Ray(Vector3(1.5, 1.5, 1.5), Vector3(0, 0, 1)))?.z, 3);
+
+      final inside = world.pick(Ray(Vector3(0.5, 0.5, 0.5), Vector3(0, 0, 1)))!;
+      expect(inside.distance, 0);
+      expect(inside.normal.toArray(), [0, 0, 0]);
+    });
+  });
+
+  test('removeSphere empties the voxels whose centers are within the radius and returns them', () {
+    final random = math.Random(5);
+    final voxels = <(int, int, int), int>{};
+    final world = VoxelWorld(palette: palette, chunkSize: 4);
+
+    for (var x = -6; x < 6; x++) {
+      for (var y = -6; y < 6; y++) {
+        for (var z = -6; z < 6; z++) {
+          voxels[(x, y, z)] = 1 + random.nextInt(4);
+          world.setVoxel(x, y, z, voxels[(x, y, z)]!);
+        }
+      }
+    }
+
+    world.update();
+
+    final center = Vector3(1.3, -0.2, 0.7);
+    final removed = world.removeSphere(center, 3.6);
+    final inside = {
+      for (final MapEntry(key: (x, y, z), :value) in voxels.entries)
+        if (Vector3(x + 0.5, y + 0.5, z + 0.5).distanceTo(center) <= 3.6) (x, y, z): value,
+    };
+
+    expect({for (final v in removed) (v.x, v.y, v.z): v.value}, inside);
+    expect(removed, hasLength(inside.length));
+    expect(world.removeSphere(center, 3.6), isEmpty);
+
+    for (final key in inside.keys) {
+      voxels.remove(key);
+    }
+
+    world.update();
+    expect(drawn(world), expected(voxels));
+  });
 }

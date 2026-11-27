@@ -126,6 +126,127 @@ class VoxelWorld extends Object3D {
     return rebuilt;
   }
 
+  /// The first solid voxel along [ray] (in world space, with a normalized direction, as [Raycaster.ray]) within [far]
+  /// of its origin, or `null` when it meets none. It reads the voxels, not the meshes, so it sees changes [update] has
+  /// not drawn yet. The world's [matrixWorld] must be current. A ray starting inside a solid voxel hits it at distance
+  /// 0 with a zero normal.
+  VoxelHit? pick(Ray ray, {double far = double.infinity}) {
+    if (_chunks.isEmpty) {
+      return null;
+    }
+
+    // The ray in grid space, its direction not normalized, so that a step t along it is t in world space.
+    final inverse = Matrix4().copy(matrixWorld).invert();
+    final origin = ray.origin.clone().applyMatrix4(inverse);
+    final direction = ray.origin.clone().add(ray.direction).applyMatrix4(inverse).sub(origin);
+
+    final o = [origin.x, origin.y, origin.z];
+    final dir = [direction.x, direction.y, direction.z];
+    final cell = [for (final value in o) value.floor()];
+    final step = [for (final value in dir) value.sign.toInt()];
+    final delta = [for (final value in dir) (1 / value).abs()];
+    final next = [
+      for (var a = 0; a < 3; a++)
+        if (step[a] > 0)
+          (cell[a] + 1 - o[a]) / dir[a]
+        else if (step[a] < 0)
+          (o[a] - cell[a]) / -dir[a]
+        else
+          double.infinity,
+    ];
+
+    // The grid area the chunks cover; once the ray is past it along an axis it moves away on, nothing is left to hit.
+    final low = [1 << 62, 1 << 62, 1 << 62];
+    final high = [-(1 << 62), -(1 << 62), -(1 << 62)];
+
+    for (final (x, y, z) in _chunks.keys) {
+      for (final (a, value) in [x, y, z].indexed) {
+        low[a] = math.min(low[a], value * chunkSize);
+        high[a] = math.max(high[a], value * chunkSize + chunkSize - 1);
+      }
+    }
+
+    final normal = [0, 0, 0];
+    var distance = 0.0;
+
+    while (distance <= far) {
+      final value = getVoxel(cell[0], cell[1], cell[2]);
+
+      if (value > 0) {
+        return VoxelHit._(
+          cell[0],
+          cell[1],
+          cell[2],
+          value,
+          Vector3(normal[0].toDouble(), normal[1].toDouble(), normal[2].toDouble()),
+          origin.clone().addScaledVector(direction, distance).applyMatrix4(matrixWorld),
+          distance,
+        );
+      }
+
+      var a = 0;
+
+      if (next[1] < next[a]) {
+        a = 1;
+      }
+
+      if (next[2] < next[a]) {
+        a = 2;
+      }
+
+      if (next[a] == double.infinity) {
+        return null;
+      }
+
+      distance = next[a];
+      next[a] += delta[a];
+      cell[a] += step[a];
+      normal.setAll(0, [0, 0, 0]);
+      normal[a] = -step[a];
+
+      if (step[a] > 0 && cell[a] > high[a]) {
+        return null;
+      }
+
+      if (step[a] < 0 && cell[a] < low[a]) {
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  /// Empties every voxel whose center lies within [radius] of [center], both in grid units (the voxel (x, y, z) has
+  /// its center at (x + 0.5, y + 0.5, z + 0.5)), and returns the voxels it removed with their former values.
+  List<({int x, int y, int z, int value})> removeSphere(Vector3 center, double radius) {
+    final removed = <({int x, int y, int z, int value})>[];
+
+    for (var x = (center.x - radius - 0.5).floor(); x <= (center.x + radius - 0.5).ceil(); x++) {
+      for (var y = (center.y - radius - 0.5).floor(); y <= (center.y + radius - 0.5).ceil(); y++) {
+        for (var z = (center.z - radius - 0.5).floor(); z <= (center.z + radius - 0.5).ceil(); z++) {
+          final dx = x + 0.5 - center.x;
+          final dy = y + 0.5 - center.y;
+          final dz = z + 0.5 - center.z;
+
+          if (dx * dx + dy * dy + dz * dz > radius * radius) {
+            continue;
+          }
+
+          final value = getVoxel(x, y, z);
+
+          if (value == 0) {
+            continue;
+          }
+
+          setVoxel(x, y, z, 0);
+          removed.add((x: x, y: y, z: z, value: value));
+        }
+      }
+    }
+
+    return removed;
+  }
+
   /// Disposes every chunk's geometry and [material], which the world owns, then fires the `dispose` event.
   @override
   void dispose() {
@@ -333,6 +454,27 @@ class VoxelWorld extends Object3D {
       ..setIndex(indices)
       ..computeBoundingSphere();
   }
+}
+
+/// A voxel [VoxelWorld.pick] hit.
+class VoxelHit {
+  VoxelHit._(this.x, this.y, this.z, this.value, this.normal, this.point, this.distance);
+
+  /// The voxel's grid coordinates.
+  final int x, y, z;
+
+  /// Its palette index.
+  final int value;
+
+  /// The grid direction out of the face the ray entered, each component -1, 0 or 1: the voxel at (x, y, z) plus the
+  /// normal is the empty one in front of that face, where a new voxel would go.
+  final Vector3 normal;
+
+  /// Where the ray entered the voxel, in world space.
+  final Vector3 point;
+
+  /// The distance from the ray's origin to [point], in world space.
+  final double distance;
 }
 
 // The voxels of one chunk and its current mesh.

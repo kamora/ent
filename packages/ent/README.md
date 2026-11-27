@@ -105,7 +105,10 @@ EntView(renderer: renderer, scene: scene, camera: camera, onFrame: game.frame);
 - Voxels: `VoxelWorld` is an object holding palette indices on an unbounded grid, split into chunks (16 voxels a
   side by default), each drawn as one greedy mesh with vertex colors. `setVoxel` marks the chunks a change affects;
   `update` rebuilds them, all at once or within `maxChunks` or a time `budget`, so a large change spreads over
-  frames: `game.everyFrame((_) => world.update(budget: const Duration(milliseconds: 4)))`.
+  frames: `game.everyFrame((_) => world.update(budget: const Duration(milliseconds: 4)))`. `pick(ray)` finds the
+  first voxel along a world-space ray (`Raycaster.ray`) with the face it entered, reading the voxels, so it sees
+  changes not yet drawn; `removeSphere(center, radius)` empties a ball of voxels and returns them, for craters and
+  debris.
 
 ## Platform services
 
