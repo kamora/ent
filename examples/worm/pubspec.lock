@@ -69,10 +69,10 @@ packages:
     dependency: transitive
     description:
       name: ent
-      sha256: "1e4517bc595dc2f37a36a474e5d054dbb6ab7200105c45af5d9b7f72b4d7fd90"
+      sha256: ba30bfbfcc6795087b3e418387473d2c1d512ad695010501dcd9d4cfa244019e
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.4"
+    version: "0.1.0-dev.5"
   ent_flutter:
     dependency: "direct main"
     description:
