@@ -517,6 +517,7 @@ VideoTexture
 VideoTexturePlatform
 VignetteMaterial
 VignettePass
+VoxelWorld
 WebAudioAnalyserNode
 WebAudioBuffer
 WebAudioBufferSourceNode

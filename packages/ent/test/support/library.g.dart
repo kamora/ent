@@ -529,6 +529,7 @@ const List<String> publicNames = [
   'VideoTexturePlatform',
   'VignetteMaterial',
   'VignettePass',
+  'VoxelWorld',
   'WebAudioAnalyserNode',
   'WebAudioBuffer',
   'WebAudioBufferSourceNode',
@@ -2684,6 +2685,12 @@ final Map<String, Map<String, Function Function(Object)>> methods = {
   },
   'VignetteMaterial': {},
   'VignettePass': {},
+  'VoxelWorld': {
+    'getVoxel': (o) => (o as VoxelWorld).getVoxel,
+    'setVoxel': (o) => (o as VoxelWorld).setVoxel,
+    'update': (o) => (o as VoxelWorld).update,
+    'dispose': (o) => (o as VoxelWorld).dispose,
+  },
   'WebAudioAnalyserNode': {'getByteFrequencyData': (o) => (o as WebAudioAnalyserNode).getByteFrequencyData},
   'WebAudioBuffer': {},
   'WebAudioBufferSourceNode': {
@@ -3095,6 +3102,7 @@ final Map<String, Map<String, Function>> statics = {
   'VideoTexturePlatform': {},
   'VignetteMaterial': {},
   'VignettePass': {},
+  'VoxelWorld': {},
   'WebAudioAnalyserNode': {},
   'WebAudioBuffer': {},
   'WebAudioBufferSourceNode': {},
@@ -4494,6 +4502,7 @@ final Map<String, Map<String, void Function(Object, Object?)>> setters = {
     'darkness': (o, v) => (o as VignetteMaterial).darkness = v as double,
   },
   'VignettePass': {},
+  'VoxelWorld': {},
   'WebAudioAnalyserNode': {'fftSize': (o, v) => (o as WebAudioAnalyserNode).fftSize = v as int},
   'WebAudioBuffer': {},
   'WebAudioBufferSourceNode': {
@@ -4736,4 +4745,5 @@ const Map<String, String> superclasses = {
   '_FullscreenTriangleGeometry': 'BufferGeometry',
   'RenderPass': 'Pass',
   'TuningPass': 'Pass',
+  'VoxelWorld': 'Object3D',
 };

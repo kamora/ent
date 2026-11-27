@@ -2,6 +2,8 @@
 
 - `VOXLoader`, the reference's loader for MagicaVoxel files: models (`VOXChunk`) and version 200 scene graphs, with
   `VOXLoader.buildMesh` (greedy meshing, vertex colors) and `VOXLoader.buildData3DTexture`.
+- `VoxelWorld`, Ent's own design: voxels on an unbounded grid, drawn by chunk meshes rebuilt after changes within a
+  count or time budget.
 
 ## 0.1.0-dev.4
 

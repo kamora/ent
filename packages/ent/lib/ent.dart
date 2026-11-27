@@ -240,3 +240,4 @@ part 'src/utils/skeleton_utils.dart';
 part 'src/engine/game.dart';
 part 'src/engine/tweens.dart';
 part 'src/engine/input.dart';
+part 'src/voxels/voxel_world.dart';

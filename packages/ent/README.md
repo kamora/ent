@@ -58,7 +58,7 @@ EntView(
 - Controls: `OrbitControls` and `MapControls`.
 - Post-processing: `EffectComposer` with `RenderPass`, `OutputPass`, `CopyPass`, `FXAAPass`, `VignettePass` and
   `TuningPass` (bloom).
-- A game layer: a game loop, timers and tweens owned by scene objects, and an input map (below).
+- A game layer: a game loop, timers and tweens owned by scene objects, an input map, and voxel worlds (below).
 
 ## Game layer
 
@@ -102,6 +102,10 @@ EntView(renderer: renderer, scene: scene, camera: camera, onFrame: game.frame);
 - In Flutter, the renderer packages bring the adapter: wrap the view in `KeyboardInput(input: game.input, child: ...)`
   for the keyboard (and gamepad buttons the platform sends as keys), and add a `Joystick` (sources `'JoystickX'` and
   `'JoystickY'`) or `TouchButton`s on touch screens.
+- Voxels: `VoxelWorld` is an object holding palette indices on an unbounded grid, split into chunks (16 voxels a
+  side by default), each drawn as one greedy mesh with vertex colors. `setVoxel` marks the chunks a change affects;
+  `update` rebuilds them, all at once or within `maxChunks` or a time `budget`, so a large change spreads over
+  frames: `game.everyFrame((_) => world.update(budget: const Duration(milliseconds: 4)))`.
 
 ## Platform services
 
