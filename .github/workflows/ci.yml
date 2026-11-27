@@ -40,7 +40,7 @@ jobs:
       - name: Format
         run: >-
           dart format --output=none --set-exit-if-changed packages/ent packages/ent_shaders packages/ent_impeller
-          packages/ent_renderer packages/ent_flutter examples/worm
+          packages/ent_renderer packages/ent_flutter examples/worm examples/voxels
       - name: Analyze ent
         working-directory: packages/ent
         run: dart analyze --fatal-infos
@@ -78,6 +78,9 @@ jobs:
         run: flutter analyze --fatal-infos
       - name: Analyze the example
         working-directory: examples/worm
+        run: flutter analyze --fatal-infos
+      - name: Analyze the voxels example
+        working-directory: examples/voxels
         run: flutter analyze --fatal-infos
 
   metal:
