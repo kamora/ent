@@ -372,57 +372,103 @@ class VoxelWorld extends Object3D {
 
   // The greedy mesh of a chunk in its own space (its corner at the origin), or `null` when no face shows. Each face
   // belongs to the chunk of its solid voxel, so a face on the chunk's side is drawn by this chunk only when its solid
-  // voxel is inside it; the voxel beyond the side is read from the neighbouring chunk.
+  // voxel is inside it; the voxels beyond the sides come from the neighbouring chunks.
   BufferGeometry? _mesh((int, int, int) key, _VoxelChunk chunk) {
     final size = chunkSize;
-    final origin = [key.$1 * size, key.$2 * size, key.$3 * size];
-    final positions = <double>[];
-    final normals = <double>[];
-    final colors = <double>[];
-    final indices = <int>[];
-    final color = Color();
-    final mask = Int16List(size * size);
 
-    // The palette index at local (a, b, c), from a neighbouring chunk when it lies outside this one.
-    int voxel(List<int> local) {
-      if (local.every((value) => value >= 0 && value < size)) {
-        return chunk.voxels[_index(local[0], local[1], local[2])];
+    // The chunk with a border of one voxel on every side, read from the six neighbours: the voxel at local (a, b, c),
+    // each from -1 to size, is at (a + 1) * stride[0] + (b + 1) * stride[1] + (c + 1) * stride[2].
+    final padded = size + 2;
+    final stride = [1, padded, padded * padded];
+    final volume = Uint8List(padded * padded * padded);
+
+    for (var c = 0; c < size; c++) {
+      for (var b = 0; b < size; b++) {
+        final at = 1 + padded * (b + 1) + stride[2] * (c + 1);
+        volume.setRange(at, at + size, chunk.voxels, size * (b + size * c));
       }
-
-      return getVoxel(origin[0] + local[0], origin[1] + local[1], origin[2] + local[2]);
     }
 
     for (var d = 0; d < 3; d++) {
       final u = (d + 1) % 3;
       final v = (d + 2) % 3;
 
-      for (var slice = 0; slice <= size; slice++) {
-        var n = 0;
+      for (final direction in [-1, 1]) {
+        final offset = [key.$1, key.$2, key.$3];
+        offset[d] += direction;
+
+        final neighbour = _chunks[(offset[0], offset[1], offset[2])];
+
+        if (neighbour == null) {
+          continue;
+        }
+
+        // The neighbour's layer touching this chunk, into the border on that side.
+        final local = [0, 0, 0];
+        local[d] = direction > 0 ? 0 : size - 1;
 
         for (var vv = 0; vv < size; vv++) {
           for (var uu = 0; uu < size; uu++) {
-            final pos = [0, 0, 0];
-            pos[d] = slice;
-            pos[u] = uu;
-            pos[v] = vv;
+            local[u] = uu;
+            local[v] = vv;
+            volume[(direction > 0 ? size + 1 : 0) * stride[d] + (uu + 1) * stride[u] + (vv + 1) * stride[v]] =
+                neighbour.voxels[_index(local[0], local[1], local[2])];
+          }
+        }
+      }
+    }
 
-            final infront = voxel(pos);
-            pos[d] -= 1;
-            final behind = voxel(pos);
-            mask[n] = 0;
+    // The palette's colors in the working color space, converted once per index used.
+    final table = Float32List(256 * 3);
+    final known = Uint8List(256);
+    final color = Color();
+
+    final positions = <double>[];
+    final normals = <double>[];
+    final colors = <double>[];
+    final indices = <int>[];
+    final mask = Int16List(size * size);
+    final corner = Float64List(3);
+
+    for (var d = 0; d < 3; d++) {
+      final u = (d + 1) % 3;
+      final v = (d + 2) % 3;
+      final sd = stride[d];
+      final su = stride[u];
+
+      for (var slice = 0; slice <= size; slice++) {
+        var n = 0;
+        var any = false;
+
+        for (var vv = 0; vv < size; vv++) {
+          var at = (slice + 1) * sd + su + (vv + 1) * stride[v];
+
+          for (var uu = 0; uu < size; uu++) {
+            final infront = volume[at];
+            final behind = volume[at - sd];
+            var face = 0;
 
             // A face toward +d belongs to the voxel behind it, inside this chunk when slice ≥ 1; one toward -d to
             // the voxel in front, inside when slice < size.
             if (slice >= 1 && behind > 0 && infront == 0) {
-              mask[n] = behind;
+              face = behind;
             }
 
             if (slice < size && infront > 0 && behind == 0) {
-              mask[n] = -infront;
+              face = -infront;
             }
 
-            n++;
+            if (face != 0) {
+              any = true;
+            }
+
+            mask[n++] = face;
+            at += su;
           }
+        }
+
+        if (!any) {
+          continue;
         }
 
         n = 0;
@@ -459,37 +505,37 @@ class VoxelWorld extends Object3D {
               }
             }
 
-            final p0 = [0.0, 0.0, 0.0];
-            p0[d] = slice.toDouble();
-            p0[u] = uu.toDouble();
-            p0[v] = vv.toDouble();
-
-            final p1 = [...p0];
-            p1[u] += w;
-            final p2 = [...p1];
-            p2[v] += h;
-            final p3 = [...p0];
-            p3[v] += h;
-
             final base = positions.length ~/ 3;
+            final index = c.abs();
 
-            // Counterclockwise seen from the side the face looks to: u × v = +d.
-            if (c > 0) {
-              positions.addAll([...p0, ...p1, ...p2, ...p3]);
-            } else {
-              positions.addAll([...p0, ...p3, ...p2, ...p1]);
+            if (known[index] == 0) {
+              color.setHex(palette[index]);
+              table
+                ..[index * 3] = color.r
+                ..[index * 3 + 1] = color.g
+                ..[index * 3 + 2] = color.b;
+              known[index] = 1;
+            }
+
+            // The corners p0, p0 + u, p0 + u + v, p0 + v, counterclockwise seen from the side the face looks to
+            // (u × v = +d); a face toward -d takes them in the other order.
+            for (final (du, dv)
+                in c > 0 ? const [(0, 0), (1, 0), (1, 1), (0, 1)] : const [(0, 0), (0, 1), (1, 1), (1, 0)]) {
+              corner[d] = slice.toDouble();
+              corner[u] = (uu + du * w).toDouble();
+              corner[v] = (vv + dv * h).toDouble();
+              positions.addAll(corner);
+              normals
+                ..add(d == 0 ? c.sign.toDouble() : 0)
+                ..add(d == 1 ? c.sign.toDouble() : 0)
+                ..add(d == 2 ? c.sign.toDouble() : 0);
+              colors
+                ..add(table[index * 3])
+                ..add(table[index * 3 + 1])
+                ..add(table[index * 3 + 2]);
             }
 
             indices.addAll([base, base + 1, base + 2, base, base + 2, base + 3]);
-
-            final normal = [0.0, 0.0, 0.0];
-            normal[d] = c.sign.toDouble();
-            color.setHex(palette[c.abs()]);
-
-            for (var corner = 0; corner < 4; corner++) {
-              normals.addAll(normal);
-              colors.addAll([color.r, color.g, color.b]);
-            }
 
             for (var hh = 0; hh < h; hh++) {
               for (var ww = 0; ww < w; ww++) {
