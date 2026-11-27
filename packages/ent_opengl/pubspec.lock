@@ -69,18 +69,18 @@ packages:
     dependency: "direct main"
     description:
       name: ent
-      sha256: "4aa8b2767684db17734687b165c616476b3c53a5f611ccd1083f07b29eb38a6c"
+      sha256: "1e4517bc595dc2f37a36a474e5d054dbb6ab7200105c45af5d9b7f72b4d7fd90"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.3"
+    version: "0.1.0-dev.4"
   ent_flutter:
     dependency: "direct dev"
     description:
       name: ent_flutter
-      sha256: "2009ac731893462915c2e4add5c6a842ab1f721d22b9f1aaf06484618f7e6ddb"
+      sha256: f60e152476f6f340c75fcbf15eaa043b2e25c795bebceace29a493df8b5def02
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.2"
+    version: "0.1.0-dev.3"
   ent_impeller:
     dependency: "direct main"
     description:
@@ -93,10 +93,10 @@ packages:
     dependency: "direct main"
     description:
       name: ent_renderer
-      sha256: "4f47ddb292c42d94ae2a33108da1de5a7102f18dd5dffbec5eb0eeff9781304b"
+      sha256: "2e8de92e4526cf533b7f5ee6286a198350b5fcc825ace37d48b80d571b684012"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0-dev.3"
+    version: "0.1.0-dev.4"
   ent_shaders:
     dependency: transitive
     description:
