@@ -86,6 +86,7 @@ GPU and list the shader variants your materials need.
 | [`ent_renderer`](packages/ent_renderer) | The renderer core both renderers share, and `EntView`. |
 | [`ent_flutter`](packages/ent_flutter) | The Flutter GPU renderer. Exports all of `ent` and `EntView`. |
 | [`ent_opengl`](packages/ent_opengl) | The OpenGL ES renderer, on ANGLE on macOS. Exports all of `ent` and `EntView`. |
+| [`ent_audio`](packages/ent_audio) | The audio backend: plays `ent`'s `Audio`, `PositionalAudio` and `AudioAnalyser` on miniaudio. |
 
 A Flutter app depends on one renderer package: `ent_flutter` where Flutter GPU runs, `ent_opengl` on Android phones
 where it does not (see Platforms). The scene code is the same for both.

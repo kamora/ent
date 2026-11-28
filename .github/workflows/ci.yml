@@ -34,6 +34,7 @@ jobs:
           (cd packages/ent && dart pub get)
           (cd packages/ent_shaders && dart pub get)
           (cd packages/ent_impeller && dart pub get)
+          (cd packages/ent_audio && dart pub get)
           (cd packages/ent_renderer && flutter pub get)
           (cd packages/ent_flutter && flutter pub get)
           (cd examples/worm && flutter pub get)
@@ -41,7 +42,7 @@ jobs:
       - name: Format
         run: >-
           dart format --output=none --set-exit-if-changed packages/ent packages/ent_shaders packages/ent_impeller
-          packages/ent_renderer packages/ent_flutter examples/worm examples/voxels
+          packages/ent_audio packages/ent_renderer packages/ent_flutter examples/worm examples/voxels
       - name: Analyze ent
         working-directory: packages/ent
         run: dart analyze --fatal-infos
@@ -61,6 +62,15 @@ jobs:
       # Compiles ent_shaders' fixed shaders with the Flutter SDK's impellerc.
       - name: ent_impeller tests
         working-directory: packages/ent_impeller
+        run: dart test
+      - name: Analyze ent_audio
+        working-directory: packages/ent_audio
+        run: dart analyze --fatal-infos
+
+      # Compares the graph with Chrome's renderings in fixtures/audio, and plays on the runner's output device if it
+      # has one (device_test.dart skips otherwise).
+      - name: ent_audio tests
+        working-directory: packages/ent_audio
         run: dart test
       - name: Analyze ent_renderer
         working-directory: packages/ent_renderer
