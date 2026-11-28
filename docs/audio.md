@@ -1,0 +1,69 @@
+# Audio
+
+`ent` has the reference's audio classes (`AudioListener`, `Audio`, `PositionalAudio`, `AudioAnalyser`) over a Web
+Audio surface (`lib/src/audio/audio_context.dart`) that a platform package implements and installs as
+`AudioContext.platform`. This page compares the ways to implement it and records the choice: `ent_audio`, our own
+package on miniaudio (Kai, 2026-11-28).
+
+## What a backend must do
+
+From `audio_context.dart` and the classes that use it:
+
+- Decode sound files into buffers (`AudioLoader`), and play a buffer from a source node: start with a delay and an
+  offset, stop, loop between two points, playback rate and detune, an `onended` callback.
+- Gain nodes, with parameters that ramp (`setTargetAtTime`, `linearRampToValueAtTime`) on an audio clock
+  (`currentTime`).
+- A panner node per positional sound, with the Web Audio panner model: position and orientation, distance model
+  (linear, inverse, exponential) with reference distance, maximum distance and rolloff, and a directional cone (inner
+  angle, outer angle, outer gain).
+- One listener: position, forward and up.
+- An analyser: `frequencyBinCount` and `getByteFrequencyData`.
+
+## Candidates
+
+Facts from pub.dev's API and the projects' own repositories and source, checked 2026-11-28. Nothing below was built or
+run.
+
+| | Package | Maintainer | License | 3D | Fit |
+|---|---|---|---|---|---|
+| flutter_soloud | 5.4.0, 2026-11-26; 619 likes, 210k downloads in 30 days | Marco Bavagnoli (alnitak; 1,998 of 2,317 commits), publisher marcobavagnoli.com | MIT, SoLoud under zlib; VST3 hosting is opt-in and off by default | Positional, Doppler, the three distance models (clamped at the maximum distance); **no cones**: `soloud_core_3d.cpp` reads `// (todo) vol *= conev;` | Everything else is there: decoding (MP3, WAV, FLAC, OGG), loops, speed, faders, filters, buses, FFT data. Android, iOS, macOS, Windows, Linux, web |
+| miniaudio, our own package | A single C file (`miniaudio.h`, 4 MB), not on pub.dev | David Reid (mackron; 7.7k stars, active this week) | Public domain or MIT-0, the reader's choice | Positional, Doppler, the three distance models with Web Audio's formulas (also clamped at the maximum distance), **cones** (`ma_sound_set_cone`), listener with world up | Decoding (WAV, FLAC, MP3 built in), loops, pitch, fades, seeking, a node graph. No FFT: the analyser would be ours, in Dart |
+| just_audio, audioplayers | 0.10.6 and 6.8.1; the most used players | ryanheise.com; Blue Fire | Apache-2.0/MIT; MIT | None | Players only; positional sound would have to be built on top. Ruled out |
+| Smaller packages (minisound, flutter_al, flutter3d_audio, just_audio_engine, ...) | 0 to 15 likes, under 1,000 downloads in 30 days | Not examined | MIT, MPL-2.0, BSD-3-Clause | Not examined | Too few users to depend on |
+
+Both real options clamp distance at the maximum distance for every model, where Web Audio clamps it only for the
+linear one: past `maxDistance`, an inverse or exponential sound stops getting quieter. That would be a recorded
+compatibility exception (or a large maximum distance by default).
+
+## The two ways
+
+1. **On flutter_soloud.** The backend is an adapter: Web Audio's nodes mapped onto SoLoud's voices, buses and 3D
+   parameters. Fastest to a sound playing, on every platform at once. Costs: a large native dependency maintained
+   mostly by one person, and cones missing.
+2. **Our own package on miniaudio**, the way `wrangle` carries ANGLE: the C file compiled by a build hook on each
+   platform, our FFI bindings, our analyser. Its model matches the Web Audio panner more closely, cones included, and
+   we own the stack, the source being ours to keep. Costs: more work (bindings, a build hook for four platforms,
+   decoding of OGG through another single file, stb_vorbis, the analyser).
+
+## Decision
+
+Kai chose the second way on 2026-11-28: closer to Web Audio, cones included, and the source is ours, as ANGLE is in
+`wrangle`. miniaudio 0.11.26 is vendored in `packages/ent_audio/third_party/miniaudio/` and compiled by the package's
+build hook (Objective-C with the audio frameworks linked on Apple platforms).
+
+miniaudio plays the device, decodes and mixes through its node graph. The Web Audio nodes themselves (buffer source,
+gain with parameter automation, panner, analyser) are ent_audio's own C nodes on that graph, written to the Web Audio
+specification's formulas rather than miniaudio's own spatializer, so that distance and cone gain match Web Audio
+exactly, and a graph rendered offline can be compared sample by sample with the same graph rendered by Chrome's
+`OfflineAudioContext`.
+
+## Steps
+
+1. The package, the build hook, decoding into buffers (done: WAV checked sample for sample).
+2. The buffer source: start with delay, offset and duration, stop, loop points, playback rate, detune, `onended`.
+3. Gain and parameter automation (`value`, `setTargetAtTime`, `linearRampToValueAtTime`) on the audio clock.
+4. The panner and the listener: equal-power panning, the three distance models, the cone.
+5. The analyser: captured samples, the specification's windowed FFT and smoothing.
+6. Device output in a Flutter app on macOS, iOS and Android, and sound in the voxels demo.
+
+Each of steps 2 to 5 is checked against Chrome's offline rendering of the same graph.
