@@ -1,15 +1,20 @@
 // A voxel landscape to blast apart: rolling terrain built from a generated heightmap, orbited with OrbitControls
 // (drag to turn, pinch or scroll to zoom). A click or tap on the ground blows a crater into it and the voxels fly
-// out as debris, down to the bottom layer, which is bedrock; KeyR raises a fresh landscape.
+// out as debris, down to the bottom layer, which is bedrock, with the sound of the blast from where it opens; KeyR
+// raises a fresh landscape.
 
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:ent_audio/ent_audio.dart';
 import 'package:ent_flutter/ent_flutter.dart';
 import 'package:flutter/widgets.dart' hide Color, Texture;
 
+import 'sound.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  NativeAudioContext.install();
   runApp(App(Landscape(await FlutterGpuRenderer.create(antialias: true))));
 }
 
@@ -59,6 +64,9 @@ class Landscape {
   late final VoxelDebris debris = VoxelDebris(world, capacity: 2048);
 
   final Raycaster raycaster = Raycaster();
+
+  /// The blasts' sound, or `null` without an audio context to play it on.
+  late final Blasts? blasts = Blasts.create(camera);
 
   // Where the pointer went down, to tell a click from a drag that turns the view.
   Vector2? _down;
@@ -121,6 +129,7 @@ class Landscape {
 
     removed.removeWhere((voxel) => voxel.y == 0);
     debris.spawn(removed, center, speed: 14);
+    blasts?.play(game, world, center, removed.length);
     return removed.length;
   }
 
