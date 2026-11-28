@@ -1,15 +1,17 @@
 // Renders the audio scenarios of fixtures/audio/<file>.json with Web Audio's OfflineAudioContext in the installed
 // headless Chrome (puppeteer-core from tool/) and writes, per scenario, fixtures/audio/<file>/<name>.f32: the
-// rendered channels one after another, as little-endian 32-bit floats. <file>/meta.json records the browser and
-// which sources fired `onended`.
+// rendered channels one after another, as little-endian 32-bit floats. <file>/meta.json records the browser, which
+// sources fired `onended` and the parameter values the scenario read.
 //
 // Usage: node tool/reference/audio/render.mjs <file> (for example: sources)
 // Chrome: $CHROME, or /Applications/Google Chrome.app.
 //
-// A scenario has its length in frames, its buffers (filled by `signal` below, which ent_audio's tests repeat) and
-// its operations: [ 'source', name, buffer ], [ 'set', name, attribute, value ], [ 'param', name, param, value ],
-// [ 'connect', name ], [ 'start', name, when?, offset?, duration? ], [ 'stop', name, when ]. Times are in frames of
-// the context rate.
+// A scenario has its length in frames, its buffers (filled with `fill`, or by `signal` below, which ent_audio's
+// tests repeat) and its operations: [ 'source', name, buffer ], [ 'gain', name ], [ 'set', name, attribute, value ],
+// [ 'param', name, param, value ], [ 'ramp', name, param, value, end ], [ 'target', name, param, value, start,
+// constant ], [ 'read', name, param ], [ 'connect', name, destination? ], [ 'start', name, when?, offset?,
+// duration? ], [ 'stop', name, when ], and [ 'at', frame ], after which the operations run when rendering reaches
+// that frame, a multiple of 128. Times are in frames of the context rate.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -36,6 +38,7 @@ async function render( doc, scenario ) {
 	const buffers = {};
 	const nodes = {};
 	const ended = [];
+	const values = [];
 
 	for ( const [ name, b ] of Object.entries( scenario.buffers ) ) {
 
@@ -47,7 +50,7 @@ async function render( doc, scenario ) {
 
 			for ( let i = 0; i < b.length; i ++ ) {
 
-				data[ i ] = signal( c, i );
+				data[ i ] = b.fill ?? signal( c, i );
 
 			}
 
@@ -57,7 +60,7 @@ async function render( doc, scenario ) {
 
 	}
 
-	for ( const [ op, name, ...args ] of scenario.ops ) {
+	const run = ( [ op, name, ...args ] ) => {
 
 		const node = nodes[ name ];
 
@@ -79,14 +82,27 @@ async function render( doc, scenario ) {
 
 			}
 
+			case 'gain':
+				nodes[ name ] = context.createGain();
+				break;
+
 			case 'set':
 				node[ args[ 0 ] ] = typeof args[ 1 ] === 'number' ? time( args[ 1 ] ) : args[ 1 ];
 				break;
 			case 'param':
 				node[ args[ 0 ] ].value = args[ 1 ];
 				break;
+			case 'ramp':
+				node[ args[ 0 ] ].linearRampToValueAtTime( args[ 1 ], time( args[ 2 ] ) );
+				break;
+			case 'target':
+				node[ args[ 0 ] ].setTargetAtTime( args[ 1 ], time( args[ 2 ] ), time( args[ 3 ] ) );
+				break;
+			case 'read':
+				values.push( node[ args[ 0 ] ].value );
+				break;
 			case 'connect':
-				node.connect( context.destination );
+				node.connect( args.length > 0 ? nodes[ args[ 0 ] ] : context.destination );
 				break;
 			case 'start':
 				node.start( ...args.map( time ) );
@@ -99,6 +115,38 @@ async function render( doc, scenario ) {
 
 		}
 
+	};
+
+	// The operations before the first 'at' run now; each later group runs while rendering is suspended at its frame.
+	let group = [];
+	const groups = [ { frame: 0, ops: group } ];
+
+	for ( const op of scenario.ops ) {
+
+		if ( op[ 0 ] === 'at' ) {
+
+			group = [];
+			groups.push( { frame: op[ 1 ], ops: group } );
+
+		} else {
+
+			group.push( op );
+
+		}
+
+	}
+
+	groups[ 0 ].ops.forEach( run );
+
+	for ( const { frame, ops } of groups.slice( 1 ) ) {
+
+		context.suspend( time( frame ) ).then( () => {
+
+			ops.forEach( run );
+			context.resume();
+
+		} );
+
 	}
 
 	const result = await context.startRendering();
@@ -108,6 +156,7 @@ async function render( doc, scenario ) {
 	return {
 		channels: Array.from( { length: result.numberOfChannels }, ( _, c ) => Array.from( result.getChannelData( c ) ) ),
 		ended,
+		values,
 	};
 
 }
@@ -115,16 +164,17 @@ async function render( doc, scenario ) {
 try {
 
 	const page = await browser.newPage();
-	const meta = { browser: await browser.version(), ended: {} };
+	const meta = { browser: await browser.version(), ended: {}, values: {} };
 
 	mkdirSync( out, { recursive: true } );
 
 	for ( const [ name, scenario ] of Object.entries( doc.scenarios ) ) {
 
-		const { channels, ended } = await page.evaluate( render, doc, scenario );
+		const { channels, ended, values } = await page.evaluate( render, doc, scenario );
 
 		writeFileSync( join( out, name + '.f32' ), Buffer.from( Float32Array.from( channels.flat() ).buffer ) );
 		meta.ended[ name ] = ended;
+		meta.values[ name ] = values;
 
 	}
 

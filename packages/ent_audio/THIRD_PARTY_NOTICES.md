@@ -7,9 +7,10 @@ used under the MIT No Attribution alternative of its license (`third_party/minia
 
 ## Chromium
 
-The buffer source in `src/ent_audio.c` follows the behaviour of Chromium's Web Audio implementation
-(`audio_buffer_source_handler.cc`, `audio_scheduled_source_handler.cc`): the start and stop frames, the loop and
-the linear interpolation.
+`src/ent_audio.c` follows Chromium's Web Audio implementation: the buffer source follows the behaviour of
+`audio_buffer_source_handler.cc` and `audio_scheduled_source_handler.cc` (the start and stop frames, the loop and the
+linear interpolation), and the parameter automation is ported from `audio_param_handler.cc`, with the gain node of
+`gain_handler.cc`.
 
 ```
 Copyright 2015 The Chromium Authors

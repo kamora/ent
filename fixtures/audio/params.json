@@ -1,0 +1,1198 @@
+{
+	"rate": 48000,
+	"channels": 2,
+	"scenarios": {
+		"value": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"param",
+					"g",
+					"gain",
+					0.5
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"zero": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"param",
+					"g",
+					"gain",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"value_inexact": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"param",
+					"g",
+					"gain",
+					0.3
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ramp_from_start": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0,
+					1000
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ramp_after_value": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"param",
+					"g",
+					"gain",
+					0.2
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0.8,
+					700
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ramps": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0.5,
+					300
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					1,
+					600
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0,
+					900
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ramp_unaligned": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0.25,
+					333.3
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"target": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"target",
+					"g",
+					"gain",
+					0,
+					0,
+					200
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"target_later": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"target",
+					"g",
+					"gain",
+					0.3,
+					300,
+					100
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"target_then_ramp": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"target",
+					"g",
+					"gain",
+					0,
+					0,
+					300
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					1,
+					1000
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"target_converges": {
+			"frames": 4096,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"target",
+					"g",
+					"gain",
+					0.5,
+					0,
+					20
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ramp_later": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"at",
+					512
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0,
+					1500
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ramp_in_past": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"at",
+					512
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0.25,
+					100
+				],
+				[
+					"at",
+					768
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"value_later": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"at",
+					640
+				],
+				[
+					"param",
+					"g",
+					"gain",
+					0.4
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"at",
+					1280
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"volume": {
+			"frames": 4096,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"at",
+					256
+				],
+				[
+					"target",
+					"g",
+					"gain",
+					0.1,
+					256,
+					480
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"target",
+					"g",
+					"gain",
+					0.9,
+					1024,
+					480
+				],
+				[
+					"at",
+					1792
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"target_value_mid": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"target",
+					"g",
+					"gain",
+					0,
+					0,
+					400
+				],
+				[
+					"at",
+					384
+				],
+				[
+					"param",
+					"g",
+					"gain",
+					0.7
+				],
+				[
+					"read",
+					"g",
+					"gain"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"stereo": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 2,
+					"length": 600,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"param",
+					"g",
+					"gain",
+					0.5
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"mixed_inputs": {
+			"frames": 1024,
+			"buffers": {
+				"m": {
+					"channels": 1,
+					"length": 600,
+					"rate": 48000
+				},
+				"t": {
+					"channels": 2,
+					"length": 400,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"a",
+					"m"
+				],
+				[
+					"source",
+					"c",
+					"t"
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0.2,
+					800
+				],
+				[
+					"connect",
+					"a",
+					"g"
+				],
+				[
+					"connect",
+					"c",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				],
+				[
+					"start",
+					"a"
+				],
+				[
+					"start",
+					"c",
+					100
+				]
+			]
+		},
+		"chain": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 600,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"gain",
+					"g1"
+				],
+				[
+					"gain",
+					"g2"
+				],
+				[
+					"param",
+					"g1",
+					"gain",
+					0.5
+				],
+				[
+					"target",
+					"g2",
+					"gain",
+					2,
+					0,
+					300
+				],
+				[
+					"connect",
+					"s",
+					"g1"
+				],
+				[
+					"connect",
+					"g1",
+					"g2"
+				],
+				[
+					"connect",
+					"g2"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"no_input": {
+			"frames": 512,
+			"buffers": {},
+			"ops": [
+				[
+					"gain",
+					"g"
+				],
+				[
+					"connect",
+					"g"
+				]
+			]
+		},
+		"rate_target": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 600,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"target",
+					"s",
+					"playbackRate",
+					2,
+					0,
+					240
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"rate_target_later": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 600,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"at",
+					256
+				],
+				[
+					"target",
+					"s",
+					"playbackRate",
+					1.5,
+					256,
+					480
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"read",
+					"s",
+					"playbackRate"
+				]
+			]
+		},
+		"detune_ramp": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 600,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"ramp",
+					"s",
+					"detune",
+					1200,
+					1500
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		}
+	}
+}

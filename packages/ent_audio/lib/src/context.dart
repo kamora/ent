@@ -64,8 +64,8 @@ final class NativeAudioContext implements WebAudioContext, WebAudioDecodingConte
   }
 
   @override
-  WebAudioGainNode createGain() {
-    throw UnimplementedError('ENT.NativeAudioContext: gain nodes are not implemented yet.');
+  AudioGain createGain() {
+    return AudioGain._(this);
   }
 
   @override
@@ -182,20 +182,47 @@ class AudioParam implements WebAudioParam {
   @override
   double get value => native.paramGet(_node.pointer, _index);
 
+  /// Sets the value now, which also schedules it at the current time, as Web Audio does.
   @override
   set value(double value) {
-    native.paramSet(_node.pointer, _index, value);
+    _check(native.paramSet(_node.pointer, _index, value));
   }
 
+  /// Approaches [target] from [startTime], by `1 - 1/e` of the remaining distance every [timeConstant] seconds.
   @override
   void setTargetAtTime(double target, double startTime, double timeConstant) {
-    throw UnimplementedError('ENT.AudioParam: automation is not implemented yet.');
+    if (startTime < 0 || timeConstant < 0) {
+      throw RangeError('ENT.AudioParam: setTargetAtTime() takes no negative time.');
+    }
+
+    _check(native.paramTarget(_node.pointer, _index, target, startTime, timeConstant));
+  }
+
+  /// Ramps linearly from the previous event to [value], reached at [endTime].
+  @override
+  void linearRampToValueAtTime(double value, double endTime) {
+    if (endTime < 0) {
+      throw RangeError('ENT.AudioParam: linearRampToValueAtTime() takes no negative time.');
+    }
+
+    _check(native.paramRamp(_node.pointer, _index, value, endTime));
+  }
+
+  void _check(int result) {
+    if (result != 0) {
+      throw StateError('ENT.AudioParam: out of memory.');
+    }
+  }
+}
+
+/// A Web Audio `GainNode`.
+class AudioGain extends AudioNode implements WebAudioGainNode {
+  AudioGain._(NativeAudioContext context) : super._(context, native.gainCreate(context.pointer)) {
+    gain = AudioParam._(this, 0);
   }
 
   @override
-  void linearRampToValueAtTime(double value, double endTime) {
-    throw UnimplementedError('ENT.AudioParam: automation is not implemented yet.');
-  }
+  late final AudioParam gain;
 }
 
 /// A Web Audio `AudioBufferSourceNode`.

@@ -2,4 +2,4 @@
 library;
 
 export 'src/buffer.dart' show AudioData;
-export 'src/context.dart' show AudioBufferSource, AudioNode, AudioParam, NativeAudioContext;
+export 'src/context.dart' show AudioBufferSource, AudioGain, AudioNode, AudioParam, NativeAudioContext;

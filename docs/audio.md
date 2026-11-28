@@ -63,7 +63,9 @@ Chrome's `OfflineAudioContext`.
 1. The package, the build hook, decoding into buffers (done: WAV checked sample for sample).
 2. The buffer source: start with delay, offset and duration, stop, loop points, playback rate, detune, `onended`
    (done: 24 scenarios in `fixtures/audio/sources.json` equal Chrome 158's rendering sample for sample).
-3. Gain and parameter automation (`value`, `setTargetAtTime`, `linearRampToValueAtTime`) on the audio clock.
+3. Gain and parameter automation (`value`, `setTargetAtTime`, `linearRampToValueAtTime`) on the audio clock (done: 23
+   scenarios in `fixtures/audio/params.json`, including changes made while rendering, equal Chrome's rendering and
+   its parameter values).
 4. The panner and the listener: equal-power panning, the three distance models, the cone.
 5. The analyser: captured samples, the specification's windowed FFT and smoothing.
 6. Device output in a Flutter app on macOS, iOS and Android, and sound in the voxels demo.
@@ -78,3 +80,8 @@ Each of steps 2 to 5 is checked against Chrome's offline rendering of the same g
 - A start between two frames begins at the next frame with the playhead moved on by the difference; reading between
   frames interpolates linearly, and past the last frame extrapolates from the last two.
 - The C is compiled with `-ffp-contract=off`: a fused multiply-add rounds the interpolation differently by one bit.
+- Parameter automation is a port of Chromium's timeline for the three kinds of event ent uses: setting the value
+  schedules it at the current time, a ramp with nothing before it starts from the value it was scheduled at, an
+  approach to a target steps by a discrete time constant and snaps once it converges, and a parameter read once per
+  quantum (playback rate, detune) uses the quantum rate for that constant. Exponential ramps, value curves and
+  cancelling are not ported: ent's audio classes do not use them.

@@ -113,6 +113,30 @@ void main() {
     expect(buffer.length, 200);
   });
 
+  test('a gain starts at 1 and its value follows its automation', () {
+    final gain = context.createGain();
+
+    expect(gain.gain.value, 1);
+
+    gain.gain.linearRampToValueAtTime(0, 256 / 48000);
+    context.createBufferSource()
+      ..buffer = context.createBuffer(1, 512, 48000)
+      ..connect(gain)
+      ..start();
+    gain.connect(context.destination);
+    context.render(128);
+
+    expect(gain.gain.value, closeTo(0.5, 1e-2));
+  });
+
+  test('automation takes no negative time', () {
+    final gain = context.createGain().gain;
+
+    expect(() => gain.linearRampToValueAtTime(1, -1), throwsRangeError);
+    expect(() => gain.setTargetAtTime(1, -1, 1), throwsRangeError);
+    expect(() => gain.setTargetAtTime(1, 0, -1), throwsRangeError);
+  });
+
   test('media elements and streams are not supported', () {
     expect(() => context.createMediaElementSource(Object()), throwsUnsupportedError);
     expect(() => context.createMediaStreamSource(Object()), throwsUnsupportedError);

@@ -1,0 +1,76 @@
+{
+	"browser": "Chrome/158.0.8127.37",
+	"ended": {
+		"value": [],
+		"zero": [],
+		"value_inexact": [],
+		"ramp_from_start": [],
+		"ramp_after_value": [],
+		"ramps": [],
+		"ramp_unaligned": [],
+		"target": [],
+		"target_later": [],
+		"target_then_ramp": [],
+		"target_converges": [],
+		"ramp_later": [],
+		"ramp_in_past": [],
+		"value_later": [],
+		"volume": [],
+		"target_value_mid": [],
+		"stereo": [
+			"s"
+		],
+		"mixed_inputs": [
+			"c",
+			"a"
+		],
+		"chain": [
+			"s"
+		],
+		"no_input": [],
+		"rate_target": [],
+		"rate_target_later": [],
+		"detune_ramp": []
+	},
+	"values": {
+		"value": [],
+		"zero": [],
+		"value_inexact": [
+			0.30000001192092896
+		],
+		"ramp_from_start": [],
+		"ramp_after_value": [],
+		"ramps": [],
+		"ramp_unaligned": [],
+		"target": [],
+		"target_later": [],
+		"target_then_ramp": [],
+		"target_converges": [],
+		"ramp_later": [
+			0.48279350996017456
+		],
+		"ramp_in_past": [
+			0.25
+		],
+		"value_later": [
+			0.4000000059604645,
+			0.4000000059604645
+		],
+		"volume": [
+			0.28208571672439575,
+			0.7749084830284119
+		],
+		"target_value_mid": [
+			0.699999988079071
+		],
+		"stereo": [],
+		"mixed_inputs": [],
+		"chain": [],
+		"no_input": [],
+		"rate_target": [],
+		"rate_target_later": [
+			1.368201494216919
+		],
+		"detune_ramp": []
+	}
+}

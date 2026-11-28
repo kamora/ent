@@ -75,8 +75,17 @@ external int nodeConnect(Pointer<Node> node, Pointer<Node> destination);
 @Native<Void Function(Pointer<Node>, Pointer<Node>)>(symbol: 'ent_node_disconnect')
 external void nodeDisconnect(Pointer<Node> node, Pointer<Node> destination);
 
-@Native<Void Function(Pointer<Node>, Int32, Double)>(symbol: 'ent_param_set')
-external void paramSet(Pointer<Node> node, int param, double value);
+@Native<Int Function(Pointer<Node>, Int32, Double)>(symbol: 'ent_param_set')
+external int paramSet(Pointer<Node> node, int param, double value);
+
+@Native<Int Function(Pointer<Node>, Int32, Double, Double)>(symbol: 'ent_param_ramp')
+external int paramRamp(Pointer<Node> node, int param, double value, double end);
+
+@Native<Int Function(Pointer<Node>, Int32, Double, Double, Double)>(symbol: 'ent_param_target')
+external int paramTarget(Pointer<Node> node, int param, double target, double start, double constant);
+
+@Native<Pointer<Node> Function(Pointer<Context>)>(symbol: 'ent_gain_create')
+external Pointer<Node> gainCreate(Pointer<Context> context);
 
 @Native<Double Function(Pointer<Node>, Int32)>(symbol: 'ent_param_get')
 external double paramGet(Pointer<Node> node, int param);

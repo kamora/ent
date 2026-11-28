@@ -60,5 +60,31 @@
 		"duration_rate_slow": [
 			"s"
 		]
+	},
+	"values": {
+		"plain": [],
+		"stereo": [],
+		"delay_offset": [],
+		"duration": [],
+		"stop": [],
+		"stop_before_start": [],
+		"loop": [],
+		"loop_points": [],
+		"loop_offset_past_end": [],
+		"loop_points_invalid": [],
+		"loop_end_past_buffer": [],
+		"loop_duration": [],
+		"rate_fast": [],
+		"rate_slow": [],
+		"rate_slow_loop": [],
+		"rate_reverse_loop": [],
+		"detune": [],
+		"buffer_rate": [],
+		"unaligned_start": [],
+		"two_sources": [],
+		"unconnected": [],
+		"no_buffer": [],
+		"duration_rate_fast": [],
+		"duration_rate_slow": []
 	}
 }
