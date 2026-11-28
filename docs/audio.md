@@ -51,19 +51,30 @@ Kai chose the second way on 2026-11-28: closer to Web Audio, cones included, and
 `wrangle`. miniaudio 0.11.26 is vendored in `packages/ent_audio/third_party/miniaudio/` and compiled by the package's
 build hook (Objective-C with the audio frameworks linked on Apple platforms).
 
-miniaudio plays the device, decodes and mixes through its node graph. The Web Audio nodes themselves (buffer source,
-gain with parameter automation, panner, analyser) are ent_audio's own C nodes on that graph, written to the Web Audio
-specification's formulas rather than miniaudio's own spatializer, so that distance and cone gain match Web Audio
-exactly, and a graph rendered offline can be compared sample by sample with the same graph rendered by Chrome's
-`OfflineAudioContext`.
+miniaudio plays the device and decodes. The graph is ent_audio's own, in C (`src/ent_audio.c`): its Web Audio nodes
+(buffer source, gain with parameter automation, panner, analyser) follow the Web Audio specification and Chrome's
+behaviour rather than miniaudio's node graph and spatializer. The graph renders in Web Audio's quanta of 128 frames
+and mixes channels by Web Audio's rules, which miniaudio's graph does not. So distance and cone gain can match Web
+Audio exactly, and a graph rendered offline can be compared sample by sample with the same graph rendered by
+Chrome's `OfflineAudioContext`.
 
 ## Steps
 
 1. The package, the build hook, decoding into buffers (done: WAV checked sample for sample).
-2. The buffer source: start with delay, offset and duration, stop, loop points, playback rate, detune, `onended`.
+2. The buffer source: start with delay, offset and duration, stop, loop points, playback rate, detune, `onended`
+   (done: 24 scenarios in `fixtures/audio/sources.json` equal Chrome 158's rendering sample for sample).
 3. Gain and parameter automation (`value`, `setTargetAtTime`, `linearRampToValueAtTime`) on the audio clock.
 4. The panner and the listener: equal-power panning, the three distance models, the cone.
 5. The analyser: captured samples, the specification's windowed FFT and smoothing.
 6. Device output in a Flutter app on macOS, iOS and Android, and sound in the voxels demo.
 
 Each of steps 2 to 5 is checked against Chrome's offline rendering of the same graph.
+
+## What matching Chrome takes
+
+- The graph renders in quanta of 128 frames; playback rate and detune are read once per quantum.
+- Every started source renders, connected or not: Chrome ends an unconnected source on time and fires its `onended`.
+- Parameter values are 32-bit floats, and Chrome computes `detune / 1200` in that precision.
+- A start between two frames begins at the next frame with the playhead moved on by the difference; reading between
+  frames interpolates linearly, and past the last frame extrapolates from the last two.
+- The C is compiled with `-ffp-contract=off`: a fused multiply-add rounds the interpolation differently by one bit.

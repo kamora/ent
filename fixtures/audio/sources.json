@@ -1,0 +1,796 @@
+{
+	"rate": 48000,
+	"channels": 2,
+	"scenarios": {
+		"plain": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"stereo": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 2,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"delay_offset": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					394,
+					100
+				]
+			]
+		},
+		"duration": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					0,
+					50,
+					200
+				]
+			]
+		},
+		"stop": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"stop",
+					"s",
+					300
+				]
+			]
+		},
+		"stop_before_start": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					256
+				],
+				[
+					"stop",
+					"s",
+					128
+				]
+			]
+		},
+		"loop": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"loop_points": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"set",
+					"s",
+					"loopStart",
+					100
+				],
+				[
+					"set",
+					"s",
+					"loopEnd",
+					250
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"loop_offset_past_end": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"set",
+					"s",
+					"loopStart",
+					50
+				],
+				[
+					"set",
+					"s",
+					"loopEnd",
+					150
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					0,
+					200
+				]
+			]
+		},
+		"loop_points_invalid": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"set",
+					"s",
+					"loopStart",
+					250
+				],
+				[
+					"set",
+					"s",
+					"loopEnd",
+					100
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"loop_end_past_buffer": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"set",
+					"s",
+					"loopStart",
+					100
+				],
+				[
+					"set",
+					"s",
+					"loopEnd",
+					900
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"loop_duration": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					0,
+					0,
+					700
+				]
+			]
+		},
+		"rate_fast": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"param",
+					"s",
+					"playbackRate",
+					1.5
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"rate_slow": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"param",
+					"s",
+					"playbackRate",
+					0.5
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"rate_slow_loop": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"param",
+					"s",
+					"playbackRate",
+					0.75
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"set",
+					"s",
+					"loopStart",
+					100
+				],
+				[
+					"set",
+					"s",
+					"loopEnd",
+					250
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"rate_reverse_loop": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"param",
+					"s",
+					"playbackRate",
+					-1
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					0,
+					200
+				]
+			]
+		},
+		"detune": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"param",
+					"s",
+					"detune",
+					700
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"buffer_rate": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 24000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"unaligned_start": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					100.5
+				]
+			]
+		},
+		"two_sources": {
+			"frames": 1024,
+			"buffers": {
+				"m": {
+					"channels": 1,
+					"length": 400,
+					"rate": 48000
+				},
+				"t": {
+					"channels": 2,
+					"length": 300,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"a",
+					"m"
+				],
+				[
+					"source",
+					"c",
+					"t"
+				],
+				[
+					"connect",
+					"a"
+				],
+				[
+					"connect",
+					"c"
+				],
+				[
+					"start",
+					"a",
+					0
+				],
+				[
+					"start",
+					"c",
+					64
+				]
+			]
+		},
+		"unconnected": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"no_buffer": {
+			"frames": 1024,
+			"buffers": {},
+			"ops": [
+				[
+					"source",
+					"s",
+					null
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"duration_rate_fast": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"param",
+					"s",
+					"playbackRate",
+					1.5
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					0,
+					10,
+					200
+				]
+			]
+		},
+		"duration_rate_slow": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 1,
+					"length": 500,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"param",
+					"s",
+					"playbackRate",
+					0.5
+				],
+				[
+					"connect",
+					"s"
+				],
+				[
+					"start",
+					"s",
+					0,
+					10,
+					100
+				]
+			]
+		}
+	}
+}

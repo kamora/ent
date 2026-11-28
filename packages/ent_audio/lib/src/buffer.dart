@@ -6,10 +6,29 @@ import 'package:ffi/ffi.dart';
 
 import 'bindings.dart' as native;
 
-/// Decoded audio: interleaved 32-bit float frames held in native memory, freed when the buffer is collected.
+/// Decoded or created audio: one plane of 32-bit float frames per channel, in native memory that lives while this
+/// buffer, a channel view of it or a source playing it is held.
 final class AudioData implements WebAudioBuffer, Finalizable {
-  AudioData._(this.samples, this.channels, this.sampleRate, this.length) {
-    _finalizer.attach(this, samples.cast(), detach: this);
+  AudioData._(this.pointer)
+    : channels = native.bufferChannels(pointer),
+      sampleRate = native.bufferRate(pointer),
+      length = native.bufferLength(pointer) {
+    _finalizer.attach(this, pointer.cast(), detach: this);
+  }
+
+  /// A silent buffer of [channels] channels of [length] frames at [sampleRate], as Web Audio's `createBuffer`.
+  factory AudioData(int channels, int length, int sampleRate) {
+    if (channels < 1 || length < 1 || sampleRate < 1) {
+      throw RangeError('ENT.AudioData: channels, length and sample rate must be positive.');
+    }
+
+    final pointer = native.bufferCreate(channels, length, sampleRate);
+
+    if (pointer == nullptr) {
+      throw StateError('ENT.AudioData: out of memory.');
+    }
+
+    return AudioData._(pointer);
   }
 
   /// Decodes WAV, FLAC or MP3 [data], keeping its channels and converting it to [sampleRate] (0 keeps the file's).
@@ -17,27 +36,24 @@ final class AudioData implements WebAudioBuffer, Finalizable {
   factory AudioData.decode(Uint8List data, [int sampleRate = 0]) {
     return using((arena) {
       final bytes = arena<Uint8>(data.length);
-      final channels = arena<Uint32>();
-      final rate = arena<Uint32>();
-      final frames = arena<Uint64>();
-      final samples = arena<Pointer<Float>>();
+      final out = arena<Pointer<native.Buffer>>();
 
       bytes.asTypedList(data.length).setAll(0, data);
 
-      final result = native.decode(bytes.cast(), data.length, sampleRate, channels, rate, frames, samples);
+      final result = native.bufferDecode(bytes.cast(), data.length, sampleRate, out);
 
       if (result != 0) {
         throw FormatException('ENT.AudioData: the audio data cannot be decoded (miniaudio error $result).');
       }
 
-      return AudioData._(samples.value, channels.value, rate.value, frames.value);
+      return AudioData._(out.value);
     });
   }
 
-  static final _finalizer = NativeFinalizer(native.free);
+  static final _finalizer = NativeFinalizer(native.bufferRelease);
 
-  /// The frames, `channels` samples each.
-  final Pointer<Float> samples;
+  /// The native buffer.
+  final Pointer<native.Buffer> pointer;
 
   /// The number of channels.
   final int channels;
@@ -51,9 +67,16 @@ final class AudioData implements WebAudioBuffer, Finalizable {
   @override
   double get duration => length / sampleRate;
 
-  /// A copy of one channel's samples, as Web Audio's `getChannelData` returns them.
+  /// The samples of [channel], as Web Audio's `getChannelData`: a view of the buffer, so writing to it changes the
+  /// buffer.
   Float32List getChannelData(int channel) {
-    final all = samples.asTypedList(length * channels);
-    return Float32List.fromList([for (var i = channel; i < all.length; i += channels) all[i]]);
+    RangeError.checkValidIndex(channel, this, 'channel', channels);
+    native.bufferRetain(pointer);
+
+    return (native.bufferData(pointer) + channel * length).asTypedList(
+      length,
+      finalizer: native.bufferRelease.cast(),
+      token: pointer.cast(),
+    );
   }
 }

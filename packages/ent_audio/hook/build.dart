@@ -21,6 +21,9 @@ void main(List<String> args) async {
         if (os == OS.iOS) 'AVFoundation',
       ],
       libraries: [if (os == OS.android) 'm'],
+
+      // No fused multiply-adds, which round differently from the separate operations Web Audio implementations use.
+      flags: ['-ffp-contract=off'],
     ).run(input: input, output: output);
   });
 }
