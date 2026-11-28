@@ -69,7 +69,9 @@ Chrome's `OfflineAudioContext`.
 4. The panner and the listener: equal-power panning, the three distance models, the cone (done: 33 scenarios in
    `fixtures/audio/panner.json`, moving sources and listeners included, equal Chrome's rendering; ent's own
    `AudioListener`, `Audio` and `PositionalAudio` play on it).
-5. The analyser: captured samples, the specification's windowed FFT and smoothing.
+5. The analyser: captured samples, the specification's windowed FFT and smoothing (done: 12 scenarios in
+   `fixtures/audio/analyser.json`, FFT sizes from 32 to 32768; `getByteFrequencyData` equals Chrome's byte for byte;
+   ent's `AudioAnalyser` finds a tone in its bin).
 6. Device output in a Flutter app on macOS, iOS and Android, and sound in the voxels demo.
 
 Each of steps 2 to 5 is checked against Chrome's offline rendering of the same graph.
@@ -93,6 +95,11 @@ Each of steps 2 to 5 is checked against Chrome's offline rendering of the same g
   within the quantum, as ent's audio classes make them do with a ramp every frame.
 - As in Chrome, only the linear distance model stops at `maxDistance`; the inverse and exponential ones keep falling,
   so the clamping noted under the candidates above does not apply to ent_audio.
+- The analyser follows Chromium's RealtimeAnalyser: the input mixed down to one channel in a ring, a Blackman window,
+  the FFT, magnitudes scaled by the size and kept as 32-bit floats, then smoothed. An analyser renders every quantum
+  even with nothing connected to its output, as ent's `AudioAnalyser` leaves it. The FFT is ent_audio's own, so its
+  rounding differs from Chrome's: `getFloatFrequencyData` agrees within 0.001 dB above -100 dB and differs by up to a
+  few decibels far below, from -128 dB down, while the bytes, which stop at -100 dB, are identical.
 
 ## Limits
 

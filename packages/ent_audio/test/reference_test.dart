@@ -13,8 +13,18 @@ final _root = '../../fixtures/audio';
 /// Sample i of channel c of a scenario's buffer, as render.mjs fills it.
 double signal(int c, int i) => ((i * 7919 + c * 104729) % 2003) / 1001.5 - 1;
 
-/// Renders [scenario] and returns its channels, the sources that ended and the parameter values it read.
-Future<(List<Float32List>, Set<String>, List<double>)> run(
+/// Sample i of a triangle wave of [period] frames, as render.mjs fills it.
+double triangle(int period, int i) => ((i % period) / period * 4 - 2).abs() - 1;
+
+/// What a scenario's analyses returned, one after another.
+class Spectra {
+  final bytes = <int>[];
+  final decibels = <double>[];
+  final bins = <int>[];
+}
+
+/// Renders [scenario] and returns its channels, the sources that ended, the parameter values it read and its analyses.
+Future<(List<Float32List>, Set<String>, List<double>, Spectra)> run(
   Map<String, dynamic> doc,
   Map<String, dynamic> scenario,
 ) async {
@@ -26,6 +36,7 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
   final nodes = <String, AudioNode>{};
   final ended = <String>{};
   final values = <double>[];
+  final spectra = Spectra();
 
   for (final MapEntry(:key, :value) in (scenario['buffers'] as Map<String, dynamic>).entries) {
     final b = value as Map<String, dynamic>;
@@ -35,7 +46,9 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
       final data = buffer.getChannelData(c);
 
       for (var i = 0; i < buffer.length; i++) {
-        data[i] = (b['fill'] as num?)?.toDouble() ?? signal(c, i);
+        final wave = b['wave'] as int?;
+
+        data[i] = (b['fill'] as num?)?.toDouble() ?? (wave != null ? triangle(wave, i) : signal(c, i));
       }
     }
 
@@ -104,6 +117,32 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
         nodes[name] = context.createGain();
       case 'panner':
         nodes[name] = context.createPanner();
+      case 'analyser':
+        nodes[name] = context.createAnalyser();
+      case 'analyse':
+        final analyser = node! as AudioAnalyserNode;
+        final bytes = Uint8List(analyser.frequencyBinCount);
+        final decibels = Float32List(analyser.frequencyBinCount);
+
+        analyser
+          ..getByteFrequencyData(bytes)
+          ..getFloatFrequencyData(decibels);
+        spectra.bytes.addAll(bytes);
+        spectra.decibels.addAll(decibels);
+        spectra.bins.add(analyser.frequencyBinCount);
+      case 'attr' when node is AudioAnalyserNode:
+        final value = args[1] as num;
+
+        switch (args[0]) {
+          case 'fftSize':
+            node.fftSize = value.toInt();
+          case 'smoothingTimeConstant':
+            node.smoothingTimeConstant = value.toDouble();
+          case 'minDecibels':
+            node.minDecibels = value.toDouble();
+          case 'maxDecibels':
+            node.maxDecibels = value.toDouble();
+        }
       case 'attr':
         final panner = node! as AudioPanner;
         final value = args[1];
@@ -166,11 +205,11 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
   await Future<void>.delayed(Duration.zero);
   context.close();
 
-  return (channels, ended, values);
+  return (channels, ended, values, spectra);
 }
 
 void main() {
-  for (final file in ['sources', 'params', 'panner']) {
+  for (final file in ['sources', 'params', 'panner', 'analyser']) {
     group(file, () {
       compare(file);
     });
@@ -187,7 +226,7 @@ void compare(String file) {
       final scenario = value as Map<String, dynamic>;
       final frames = scenario['frames'] as int;
       final expected = File('$_root/$file/$key.f32').readAsBytesSync().buffer.asFloat32List();
-      final (channels, ended, values) = await run(doc, scenario);
+      final (channels, ended, values, spectra) = await run(doc, scenario);
       var worst = 0.0;
       var at = '';
 
@@ -205,6 +244,25 @@ void compare(String file) {
       print('$key: worst $worst $at');
       expect(ended, (meta['ended'][key] as List).toSet());
       expect(values, meta['values'][key]);
+      expect(spectra.bins, meta['bins'][key] ?? []);
+
+      if (spectra.bins.isNotEmpty) {
+        final bytes = File('$_root/$file/$key.u8').readAsBytesSync();
+        final decibels = File('$_root/$file/$key.db.f32').readAsBytesSync().buffer.asFloat32List();
+
+        expect(spectra.bytes, bytes);
+
+        // The FFT's rounding is not Chrome's (its FFT is another, in 32-bit floats), which shows only far below the
+        // bytes' range: from -128 dB down, at magnitudes of 1e-7 and less. Above -100 dB the decibels agree closely.
+        for (var i = 0; i < decibels.length; i++) {
+          if (decibels[i] > -100) {
+            expect(spectra.decibels[i], closeTo(decibels[i], 1e-3), reason: 'bin $i');
+          } else {
+            expect(spectra.decibels[i].isFinite, decibels[i].isFinite, reason: 'bin $i');
+          }
+        }
+      }
+
       expect(worst, 0, reason: at);
     });
   }

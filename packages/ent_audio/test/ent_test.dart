@@ -109,4 +109,22 @@ void main() {
 
     expect(quiet, closeTo(loud / 10, loud / 100));
   });
+
+  test('AudioAnalyser hears the tone in its frequency bin', () {
+    final listener = AudioListener();
+    final sound = Audio(listener)..setBuffer(tone());
+    final analyser = AudioAnalyser(sound, 1024);
+
+    expect(analyser.getAverageFrequency(), 0);
+
+    sound.play();
+    context.render(2048);
+
+    final data = analyser.getFrequencyData();
+    final peak = data.indexOf(data.reduce(math.max));
+
+    // 440 Hz in bins of 48000 / 1024 Hz.
+    expect(peak, (440 / (48000 / 1024)).round());
+    expect(analyser.getAverageFrequency(), greaterThan(0));
+  });
 }

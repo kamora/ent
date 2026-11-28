@@ -1,0 +1,77 @@
+{
+	"browser": "Chrome/158.0.8127.37",
+	"ended": {
+		"default": [],
+		"pass_through": [],
+		"triangle": [],
+		"triangle_smoothed": [],
+		"stereo": [],
+		"small": [],
+		"large": [],
+		"decibel_range": [],
+		"twice": [],
+		"silent": [],
+		"resize": [],
+		"quieter": []
+	},
+	"values": {
+		"default": [],
+		"pass_through": [],
+		"triangle": [],
+		"triangle_smoothed": [],
+		"stereo": [],
+		"small": [],
+		"large": [],
+		"decibel_range": [],
+		"twice": [],
+		"silent": [],
+		"resize": [],
+		"quieter": []
+	},
+	"bins": {
+		"default": [
+			1024,
+			1024
+		],
+		"pass_through": [
+			1024
+		],
+		"triangle": [
+			256
+		],
+		"triangle_smoothed": [
+			512,
+			512,
+			512
+		],
+		"stereo": [
+			1024
+		],
+		"small": [
+			16,
+			16
+		],
+		"large": [
+			16384
+		],
+		"decibel_range": [
+			1024
+		],
+		"twice": [
+			1024,
+			1024
+		],
+		"silent": [
+			1024
+		],
+		"resize": [
+			1024,
+			128
+		],
+		"quieter": [
+			1024,
+			1024,
+			1024
+		]
+	}
+}

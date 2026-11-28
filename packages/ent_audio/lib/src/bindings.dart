@@ -125,3 +125,15 @@ external void sourceStart(Pointer<Node> node, double when, double offset, double
 
 @Native<Void Function(Pointer<Node>, Double)>(symbol: 'ent_source_stop')
 external void sourceStop(Pointer<Node> node, double when);
+
+@Native<Pointer<Node> Function(Pointer<Context>)>(symbol: 'ent_analyser_create')
+external Pointer<Node> analyserCreate(Pointer<Context> context);
+
+@Native<Int Function(Pointer<Node>, Uint32)>(symbol: 'ent_analyser_size')
+external int analyserSize(Pointer<Node> node, int size);
+
+@Native<Int Function(Pointer<Node>, Double, Pointer<Float>, Uint32)>(symbol: 'ent_analyser_decibels')
+external int analyserDecibels(Pointer<Node> node, double smoothing, Pointer<Float> out, int count);
+
+@Native<Int Function(Pointer<Node>, Double, Double, Double, Pointer<Uint8>, Uint32)>(symbol: 'ent_analyser_bytes')
+external int analyserBytes(Pointer<Node> node, double smoothing, double min, double max, Pointer<Uint8> out, int count);

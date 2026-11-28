@@ -74,8 +74,8 @@ final class NativeAudioContext implements WebAudioContext, WebAudioDecodingConte
   }
 
   @override
-  WebAudioAnalyserNode createAnalyser() {
-    throw UnimplementedError('ENT.NativeAudioContext: analyser nodes are not implemented yet.');
+  AudioAnalyserNode createAnalyser() {
+    return AudioAnalyserNode._(this);
   }
 
   @override
@@ -562,5 +562,92 @@ class AudioPanner extends AudioNode implements WebAudioPannerNode {
     orientationX._at(x);
     orientationY._at(y);
     orientationZ._at(z);
+  }
+}
+
+/// A Web Audio `AnalyserNode`: passes its input through and analyses its frequencies.
+class AudioAnalyserNode extends AudioNode implements WebAudioAnalyserNode {
+  AudioAnalyserNode._(NativeAudioContext context) : super._(context, native.analyserCreate(context.pointer));
+
+  int _fftSize = 2048;
+  double _smoothingTimeConstant = 0.8;
+  double _minDecibels = -100;
+  double _maxDecibels = -30;
+
+  /// The FFT size: a power of two from 32 to 32768.
+  @override
+  int get fftSize => _fftSize;
+
+  @override
+  set fftSize(int value) {
+    if (value < 32 || value > 32768 || value & (value - 1) != 0) {
+      throw RangeError('ENT.AudioAnalyserNode: fftSize must be a power of two from 32 to 32768.');
+    }
+
+    _check(native.analyserSize(pointer, value));
+    _fftSize = value;
+  }
+
+  @override
+  int get frequencyBinCount => _fftSize ~/ 2;
+
+  /// How much of the previous analysis each new one keeps, from 0 to 1.
+  double get smoothingTimeConstant => _smoothingTimeConstant;
+
+  set smoothingTimeConstant(double value) {
+    if (value < 0 || value > 1) {
+      throw RangeError('ENT.AudioAnalyserNode: smoothingTimeConstant must be between 0 and 1.');
+    }
+
+    _smoothingTimeConstant = value;
+  }
+
+  /// The decibels that [getByteFrequencyData] maps to 0.
+  double get minDecibels => _minDecibels;
+
+  set minDecibels(double value) {
+    if (value >= _maxDecibels) {
+      throw RangeError('ENT.AudioAnalyserNode: minDecibels must be below maxDecibels.');
+    }
+
+    _minDecibels = value;
+  }
+
+  /// The decibels that [getByteFrequencyData] maps to 255.
+  double get maxDecibels => _maxDecibels;
+
+  set maxDecibels(double value) {
+    if (value <= _minDecibels) {
+      throw RangeError('ENT.AudioAnalyserNode: maxDecibels must be above minDecibels.');
+    }
+
+    _maxDecibels = value;
+  }
+
+  /// Copies the magnitude of each frequency, scaled from [minDecibels] to [maxDecibels] into 0 to 255, into [array].
+  @override
+  void getByteFrequencyData(Uint8List array) {
+    using((arena) {
+      final out = arena<Uint8>(array.length);
+
+      _check(native.analyserBytes(pointer, _smoothingTimeConstant, _minDecibels, _maxDecibels, out, array.length));
+      array.setAll(0, out.asTypedList(array.length).take(frequencyBinCount));
+    });
+  }
+
+  /// Copies the magnitude of each frequency in decibels into [array].
+  void getFloatFrequencyData(Float32List array) {
+    using((arena) {
+      final out = arena<Float>(array.length);
+
+      _check(native.analyserDecibels(pointer, _smoothingTimeConstant, out, array.length));
+      array.setAll(0, out.asTypedList(array.length).take(frequencyBinCount));
+    });
+  }
+
+  void _check(int result) {
+    if (result != 0) {
+      throw StateError('ENT.AudioAnalyserNode: out of memory.');
+    }
   }
 }

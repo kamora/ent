@@ -86,5 +86,6 @@
 		"no_buffer": [],
 		"duration_rate_fast": [],
 		"duration_rate_slow": []
-	}
+	},
+	"bins": {}
 }

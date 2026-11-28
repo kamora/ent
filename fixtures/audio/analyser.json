@@ -1,0 +1,645 @@
+{
+	"rate": 48000,
+	"channels": 2,
+	"scenarios": {
+		"default": {
+			"frames": 4224,
+			"buffers": {
+				"n": {
+					"channels": 1,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"at",
+					4096
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"pass_through": {
+			"frames": 4096,
+			"buffers": {
+				"n": {
+					"channels": 1,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"connect",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"triangle": {
+			"frames": 4096,
+			"buffers": {
+				"t": {
+					"channels": 1,
+					"length": 2400,
+					"rate": 48000,
+					"wave": 96
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"t"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"attr",
+					"a",
+					"fftSize",
+					512
+				],
+				[
+					"attr",
+					"a",
+					"smoothingTimeConstant",
+					0
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"triangle_smoothed": {
+			"frames": 4096,
+			"buffers": {
+				"t": {
+					"channels": 1,
+					"length": 2400,
+					"rate": 48000,
+					"wave": 96
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"t"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"attr",
+					"a",
+					"fftSize",
+					1024
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"at",
+					1536
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"stereo": {
+			"frames": 4096,
+			"buffers": {
+				"n": {
+					"channels": 2,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"small": {
+			"frames": 4096,
+			"buffers": {
+				"n": {
+					"channels": 1,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"attr",
+					"a",
+					"fftSize",
+					32
+				],
+				[
+					"at",
+					256
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"at",
+					384
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"large": {
+			"frames": 33024,
+			"buffers": {
+				"n": {
+					"channels": 1,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"attr",
+					"a",
+					"fftSize",
+					32768
+				],
+				[
+					"attr",
+					"a",
+					"smoothingTimeConstant",
+					0.5
+				],
+				[
+					"at",
+					32768
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"decibel_range": {
+			"frames": 4096,
+			"buffers": {
+				"n": {
+					"channels": 1,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"attr",
+					"a",
+					"minDecibels",
+					-80
+				],
+				[
+					"attr",
+					"a",
+					"maxDecibels",
+					-10
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"twice": {
+			"frames": 4096,
+			"buffers": {
+				"n": {
+					"channels": 1,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"silent": {
+			"frames": 1024,
+			"buffers": {},
+			"ops": [
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"at",
+					512
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"resize": {
+			"frames": 4096,
+			"buffers": {
+				"n": {
+					"channels": 1,
+					"length": 3000,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"n"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"a"
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"attr",
+					"a",
+					"fftSize",
+					256
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		},
+		"quieter": {
+			"frames": 4096,
+			"buffers": {
+				"t": {
+					"channels": 1,
+					"length": 2400,
+					"rate": 48000,
+					"wave": 96
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"t"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"gain",
+					"g"
+				],
+				[
+					"analyser",
+					"a"
+				],
+				[
+					"connect",
+					"s",
+					"g"
+				],
+				[
+					"connect",
+					"g",
+					"a"
+				],
+				[
+					"ramp",
+					"g",
+					"gain",
+					0.01,
+					4096
+				],
+				[
+					"start",
+					"s"
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"at",
+					2048
+				],
+				[
+					"analyse",
+					"a"
+				],
+				[
+					"at",
+					3072
+				],
+				[
+					"analyse",
+					"a"
+				]
+			]
+		}
+	}
+}

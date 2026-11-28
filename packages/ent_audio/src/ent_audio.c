@@ -11,6 +11,7 @@
  */
 
 #include <float.h>
+#include <limits.h>
 #include <math.h>
 
 #define MINIAUDIO_IMPLEMENTATION
@@ -34,7 +35,7 @@ typedef struct ent_buffer {
 	float *data;
 } ent_buffer;
 
-enum { ENT_DESTINATION, ENT_SOURCE, ENT_GAIN, ENT_PANNER, ENT_LISTENER };
+enum { ENT_DESTINATION, ENT_SOURCE, ENT_GAIN, ENT_PANNER, ENT_LISTENER, ENT_ANALYSER };
 
 enum { ENT_UNSCHEDULED, ENT_SCHEDULED, ENT_PLAYING, ENT_FINISHED };
 
@@ -65,6 +66,17 @@ typedef struct ent_param {
 	uint32_t count;
 	uint32_t capacity;
 } ent_param;
+
+/* An analyser's ring of the latest frames, its FFT size and its last analysis: magnitudes and when it was made. */
+#define ENT_RING 32768
+
+typedef struct ent_analysis {
+	float ring[ENT_RING];
+	uint32_t write;
+	uint32_t size;
+	float *magnitudes;
+	double time;
+} ent_analysis;
 
 typedef struct ent_context ent_context;
 typedef struct ent_node ent_node;
@@ -107,6 +119,9 @@ struct ent_node {
 	double coneInnerAngle;
 	double coneOuterAngle;
 	double coneOuterGain;
+
+	/* An analyser: its ring of frames and its last analysis. */
+	ent_analysis *analysis;
 };
 
 struct ent_context {
@@ -671,6 +686,11 @@ static void ent_node_free(ent_node *node) {
 
 	for (int p = 0; p < 9; p++) {
 		ma_free(node->params[p].events, NULL);
+	}
+
+	if (node->analysis != NULL) {
+		ma_free(node->analysis->magnitudes, NULL);
+		ma_free(node->analysis, NULL);
 	}
 
 	ma_free(node->inputs, NULL);
@@ -1618,6 +1638,209 @@ static void ent_panner_render(ent_node *node, uint64_t quantum) {
 	}
 }
 
+/*
+ * The analyser, following Chromium's AnalyserHandler and RealtimeAnalyser: its input passes through unchanged and,
+ * mixed down to one channel, fills a ring of the latest 32768 frames. An analysis takes the latest `size` frames
+ * through a Blackman window and an FFT, and smooths the magnitudes with those of the previous analysis.
+ */
+
+/* Writes the mixed-down input of this quantum into the ring. */
+static void ent_analyser_write(ent_node *node) {
+	ent_analysis *analysis = node->analysis;
+
+	for (uint32_t i = 0; i < ENT_QUANTUM; i++) {
+		float sample = node->output[0][i];
+
+		if (node->channels == 2) {
+			sample = 0.5f * (node->output[0][i] + node->output[1][i]);
+		}
+
+		analysis->ring[(analysis->write + i) % ENT_RING] = sample;
+	}
+
+	analysis->write = (analysis->write + ENT_QUANTUM) % ENT_RING;
+}
+
+static void ent_analyser_render(ent_node *node, uint64_t quantum) {
+	ent_node_mix(node, quantum, ent_node_widest(node, quantum));
+	ent_analyser_write(node);
+}
+
+/* An in-place radix-2 FFT of `n` complex values. */
+static void ent_fft(double *re, double *im, uint32_t n) {
+	for (uint32_t i = 1, j = 0; i < n; i++) {
+		uint32_t bit = n >> 1;
+
+		for (; j & bit; bit >>= 1) {
+			j ^= bit;
+		}
+
+		j ^= bit;
+
+		if (i < j) {
+			double t = re[i];
+			re[i] = re[j];
+			re[j] = t;
+			t = im[i];
+			im[i] = im[j];
+			im[j] = t;
+		}
+	}
+
+	for (uint32_t length = 2; length <= n; length <<= 1) {
+		double angle = -2 * M_PI / length;
+
+		for (uint32_t start = 0; start < n; start += length) {
+			for (uint32_t k = 0; k < length / 2; k++) {
+				double wr = cos(angle * k);
+				double wi = sin(angle * k);
+				uint32_t a = start + k;
+				uint32_t b = a + length / 2;
+				double xr = re[b] * wr - im[b] * wi;
+				double xi = re[b] * wi + im[b] * wr;
+				re[b] = re[a] - xr;
+				im[b] = im[a] - xi;
+				re[a] += xr;
+				im[a] += xi;
+			}
+		}
+	}
+}
+
+/* Analyses the latest frames unless this quantum was analysed already, leaving the magnitudes in the analysis. */
+static int ent_analyse(ent_node *node, double smoothing) {
+	ent_context *context = node->context;
+	ent_analysis *analysis = node->analysis;
+	double now = (double)(context->quantum * ENT_QUANTUM) / context->rate;
+
+	if (now <= analysis->time) {
+		return 0;
+	}
+
+	analysis->time = now;
+
+	uint32_t n = analysis->size;
+	double *re = ma_malloc(n * 2 * sizeof(double), NULL);
+
+	if (re == NULL) {
+		return MA_OUT_OF_MEMORY;
+	}
+
+	double *im = re + n;
+
+	for (uint32_t i = 0; i < n; i++) {
+		float sample = analysis->ring[(analysis->write + ENT_RING - n + i) % ENT_RING];
+		double x = (double)i / (double)n;
+		double window = 0.5 * (1 - 0.16) - 0.5 * cos(2 * M_PI * x) + 0.5 * 0.16 * cos(2 * M_PI * 2.0 * x);
+
+		re[i] = sample * (float)window;
+		im[i] = 0;
+	}
+
+	ent_fft(re, im, n);
+
+	double k = fmin(fmax(smoothing, 0.0), 1.0);
+
+	for (uint32_t i = 0; i < n / 2; i++) {
+
+		/* The FFT's results are kept as 32-bit floats, and bin 0 has no imaginary part. */
+		double magnitude = hypot((float)re[i], i == 0 ? 0 : (float)im[i]) / n;
+		float value = (float)(k * analysis->magnitudes[i] + (1 - k) * magnitude);
+
+		analysis->magnitudes[i] = isfinite(value) ? value : 0;
+	}
+
+	ma_free(re, NULL);
+	return 0;
+}
+
+/* An analyser with an FFT of 2048 frames. */
+ENT_EXPORT ent_node *ent_analyser_create(ent_context *context) {
+	ent_analysis *analysis = ma_calloc(sizeof(ent_analysis), NULL);
+	float *magnitudes = ma_calloc(1024 * sizeof(float), NULL);
+
+	if (analysis == NULL || magnitudes == NULL) {
+		ma_free(analysis, NULL);
+		ma_free(magnitudes, NULL);
+		return NULL;
+	}
+
+	analysis->size = 2048;
+	analysis->magnitudes = magnitudes;
+	analysis->time = -1;
+
+	ma_mutex_lock(&context->lock);
+	ent_context_collect(context, 0);
+	ent_node *node = ent_node_create(context, ENT_ANALYSER);
+
+	if (node != NULL) {
+		node->held = 1;
+		node->analysis = analysis;
+	}
+
+	ma_mutex_unlock(&context->lock);
+
+	if (node == NULL) {
+		ma_free(magnitudes, NULL);
+		ma_free(analysis, NULL);
+	}
+
+	return node;
+}
+
+/* Sets the FFT size, a power of two from 32 to 32768; a new size starts the smoothing over. */
+ENT_EXPORT int ent_analyser_size(ent_node *node, uint32_t size) {
+	ent_analysis *analysis = node->analysis;
+	int result = 0;
+	ma_mutex_lock(&node->context->lock);
+
+	if (size != analysis->size) {
+		float *magnitudes = ma_calloc(size / 2 * sizeof(float), NULL);
+
+		if (magnitudes == NULL) {
+			result = MA_OUT_OF_MEMORY;
+		} else {
+			ma_free(analysis->magnitudes, NULL);
+			analysis->magnitudes = magnitudes;
+			analysis->size = size;
+		}
+	}
+
+	ma_mutex_unlock(&node->context->lock);
+	return result;
+}
+
+/* The magnitudes in decibels, as `getFloatFrequencyData`, into `out` of `count` values. */
+ENT_EXPORT int ent_analyser_decibels(ent_node *node, double smoothing, float *out, uint32_t count) {
+	ma_mutex_lock(&node->context->lock);
+	int result = ent_analyse(node, smoothing);
+
+	for (uint32_t i = 0; i < count && i < node->analysis->size / 2; i++) {
+		out[i] = 20 * log10f(node->analysis->magnitudes[i]);
+	}
+
+	ma_mutex_unlock(&node->context->lock);
+	return result;
+}
+
+/* The magnitudes scaled from [min, max] decibels to [0, 255], as `getByteFrequencyData`. */
+ENT_EXPORT int ent_analyser_bytes(ent_node *node, double smoothing, double min, double max, uint8_t *out,
+	uint32_t count) {
+	ma_mutex_lock(&node->context->lock);
+	int result = ent_analyse(node, smoothing);
+	double scale = max == min ? 1.0 : 1.0 / (max - min);
+
+	for (uint32_t i = 0; i < count && i < node->analysis->size / 2; i++) {
+		double decibels = 20 * log10f(node->analysis->magnitudes[i]);
+		double scaled = UCHAR_MAX * (decibels - min) * scale;
+
+		out[i] = (uint8_t)fmin(fmax(scaled, 0), UCHAR_MAX);
+	}
+
+	ma_mutex_unlock(&node->context->lock);
+	return result;
+}
+
 static void ent_node_render(ent_node *node, uint64_t quantum) {
 	if (node->quantum == quantum + 1) {
 		return;
@@ -1631,6 +1854,8 @@ static void ent_node_render(ent_node *node, uint64_t quantum) {
 		ent_gain_render(node, quantum);
 	} else if (node->kind == ENT_PANNER) {
 		ent_panner_render(node, quantum);
+	} else if (node->kind == ENT_ANALYSER) {
+		ent_analyser_render(node, quantum);
 	} else {
 		ent_node_mix(node, quantum, node->context->channels);
 	}
@@ -1644,7 +1869,12 @@ static void ent_context_step(ent_context *context) {
 	for (uint32_t i = 0; i < context->count; i++) {
 		ent_node *node = context->nodes[i];
 
+		/* Started sources and analysers render even when nothing pulls them, as in Chrome. */
 		if (node->kind == ENT_SOURCE && node->state != ENT_UNSCHEDULED) {
+			ent_node_render(node, quantum);
+		}
+
+		if (node->kind == ENT_ANALYSER) {
 			ent_node_render(node, quantum);
 		}
 
