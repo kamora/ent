@@ -72,7 +72,8 @@ Chrome's `OfflineAudioContext`.
 5. The analyser: captured samples, the specification's windowed FFT and smoothing (done: 12 scenarios in
    `fixtures/audio/analyser.json`, FFT sizes from 32 to 32768; `getByteFrequencyData` equals Chrome's byte for byte;
    ent's `AudioAnalyser` finds a tone in its bin).
-6. Device output in a Flutter app on macOS, iOS and Android, and sound in the voxels demo.
+6. Device output in a Flutter app on macOS, iOS and Android, and sound in the voxels demo (in progress: plays on the
+   Mac's output device, in tests and inside the sandboxed voxels app; iOS and Android apps build; not yet heard).
 
 Each of steps 2 to 5 is checked against Chrome's offline rendering of the same graph.
 
@@ -101,8 +102,23 @@ Each of steps 2 to 5 is checked against Chrome's offline rendering of the same g
   rounding differs from Chrome's: `getFloatFrequencyData` agrees within 0.001 dB above -100 dB and differs by up to a
   few decibels far below, from -128 dB down, while the bytes, which stop at -100 dB, are identical.
 
+## Playing
+
+`NativeAudioContext.install()` makes ent's audio classes play through ent_audio: the first `AudioListener` opens
+the default output device in stereo, at the device's own rate, as a Web Audio `AudioContext` does. The device asks
+for frames in its own amounts; the graph renders a quantum at a time and keeps what the device has not taken yet.
+A playing context stays alive until `close()`, which stops the device before anything is freed.
+`NativeAudioContext.offline()` renders on demand instead, for tests.
+
+On Apple platforms the hook compiles miniaudio as Objective-C through `src/apple.m` (clang takes the language from
+the file's extension) and links Foundation, Core Audio and Audio Toolbox (and AVFoundation on iOS, where miniaudio's
+default audio session is Ambient: it follows the silent switch and mixes with other apps).
+
 ## Limits
 
 - The `HRTF` panning model, which ent's `PositionalAudio` asks for, pans by equal power. Chromium's HRTF convolves
   each source with measured head responses (a database and FFT convolution), a port of its own; until then a
   `PositionalAudio` sounds as with `panningModel = 'equalpower'`, without the cues for front, back and height.
+- The device thread and Dart calls share one lock; a long Dart call could make the device miss a deadline. Dart's
+  calls hold it only to change a few values.
+- A change of the default output device (headphones plugged in) is left to miniaudio; not checked.

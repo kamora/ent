@@ -9,30 +9,62 @@ import 'buffer.dart';
 
 /// A Web Audio context on ent_audio's native graph.
 ///
-/// [NativeAudioContext.offline] renders on demand with [render] instead of playing on a device.
+/// [NativeAudioContext.new] plays on the default output device; [NativeAudioContext.offline] renders on demand with
+/// [render] instead.
 final class NativeAudioContext implements WebAudioContext, WebAudioDecodingContext, Finalizable {
+  /// A context playing in stereo on the default output device, at the device's rate, until [close]. Throws a
+  /// [StateError] when there is no device to play on.
+  ///
+  /// A playing context stays alive until [close], whether or not it is still referenced.
+  NativeAudioContext() : this._(native.contextOpen, playing: true);
+
   /// A context that renders [channels] channels at [sampleRate] frames per second only when [render] asks.
-  NativeAudioContext.offline({this.sampleRate = 48000, this.channels = 2}) {
+  NativeAudioContext.offline({int sampleRate = 48000, int channels = 2})
+    : this._((ended) => native.contextCreate(sampleRate, channels, ended), playing: false);
+
+  NativeAudioContext._(
+    Pointer<native.Context> Function(Pointer<NativeFunction<Void Function(Int32)>>) open, {
+    required this.playing,
+  }) {
     _ended = NativeCallable<Void Function(Int32)>.listener(_end)..keepIsolateAlive = false;
-    pointer = native.contextCreate(sampleRate, channels, _ended.nativeFunction);
+    pointer = open(_ended.nativeFunction);
 
     if (pointer == nullptr) {
       _ended.close();
-      throw StateError('ENT.NativeAudioContext: out of memory.');
+      throw StateError('ENT.NativeAudioContext: ${playing ? 'no output device to play on' : 'out of memory'}.');
     }
 
-    _finalizer.attach(this, pointer.cast(), detach: this);
+    if (playing) {
+      _open.add(this);
+    } else {
+      _finalizer.attach(this, pointer.cast(), detach: this);
+    }
+
+    sampleRate = native.contextRate(pointer);
+    channels = native.contextChannels(pointer);
     destination = AudioNode._(this, native.contextDestination(pointer), held: false);
     listener = NativeAudioListener._(AudioNode._(this, native.contextListener(pointer), held: false));
   }
 
+  /// Makes ent's audio classes play through ent_audio: the first [AudioListener] creates a playing
+  /// [NativeAudioContext] as the engine's [AudioContext].
+  static void install() {
+    AudioContext.platform = NativeAudioContext.new;
+  }
+
   static final _finalizer = NativeFinalizer(native.contextRelease);
 
+  /// The playing contexts, held until they are closed: their device calls back into them.
+  static final _open = <NativeAudioContext>{};
+
+  /// Whether the context plays on a device.
+  final bool playing;
+
   /// The frames per second.
-  final int sampleRate;
+  late final int sampleRate;
 
   /// The number of output channels.
-  final int channels;
+  late final int channels;
 
   /// The native context.
   late final Pointer<native.Context> pointer;
@@ -97,6 +129,10 @@ final class NativeAudioContext implements WebAudioContext, WebAudioDecodingConte
   /// Renders the next [frames] frames, rounded up to whole quanta of 128, and returns each channel's first [frames].
   /// Sources that end meanwhile call their `onended` once the caller yields to the event loop.
   List<Float32List> render(int frames) {
+    if (playing) {
+      throw StateError('ENT.NativeAudioContext: a playing context renders on its device.');
+    }
+
     final quanta = (frames + 127) ~/ 128;
 
     return using((arena) {
@@ -108,13 +144,15 @@ final class NativeAudioContext implements WebAudioContext, WebAudioDecodingConte
     });
   }
 
-  /// Releases the native context; the context cannot be used afterwards.
+  /// Stops the device, if the context plays on one, and releases the native context; the context cannot be used
+  /// afterwards.
   void close() {
     if (_closed) {
       return;
     }
 
     _closed = true;
+    _open.remove(this);
     _finalizer.detach(this);
     native.contextRelease.asFunction<void Function(Pointer<Void>)>()(pointer.cast());
     _ended.close();

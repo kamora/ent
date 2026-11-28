@@ -8,16 +8,16 @@ void main(List<String> args) async {
     final os = input.config.code.targetOS;
     final apple = os == OS.macOS || os == OS.iOS;
 
-    // On Apple platforms miniaudio is compiled as Objective-C (iOS needs it for its audio session) and links the
-    // audio frameworks instead of loading them at run time.
+    // On Apple platforms miniaudio is compiled as Objective-C (iOS needs it for its audio session), through a .m file
+    // since clang takes the language from the extension, and links the audio frameworks instead of loading them at
+    // run time.
     await CBuilder.library(
       name: 'ent_audio',
       assetName: 'src/bindings.dart',
-      sources: ['src/ent_audio.c'],
-      language: apple ? Language.objectiveC : Language.c,
+      sources: [apple ? 'src/apple.m' : 'src/ent_audio.c'],
       defines: {if (apple) 'MA_NO_RUNTIME_LINKING': null},
       frameworks: [
-        if (apple) ...['CoreFoundation', 'CoreAudio', 'AudioToolbox'],
+        if (apple) ...['Foundation', 'CoreFoundation', 'CoreAudio', 'AudioToolbox'],
         if (os == OS.iOS) 'AVFoundation',
       ],
       libraries: [if (os == OS.android) 'm'],

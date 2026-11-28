@@ -140,6 +140,10 @@ struct ent_context {
 	uint32_t capacity;
 	int32_t next;
 	void (*ended)(int32_t id);
+
+	/* A context playing on a device: the device, and the frames of the last quantum it has not played yet. */
+	ma_device *device;
+	uint32_t played;
 };
 
 /*
@@ -800,11 +804,19 @@ ENT_EXPORT ent_context *ent_context_create(uint32_t rate, uint32_t channels, voi
 }
 
 /*
- * Drops the caller's hold on a context: the nodes without a Dart handle go with it, and the context is freed once the
- * handles of the others are gone too.
+ * Drops the caller's hold on a context: its device stops, the nodes without a Dart handle go with it, and the context
+ * is freed once the handles of the others are gone too.
  */
 ENT_EXPORT void ent_context_release(void *pointer) {
 	ent_context *context = pointer;
+
+	/* Outside the lock, which the device's thread takes to render. */
+	if (context->device != NULL) {
+		ma_device_uninit(context->device);
+		ma_free(context->device, NULL);
+		context->device = NULL;
+	}
+
 	ma_mutex_lock(&context->lock);
 	ent_context_collect(context, 1);
 	int32_t references = --context->references;
@@ -1908,4 +1920,89 @@ ENT_EXPORT void ent_context_render(ent_context *context, float *out, uint32_t qu
 	ma_mutex_lock(&context->lock);
 	ent_context_collect(context, 0);
 	ma_mutex_unlock(&context->lock);
+}
+
+/* Plays the graph: the device asks for frames in its own amounts, rendered a quantum at a time. */
+static void ent_device_data(ma_device *device, void *output, const void *input, ma_uint32 count) {
+	(void)input;
+	ent_context *context = device->pUserData;
+	float *out = output;
+	uint32_t channels = context->channels;
+	uint32_t written = 0;
+
+	while (written < count) {
+		if (context->played == ENT_QUANTUM) {
+			ma_mutex_lock(&context->lock);
+			ent_context_step(context);
+			ma_mutex_unlock(&context->lock);
+			context->played = 0;
+		}
+
+		uint32_t n = ENT_QUANTUM - context->played;
+
+		if (n > count - written) {
+			n = count - written;
+		}
+
+		for (uint32_t i = 0; i < n; i++) {
+			for (uint32_t c = 0; c < channels; c++) {
+				out[(written + i) * channels + c] = context->destination->output[c][context->played + i];
+			}
+		}
+
+		written += n;
+		context->played += n;
+	}
+}
+
+/*
+ * A context playing in stereo on the default output device, at the device's rate, held once by the caller; `ended` is
+ * called with a source's id when it ends. Returns NULL when there is no device to play on.
+ */
+ENT_EXPORT ent_context *ent_context_open(void (*ended)(int32_t id)) {
+	ma_device *device = ma_malloc(sizeof(ma_device), NULL);
+
+	if (device == NULL) {
+		return NULL;
+	}
+
+	ma_device_config config = ma_device_config_init(ma_device_type_playback);
+	config.playback.format = ma_format_f32;
+	config.playback.channels = 2;
+	config.sampleRate = 0;
+	config.dataCallback = ent_device_data;
+
+	if (ma_device_init(NULL, &config, device) != MA_SUCCESS) {
+		ma_free(device, NULL);
+		return NULL;
+	}
+
+	ent_context *context = ent_context_create(device->sampleRate, 2, ended);
+
+	if (context == NULL) {
+		ma_device_uninit(device);
+		ma_free(device, NULL);
+		return NULL;
+	}
+
+	device->pUserData = context;
+	context->device = device;
+	context->played = ENT_QUANTUM;
+
+	if (ma_device_start(device) != MA_SUCCESS) {
+		ent_context_release(context);
+		return NULL;
+	}
+
+	return context;
+}
+
+/* The context's frames per second. */
+ENT_EXPORT uint32_t ent_context_rate(ent_context *context) {
+	return context->rate;
+}
+
+/* The context's number of output channels. */
+ENT_EXPORT uint32_t ent_context_channels(ent_context *context) {
+	return context->channels;
 }

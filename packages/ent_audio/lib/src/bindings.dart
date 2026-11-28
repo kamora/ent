@@ -137,3 +137,12 @@ external int analyserDecibels(Pointer<Node> node, double smoothing, Pointer<Floa
 
 @Native<Int Function(Pointer<Node>, Double, Double, Double, Pointer<Uint8>, Uint32)>(symbol: 'ent_analyser_bytes')
 external int analyserBytes(Pointer<Node> node, double smoothing, double min, double max, Pointer<Uint8> out, int count);
+
+@Native<Pointer<Context> Function(Pointer<NativeFunction<Void Function(Int32)>>)>(symbol: 'ent_context_open')
+external Pointer<Context> contextOpen(Pointer<NativeFunction<Void Function(Int32)>> ended);
+
+@Native<Uint32 Function(Pointer<Context>)>(symbol: 'ent_context_rate')
+external int contextRate(Pointer<Context> context);
+
+@Native<Uint32 Function(Pointer<Context>)>(symbol: 'ent_context_channels')
+external int contextChannels(Pointer<Context> context);
