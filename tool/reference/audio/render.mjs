@@ -7,11 +7,12 @@
 // Chrome: $CHROME, or /Applications/Google Chrome.app.
 //
 // A scenario has its length in frames, its buffers (filled with `fill`, or by `signal` below, which ent_audio's
-// tests repeat) and its operations: [ 'source', name, buffer ], [ 'gain', name ], [ 'set', name, attribute, value ],
-// [ 'param', name, param, value ], [ 'ramp', name, param, value, end ], [ 'target', name, param, value, start,
-// constant ], [ 'read', name, param ], [ 'connect', name, destination? ], [ 'start', name, when?, offset?,
-// duration? ], [ 'stop', name, when ], and [ 'at', frame ], after which the operations run when rendering reaches
-// that frame, a multiple of 128. Times are in frames of the context rate.
+// tests repeat) and its operations: [ 'source', name, buffer ], [ 'gain', name ], [ 'panner', name ], [ 'set', name,
+// attribute, frames ], [ 'attr', name, attribute, value ], [ 'param', name, param, value ], [ 'ramp', name, param,
+// value, end ], [ 'target', name, param, value, start, constant ], [ 'read', name, param ], [ 'connect', name,
+// destination? ], [ 'start', name, when?, offset?, duration? ], [ 'stop', name, when ], and [ 'at', frame ], after
+// which the operations run when rendering reaches that frame, a multiple of 128. Times are in frames of the context
+// rate; the node named 'listener' is the context's listener.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -36,7 +37,7 @@ async function render( doc, scenario ) {
 	const time = ( frames ) => frames / doc.rate;
 	const context = new OfflineAudioContext( doc.channels, scenario.frames, doc.rate );
 	const buffers = {};
-	const nodes = {};
+	const nodes = { listener: context.listener };
 	const ended = [];
 	const values = [];
 
@@ -84,6 +85,12 @@ async function render( doc, scenario ) {
 
 			case 'gain':
 				nodes[ name ] = context.createGain();
+				break;
+			case 'panner':
+				nodes[ name ] = context.createPanner();
+				break;
+			case 'attr':
+				node[ args[ 0 ] ] = args[ 1 ];
 				break;
 
 			case 'set':

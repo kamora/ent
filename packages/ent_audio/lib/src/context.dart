@@ -23,6 +23,7 @@ final class NativeAudioContext implements WebAudioContext, WebAudioDecodingConte
 
     _finalizer.attach(this, pointer.cast(), detach: this);
     destination = AudioNode._(this, native.contextDestination(pointer), held: false);
+    listener = NativeAudioListener._(AudioNode._(this, native.contextListener(pointer), held: false));
   }
 
   static final _finalizer = NativeFinalizer(native.contextRelease);
@@ -50,8 +51,7 @@ final class NativeAudioContext implements WebAudioContext, WebAudioDecodingConte
   double get currentTime => native.contextTime(pointer);
 
   @override
-  WebAudioListener get listener =>
-      throw UnimplementedError('ENT.NativeAudioContext: the listener is not implemented yet.');
+  late final NativeAudioListener listener;
 
   /// A silent buffer, as Web Audio's `createBuffer`.
   AudioData createBuffer(int channels, int length, int sampleRate) {
@@ -69,8 +69,8 @@ final class NativeAudioContext implements WebAudioContext, WebAudioDecodingConte
   }
 
   @override
-  WebAudioPannerNode createPanner() {
-    throw UnimplementedError('ENT.NativeAudioContext: panner nodes are not implemented yet.');
+  AudioPanner createPanner() {
+    return AudioPanner._(this);
   }
 
   @override
@@ -208,6 +208,11 @@ class AudioParam implements WebAudioParam {
     _check(native.paramRamp(_node.pointer, _index, value, endTime));
   }
 
+  /// `setValueAtTime( value, currentTime )`.
+  void _at(double value) {
+    _check(native.paramAt(_node.pointer, _index, value, _node.context.currentTime));
+  }
+
   void _check(int result) {
     if (result != 0) {
       throw StateError('ENT.AudioParam: out of memory.');
@@ -330,5 +335,232 @@ class AudioBufferSource extends AudioNode implements WebAudioBufferSourceNode {
     }
 
     native.sourceStop(pointer, when ?? 0);
+  }
+}
+
+/// A Web Audio `AudioListener`: where the context's panners are heard from.
+class NativeAudioListener implements WebAudioListener {
+  NativeAudioListener._(AudioNode node)
+    : positionX = AudioParam._(node, 0),
+      positionY = AudioParam._(node, 1),
+      positionZ = AudioParam._(node, 2),
+      forwardX = AudioParam._(node, 3),
+      forwardY = AudioParam._(node, 4),
+      forwardZ = AudioParam._(node, 5),
+      upX = AudioParam._(node, 6),
+      upY = AudioParam._(node, 7),
+      upZ = AudioParam._(node, 8);
+
+  @override
+  final AudioParam positionX;
+
+  @override
+  final AudioParam positionY;
+
+  @override
+  final AudioParam positionZ;
+
+  @override
+  final AudioParam forwardX;
+
+  @override
+  final AudioParam forwardY;
+
+  @override
+  final AudioParam forwardZ;
+
+  @override
+  final AudioParam upX;
+
+  @override
+  final AudioParam upY;
+
+  @override
+  final AudioParam upZ;
+
+  /// Sets the position at the current time.
+  @override
+  void setPosition(double x, double y, double z) {
+    positionX._at(x);
+    positionY._at(y);
+    positionZ._at(z);
+  }
+
+  /// Sets the forward and up directions at the current time.
+  @override
+  void setOrientation(double x, double y, double z, double xUp, double yUp, double zUp) {
+    forwardX._at(x);
+    forwardY._at(y);
+    forwardZ._at(z);
+    upX._at(xUp);
+    upY._at(yUp);
+    upZ._at(zUp);
+  }
+}
+
+/// A Web Audio `PannerNode`, with the equal-power panning model.
+///
+/// [panningModel] keeps `'HRTF'` when set to it, but the node pans by equal power either way.
+class AudioPanner extends AudioNode implements WebAudioPannerNode {
+  AudioPanner._(NativeAudioContext context) : super._(context, native.pannerCreate(context.pointer)) {
+    positionX = AudioParam._(this, 0);
+    positionY = AudioParam._(this, 1);
+    positionZ = AudioParam._(this, 2);
+    orientationX = AudioParam._(this, 3);
+    orientationY = AudioParam._(this, 4);
+    orientationZ = AudioParam._(this, 5);
+  }
+
+  static const _models = ['linear', 'inverse', 'exponential'];
+
+  @override
+  late final AudioParam positionX;
+
+  @override
+  late final AudioParam positionY;
+
+  @override
+  late final AudioParam positionZ;
+
+  @override
+  late final AudioParam orientationX;
+
+  @override
+  late final AudioParam orientationY;
+
+  @override
+  late final AudioParam orientationZ;
+
+  String _panningModel = 'equalpower';
+  String _distanceModel = 'inverse';
+  double _refDistance = 1;
+  double _maxDistance = 10000;
+  double _rolloffFactor = 1;
+  double _coneInnerAngle = 360;
+  double _coneOuterAngle = 360;
+  double _coneOuterGain = 0;
+
+  @override
+  String get panningModel => _panningModel;
+
+  @override
+  set panningModel(String value) {
+    if (value != 'equalpower' && value != 'HRTF') {
+      throw ArgumentError.value(value, 'panningModel');
+    }
+
+    _panningModel = value;
+  }
+
+  @override
+  String get distanceModel => _distanceModel;
+
+  @override
+  set distanceModel(String value) {
+    if (!_models.contains(value)) {
+      throw ArgumentError.value(value, 'distanceModel');
+    }
+
+    _distanceModel = value;
+    _send();
+  }
+
+  @override
+  double get refDistance => _refDistance;
+
+  @override
+  set refDistance(double value) {
+    if (value < 0) {
+      throw RangeError('ENT.AudioPanner: refDistance cannot be negative.');
+    }
+
+    _refDistance = value;
+    _send();
+  }
+
+  @override
+  double get maxDistance => _maxDistance;
+
+  @override
+  set maxDistance(double value) {
+    if (value <= 0) {
+      throw RangeError('ENT.AudioPanner: maxDistance must be positive.');
+    }
+
+    _maxDistance = value;
+    _send();
+  }
+
+  @override
+  double get rolloffFactor => _rolloffFactor;
+
+  @override
+  set rolloffFactor(double value) {
+    if (value < 0) {
+      throw RangeError('ENT.AudioPanner: rolloffFactor cannot be negative.');
+    }
+
+    _rolloffFactor = value;
+    _send();
+  }
+
+  @override
+  double get coneInnerAngle => _coneInnerAngle;
+
+  @override
+  set coneInnerAngle(double value) {
+    _coneInnerAngle = value;
+    _send();
+  }
+
+  @override
+  double get coneOuterAngle => _coneOuterAngle;
+
+  @override
+  set coneOuterAngle(double value) {
+    _coneOuterAngle = value;
+    _send();
+  }
+
+  @override
+  double get coneOuterGain => _coneOuterGain;
+
+  @override
+  set coneOuterGain(double value) {
+    if (value < 0 || value > 1) {
+      throw StateError('ENT.AudioPanner: coneOuterGain must be between 0 and 1.');
+    }
+
+    _coneOuterGain = value;
+    _send();
+  }
+
+  void _send() {
+    native.pannerSet(
+      pointer,
+      _models.indexOf(_distanceModel),
+      _refDistance,
+      _maxDistance,
+      _rolloffFactor,
+      _coneInnerAngle,
+      _coneOuterAngle,
+      _coneOuterGain,
+    );
+  }
+
+  /// Sets the position at the current time.
+  @override
+  void setPosition(double x, double y, double z) {
+    positionX._at(x);
+    positionY._at(y);
+    positionZ._at(z);
+  }
+
+  /// Sets the direction the source faces at the current time.
+  @override
+  void setOrientation(double x, double y, double z) {
+    orientationX._at(x);
+    orientationY._at(y);
+    orientationZ._at(z);
   }
 }

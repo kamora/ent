@@ -84,6 +84,27 @@ external int paramRamp(Pointer<Node> node, int param, double value, double end);
 @Native<Int Function(Pointer<Node>, Int32, Double, Double, Double)>(symbol: 'ent_param_target')
 external int paramTarget(Pointer<Node> node, int param, double target, double start, double constant);
 
+@Native<Int Function(Pointer<Node>, Int32, Double, Double)>(symbol: 'ent_param_at')
+external int paramAt(Pointer<Node> node, int param, double value, double time);
+
+@Native<Pointer<Node> Function(Pointer<Context>)>(symbol: 'ent_context_listener')
+external Pointer<Node> contextListener(Pointer<Context> context);
+
+@Native<Pointer<Node> Function(Pointer<Context>)>(symbol: 'ent_panner_create')
+external Pointer<Node> pannerCreate(Pointer<Context> context);
+
+@Native<Void Function(Pointer<Node>, Int32, Double, Double, Double, Double, Double, Double)>(symbol: 'ent_panner_set')
+external void pannerSet(
+  Pointer<Node> node,
+  int model,
+  double ref,
+  double max,
+  double rolloff,
+  double inner,
+  double outer,
+  double gain,
+);
+
 @Native<Pointer<Node> Function(Pointer<Context>)>(symbol: 'ent_gain_create')
 external Pointer<Node> gainCreate(Pointer<Context> context);
 

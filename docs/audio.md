@@ -66,7 +66,9 @@ Chrome's `OfflineAudioContext`.
 3. Gain and parameter automation (`value`, `setTargetAtTime`, `linearRampToValueAtTime`) on the audio clock (done: 23
    scenarios in `fixtures/audio/params.json`, including changes made while rendering, equal Chrome's rendering and
    its parameter values).
-4. The panner and the listener: equal-power panning, the three distance models, the cone.
+4. The panner and the listener: equal-power panning, the three distance models, the cone (done: 33 scenarios in
+   `fixtures/audio/panner.json`, moving sources and listeners included, equal Chrome's rendering; ent's own
+   `AudioListener`, `Audio` and `PositionalAudio` play on it).
 5. The analyser: captured samples, the specification's windowed FFT and smoothing.
 6. Device output in a Flutter app on macOS, iOS and Android, and sound in the voxels demo.
 
@@ -85,3 +87,15 @@ Each of steps 2 to 5 is checked against Chrome's offline rendering of the same g
   approach to a target steps by a discrete time constant and snaps once it converges, and a parameter read once per
   quantum (playback rate, detune) uses the quantum rate for that constant. Exponential ramps, value curves and
   cancelling are not ported: ent's audio classes do not use them.
+- The panner is a port of Chromium's PannerHandler with its equal-power panner. Positions, directions and the angles
+  between them are 32-bit floats, as in Chromium's vector math: computing the azimuth in double changes the output.
+  A panner computes a direction and gain per frame whenever its own or the listener's position or direction changes
+  within the quantum, as ent's audio classes make them do with a ramp every frame.
+- As in Chrome, only the linear distance model stops at `maxDistance`; the inverse and exponential ones keep falling,
+  so the clamping noted under the candidates above does not apply to ent_audio.
+
+## Limits
+
+- The `HRTF` panning model, which ent's `PositionalAudio` asks for, pans by equal power. Chromium's HRTF convolves
+  each source with measured head responses (a database and FFT convolution), a port of its own; until then a
+  `PositionalAudio` sounds as with `panningModel = 'equalpower'`, without the cues for front, back and height.

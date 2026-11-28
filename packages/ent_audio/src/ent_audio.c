@@ -34,7 +34,7 @@ typedef struct ent_buffer {
 	float *data;
 } ent_buffer;
 
-enum { ENT_DESTINATION, ENT_SOURCE, ENT_GAIN };
+enum { ENT_DESTINATION, ENT_SOURCE, ENT_GAIN, ENT_PANNER, ENT_LISTENER };
 
 enum { ENT_UNSCHEDULED, ENT_SCHEDULED, ENT_PLAYING, ENT_FINISHED };
 
@@ -42,6 +42,9 @@ enum { ENT_UNSCHEDULED, ENT_SCHEDULED, ENT_PLAYING, ENT_FINISHED };
 enum { ENT_PLAYBACK_RATE = 0, ENT_DETUNE = 1, ENT_GAIN_VALUE = 0 };
 
 enum { ENT_SET_VALUE, ENT_LINEAR_RAMP, ENT_SET_TARGET };
+
+/* A panner's distance models. */
+enum { ENT_LINEAR, ENT_INVERSE, ENT_EXPONENTIAL };
 
 /* An automation event; `fresh` marks one inserted since the last rendering, whose time may still be clamped. */
 typedef struct ent_event {
@@ -80,7 +83,7 @@ struct ent_node {
 	uint32_t channels;
 	float output[ENT_CHANNELS][ENT_QUANTUM];
 
-	ent_param params[2];
+	ent_param params[9];
 
 	/* A source: its buffer, loop, schedule (in seconds) and playhead (in buffer frames). */
 	ent_buffer *buffer;
@@ -95,6 +98,15 @@ struct ent_node {
 	double stop;
 	double index;
 	double played;
+
+	/* A panner: its distance model and cone. */
+	int distanceModel;
+	double refDistance;
+	double maxDistance;
+	double rolloffFactor;
+	double coneInnerAngle;
+	double coneOuterAngle;
+	double coneOuterGain;
 };
 
 struct ent_context {
@@ -104,6 +116,10 @@ struct ent_context {
 	uint32_t channels;
 	uint64_t quantum;
 	ent_node *destination;
+
+	/* The listener, as a node outside the graph holding its nine parameters, and their values in this quantum. */
+	ent_node *listener;
+	float listenerValues[9][ENT_QUANTUM];
 	ent_node **nodes;
 	uint32_t count;
 	uint32_t capacity;
@@ -653,8 +669,10 @@ static void ent_node_free(ent_node *node) {
 		ent_buffer_release(node->buffer);
 	}
 
-	ma_free(node->params[0].events, NULL);
-	ma_free(node->params[1].events, NULL);
+	for (int p = 0; p < 9; p++) {
+		ma_free(node->params[p].events, NULL);
+	}
+
 	ma_free(node->inputs, NULL);
 	ma_free(node, NULL);
 }
@@ -664,7 +682,7 @@ static void ent_node_free(ent_node *node) {
  * node with nothing feeding it.
  */
 static int ent_node_silent(ent_node *node) {
-	if (node->kind == ENT_DESTINATION) {
+	if (node->kind == ENT_DESTINATION || node->kind == ENT_LISTENER) {
 		return 0;
 	}
 
@@ -738,16 +756,26 @@ ENT_EXPORT ent_context *ent_context_create(uint32_t rate, uint32_t channels, voi
 	context->ended = ended;
 	context->references = 1;
 	context->destination = ent_node_create(context, ENT_DESTINATION);
+	context->listener = ent_node_create(context, ENT_LISTENER);
 
-	if (context->destination == NULL) {
+	if (context->destination == NULL || context->listener == NULL) {
 		ent_context_free(context);
 		return NULL;
 	}
 
-	/* The destination goes with the context, so it does not hold it. */
+	/* The destination and the listener go with the context, so they do not hold it. */
 	context->references = 1;
 	context->destination->held = 1;
 	context->destination->channels = channels;
+	context->listener->held = 1;
+
+	/* At the origin, facing -z with +y up. */
+	float listener[9] = {0, 0, 0, 0, 0, -1, 0, 1, 0};
+
+	for (int p = 0; p < 9; p++) {
+		ent_param_init(&context->listener->params[p], listener[p], 1);
+	}
+
 	return context;
 }
 
@@ -769,6 +797,11 @@ ENT_EXPORT void ent_context_release(void *pointer) {
 
 ENT_EXPORT ent_node *ent_context_destination(ent_context *context) {
 	return context->destination;
+}
+
+/* The node holding the listener's parameters: position, forward and up, x, y and z each. */
+ENT_EXPORT ent_node *ent_context_listener(ent_context *context) {
+	return context->listener;
 }
 
 /* The context's time in seconds: the start of the next quantum. */
@@ -886,6 +919,65 @@ ENT_EXPORT int ent_param_target(ent_node *node, int32_t index, double target, do
 	int result = ent_param_insert(context, param, event, param->value);
 	ma_mutex_unlock(&context->lock);
 	return result;
+}
+
+/* `setValueAtTime( value, time )`, which the deprecated `setPosition` and `setOrientation` use. */
+ENT_EXPORT int ent_param_at(ent_node *node, int32_t index, double value, double time) {
+	ent_context *context = node->context;
+	ent_param *param = &node->params[index];
+	ma_mutex_lock(&context->lock);
+
+	double now = (double)(context->quantum * ENT_QUANTUM) / context->rate;
+	ent_event event = {ENT_SET_VALUE, 0, (float)value, fmax(time, now), 0};
+	int result = ent_param_insert(context, param, event, param->value);
+	ma_mutex_unlock(&context->lock);
+	return result;
+}
+
+/* A panner at the origin facing +x, with Web Audio's default distance model and no cone. */
+ENT_EXPORT ent_node *ent_panner_create(ent_context *context) {
+	ma_mutex_lock(&context->lock);
+	ent_context_collect(context, 0);
+	ent_node *node = ent_node_create(context, ENT_PANNER);
+
+	if (node != NULL) {
+		node->held = 1;
+		node->channels = 2;
+
+		float values[6] = {0, 0, 0, 1, 0, 0};
+
+		for (int p = 0; p < 6; p++) {
+			ent_param_init(&node->params[p], values[p], 1);
+		}
+
+		node->distanceModel = ENT_INVERSE;
+		node->refDistance = 1;
+		node->maxDistance = 10000;
+		node->rolloffFactor = 1;
+		node->coneInnerAngle = 360;
+		node->coneOuterAngle = 360;
+		node->coneOuterGain = 0;
+	}
+
+	ma_mutex_unlock(&context->lock);
+	return node;
+}
+
+/*
+ * Sets a panner's distance model (0 linear, 1 inverse, 2 exponential), reference distance, maximum distance, rolloff
+ * factor, cone inner angle, cone outer angle and cone outer gain.
+ */
+ENT_EXPORT void ent_panner_set(ent_node *node, int32_t model, double ref, double max, double rolloff, double inner,
+	double outer, double gain) {
+	ma_mutex_lock(&node->context->lock);
+	node->distanceModel = model;
+	node->refDistance = ref;
+	node->maxDistance = max;
+	node->rolloffFactor = rolloff;
+	node->coneInnerAngle = inner;
+	node->coneOuterAngle = outer;
+	node->coneOuterGain = gain;
+	ma_mutex_unlock(&node->context->lock);
 }
 
 /* A gain node, with its gain at 1. */
@@ -1206,6 +1298,326 @@ static void ent_gain_render(ent_node *node, uint64_t quantum) {
 	}
 }
 
+/*
+ * The panner and the listener, following Chromium's PannerHandler with its equal-power panner: positions and
+ * directions in 32-bit floats as its vector math has them, the azimuth and elevation of the source as the listener
+ * hears it, the distance and cone gains, and a value per frame whenever a position or direction changes within the
+ * quantum.
+ */
+
+typedef struct ent_vector {
+	float x;
+	float y;
+	float z;
+} ent_vector;
+
+static ent_vector ent_minus(ent_vector a, ent_vector b) {
+	ent_vector v = {a.x - b.x, a.y - b.y, a.z - b.z};
+	return v;
+}
+
+static double ent_length_squared(ent_vector v) {
+	return (double)v.x * v.x + (double)v.y * v.y + (double)v.z * v.z;
+}
+
+static float ent_length(ent_vector v) {
+	return (float)sqrt(ent_length_squared(v));
+}
+
+static float ent_dot(ent_vector a, ent_vector b) {
+	return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+static ent_vector ent_cross(ent_vector a, ent_vector b) {
+	double x = a.x;
+	double y = a.y;
+	double z = a.z;
+	ent_vector v = {(float)(y * b.z - z * b.y), (float)(z * b.x - x * b.z), (float)(x * b.y - y * b.x)};
+	return v;
+}
+
+/* Scales a vector to length 1, unless it is too short to have a direction; returns whether it had one. */
+static int ent_normalize(ent_vector *v) {
+	double squared = ent_length_squared(*v);
+
+	if (squared < 1.0e-6 * 1.0e-6) {
+		return 0;
+	}
+
+	float length = (float)sqrt(squared);
+	v->x /= length;
+	v->y /= length;
+	v->z /= length;
+	return 1;
+}
+
+static float ent_degrees(float radians) {
+	return radians * (180 / (float)M_PI);
+}
+
+static float ent_angle(ent_vector a, ent_vector b) {
+	return ent_degrees(acosf(fmaxf(fminf(ent_dot(a, b) / ent_length(a) / ent_length(b), 1.f), -1.f)));
+}
+
+static double ent_finite(double x) {
+	return isfinite(x) ? x : 0.0;
+}
+
+/* The azimuth and elevation, in degrees, of a source at `position` as a listener at `listener` hears it. */
+static void ent_direction(double *azimuth, double *elevation, ent_vector position, ent_vector listener,
+	ent_vector forward, ent_vector up) {
+	ent_vector source = ent_minus(position, listener);
+
+	if (!ent_normalize(&source)) {
+		*azimuth = 0;
+		*elevation = 0;
+		return;
+	}
+
+	ent_vector right = ent_cross(forward, up);
+	ent_normalize(&right);
+
+	ent_vector ahead = forward;
+	ent_normalize(&ahead);
+
+	ent_vector above = ent_cross(right, ahead);
+	float projection = ent_dot(source, above);
+	ent_vector projected = {source.x - above.x * projection, source.y - above.y * projection,
+		source.z - above.z * projection};
+	ent_normalize(&projected);
+
+	double angle = ent_finite(ent_degrees(acosf(fminf(fmaxf(ent_dot(projected, right), -1.0f), 1.0f))));
+
+	if (ent_dot(projected, ahead) < 0.0) {
+		angle = 360.0 - angle;
+	}
+
+	if (angle >= 0.0 && angle <= 270.0) {
+		angle = 90.0 - angle;
+	} else {
+		angle = 450.0 - angle;
+	}
+
+	double height = ent_finite(90 - ent_angle(source, above));
+
+	if (height > 90.0) {
+		height = 180.0 - height;
+	} else if (height < -90.0) {
+		height = -180.0 - height;
+	}
+
+	*azimuth = angle;
+	*elevation = height;
+}
+
+/* The gain for a source at `distance` by the panner's distance model. */
+static double ent_distance_gain(const ent_node *node, double distance) {
+	double ref = node->refDistance;
+	double rolloff = node->rolloffFactor;
+
+	if (node->distanceModel == ENT_LINEAR) {
+		double near = fmin(ref, node->maxDistance);
+		double far = fmax(ref, node->maxDistance);
+		distance = fmin(fmax(distance, near), far);
+
+		if (near == far) {
+			return 1 - rolloff;
+		}
+
+		return 1.0 - fmin(fmax(rolloff, 0.0), 1.0) * (distance - near) / (far - near);
+	}
+
+	if (ref == 0) {
+		return 0;
+	}
+
+	distance = fmax(distance, ref);
+
+	if (node->distanceModel == ENT_INVERSE) {
+		return ref / (ref + fmax(rolloff, 0.0) * (distance - ref));
+	}
+
+	return pow(distance / ref, -fmax(rolloff, 0.0));
+}
+
+/* The gain for a listener at `listener` from a source at `position` facing `orientation`, by the panner's cone. */
+static double ent_cone_gain(const ent_node *node, ent_vector position, ent_vector orientation, ent_vector listener) {
+	int none = orientation.x == 0 && orientation.y == 0 && orientation.z == 0;
+
+	if (none || (node->coneInnerAngle == 360.0 && node->coneOuterAngle == 360.0)) {
+		return 1.0;
+	}
+
+	double angle = fabs(ent_angle(ent_minus(listener, position), orientation));
+	double inner = fabs(node->coneInnerAngle) / 2.0;
+	double outer = fabs(node->coneOuterAngle) / 2.0;
+
+	if (angle <= inner) {
+		return 1.0;
+	}
+
+	if (angle >= outer) {
+		return node->coneOuterGain;
+	}
+
+	double x = (angle - inner) / (outer - inner);
+	return (1.0 - x) + node->coneOuterGain * x;
+}
+
+static float ent_panner_gain(const ent_node *node, ent_vector position, ent_vector orientation, ent_vector listener) {
+	double distance = ent_length(ent_minus(position, listener));
+	return (float)(ent_distance_gain(node, distance) * ent_cone_gain(node, position, orientation, listener));
+}
+
+/*
+ * The equal-power gains of the left and right channels for `azimuth`, which is first folded into [-90, 90]; returns
+ * the folded azimuth.
+ */
+static double ent_equal_power(double azimuth, uint32_t channels, double *left, double *right) {
+	azimuth = fmin(fmax(azimuth, -180.0), 180.0);
+
+	if (azimuth < -90.0) {
+		azimuth = -180.0 - azimuth;
+	} else if (azimuth > 90.0) {
+		azimuth = 180.0 - azimuth;
+	}
+
+	double position = 0.0;
+
+	if (channels == 1) {
+		position = (azimuth + 90.0) / 180.0;
+	} else if (azimuth <= 0) {
+		position = (azimuth + 90.0) / 90.0;
+	} else {
+		position = azimuth / 90.0;
+	}
+
+	*left = cos(M_PI / 2 * position);
+	*right = sin(M_PI / 2 * position);
+	return azimuth;
+}
+
+/* Pans frame `i` of `in` (`channels` channels) into the panner's stereo output. */
+static void ent_pan(ent_node *node, float in[2][ENT_QUANTUM], uint32_t channels, uint32_t i, double azimuth) {
+	double left = 0;
+	double right = 0;
+	double folded = ent_equal_power(azimuth, channels, &left, &right);
+
+	if (channels == 1) {
+		node->output[0][i] = (float)(in[0][i] * left);
+		node->output[1][i] = (float)(in[0][i] * right);
+	} else if (folded <= 0) {
+		node->output[0][i] = (float)(in[0][i] + in[1][i] * left);
+		node->output[1][i] = (float)(in[1][i] * right);
+	} else {
+		node->output[0][i] = (float)(in[0][i] * left);
+		node->output[1][i] = (float)(in[1][i] + in[0][i] * right);
+	}
+}
+
+/* Computes the listener's position, forward and up for every frame of the quantum, once per quantum. */
+static void ent_listener_update(ent_context *context) {
+	ent_node *listener = context->listener;
+
+	if (listener->quantum == context->quantum + 1) {
+		return;
+	}
+
+	listener->quantum = context->quantum + 1;
+
+	for (int p = 0; p < 9; p++) {
+		ent_param_timeline(context, &listener->params[p], context->listenerValues[p]);
+	}
+}
+
+static int ent_params_accurate(ent_context *context, ent_node *node, int count) {
+	for (int p = 0; p < count; p++) {
+		if (ent_param_accurate(context, &node->params[p])) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+/* Renders one quantum of a panner: its inputs mixed to at most two channels, panned and scaled to stereo. */
+static void ent_panner_render(ent_node *node, uint64_t quantum) {
+	ent_context *context = node->context;
+	ent_node *listener = context->listener;
+	uint32_t channels = ent_node_widest(node, quantum) > 1 ? 2 : 1;
+	float in[2][ENT_QUANTUM];
+
+	ent_node_mix(node, quantum, channels);
+	memcpy(in[0], node->output[0], sizeof(in[0]));
+	memcpy(in[1], node->output[channels - 1], sizeof(in[1]));
+	node->channels = 2;
+
+	if (ent_params_accurate(context, node, 6) || ent_params_accurate(context, listener, 9)) {
+		float values[6][ENT_QUANTUM];
+		float (*heard)[ENT_QUANTUM] = context->listenerValues;
+
+		ent_listener_update(context);
+
+		for (int p = 0; p < 6; p++) {
+			ent_param_timeline(context, &node->params[p], values[p]);
+		}
+
+		for (uint32_t i = 0; i < ENT_QUANTUM; i++) {
+			ent_vector position = {values[0][i], values[1][i], values[2][i]};
+			ent_vector orientation = {values[3][i], values[4][i], values[5][i]};
+			ent_vector at = {heard[0][i], heard[1][i], heard[2][i]};
+			ent_vector forward = {heard[3][i], heard[4][i], heard[5][i]};
+			ent_vector up = {heard[6][i], heard[7][i], heard[8][i]};
+			double azimuth = 0;
+			double elevation = 0;
+
+			ent_direction(&azimuth, &elevation, position, at, forward, up);
+			ent_pan(node, in, channels, i, azimuth);
+
+			float gain = ent_panner_gain(node, position, orientation, at);
+			node->output[0][i] *= gain;
+			node->output[1][i] *= gain;
+		}
+
+		return;
+	}
+
+	float v[15];
+
+	for (int p = 0; p < 6; p++) {
+		v[p] = ent_param_final(context, &node->params[p]);
+	}
+
+	for (int p = 0; p < 9; p++) {
+		v[6 + p] = ent_param_final(context, &listener->params[p]);
+	}
+
+	ent_vector position = {v[0], v[1], v[2]};
+	ent_vector orientation = {v[3], v[4], v[5]};
+	ent_vector at = {v[6], v[7], v[8]};
+	ent_vector forward = {v[9], v[10], v[11]};
+	ent_vector up = {v[12], v[13], v[14]};
+	double azimuth = 0;
+	double elevation = 0;
+
+	ent_direction(&azimuth, &elevation, position, at, forward, up);
+
+	for (uint32_t i = 0; i < ENT_QUANTUM; i++) {
+		ent_pan(node, in, channels, i, azimuth);
+	}
+
+	float gain = ent_panner_gain(node, position, orientation, at);
+
+	if (gain == 1) {
+		return;
+	}
+
+	for (uint32_t i = 0; i < ENT_QUANTUM; i++) {
+		node->output[0][i] = gain == 0 ? 0 : node->output[0][i] * gain;
+		node->output[1][i] = gain == 0 ? 0 : node->output[1][i] * gain;
+	}
+}
+
 static void ent_node_render(ent_node *node, uint64_t quantum) {
 	if (node->quantum == quantum + 1) {
 		return;
@@ -1217,6 +1629,8 @@ static void ent_node_render(ent_node *node, uint64_t quantum) {
 		ent_source_render(node, quantum);
 	} else if (node->kind == ENT_GAIN) {
 		ent_gain_render(node, quantum);
+	} else if (node->kind == ENT_PANNER) {
+		ent_panner_render(node, quantum);
 	} else {
 		ent_node_mix(node, quantum, node->context->channels);
 	}

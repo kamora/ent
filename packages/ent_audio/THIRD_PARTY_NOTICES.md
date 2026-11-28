@@ -9,8 +9,9 @@ used under the MIT No Attribution alternative of its license (`third_party/minia
 
 `src/ent_audio.c` follows Chromium's Web Audio implementation: the buffer source follows the behaviour of
 `audio_buffer_source_handler.cc` and `audio_scheduled_source_handler.cc` (the start and stop frames, the loop and the
-linear interpolation), and the parameter automation is ported from `audio_param_handler.cc`, with the gain node of
-`gain_handler.cc`.
+linear interpolation), the parameter automation is ported from `audio_param_handler.cc`, with the gain node of
+`gain_handler.cc`, and the panner and listener from `panner_handler.cc`, `audio_listener_handler.cc`,
+`equal_power_panner.cc`, `distance_effect.cc`, `cone_effect.cc` and `ui/gfx/geometry/vector3d_f.cc`.
 
 ```
 Copyright 2015 The Chromium Authors

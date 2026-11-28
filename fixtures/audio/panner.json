@@ -1,0 +1,2565 @@
+{
+	"rate": 48000,
+	"channels": 2,
+	"scenarios": {
+		"same_place": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"right": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					3
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"left_behind": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-2
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					3
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"front": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0.5
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-4
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"above": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					5
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					0.1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"below_left": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					-3
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"linear": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"linear"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					1
+				],
+				[
+					"attr",
+					"p",
+					"maxDistance",
+					10
+				],
+				[
+					"attr",
+					"p",
+					"rolloffFactor",
+					1.5
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					2
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-4
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"linear_past_max": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"linear"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					1
+				],
+				[
+					"attr",
+					"p",
+					"maxDistance",
+					10
+				],
+				[
+					"attr",
+					"p",
+					"rolloffFactor",
+					0.5
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-12
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					6
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					9
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"linear_inside_ref": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"linear"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					3
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"inverse": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"inverse"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					1
+				],
+				[
+					"attr",
+					"p",
+					"maxDistance",
+					10
+				],
+				[
+					"attr",
+					"p",
+					"rolloffFactor",
+					1.5
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					2
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-4
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"inverse_past_max": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"inverse"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					1
+				],
+				[
+					"attr",
+					"p",
+					"maxDistance",
+					10
+				],
+				[
+					"attr",
+					"p",
+					"rolloffFactor",
+					0.5
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-12
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					6
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					9
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"inverse_inside_ref": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"inverse"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					3
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"exponential": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"exponential"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					1
+				],
+				[
+					"attr",
+					"p",
+					"maxDistance",
+					10
+				],
+				[
+					"attr",
+					"p",
+					"rolloffFactor",
+					1.5
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					2
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-4
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"exponential_past_max": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"exponential"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					1
+				],
+				[
+					"attr",
+					"p",
+					"maxDistance",
+					10
+				],
+				[
+					"attr",
+					"p",
+					"rolloffFactor",
+					0.5
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-12
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					6
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					9
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"exponential_inside_ref": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"exponential"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					3
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"linear_ref_is_max": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"distanceModel",
+					"linear"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					5
+				],
+				[
+					"attr",
+					"p",
+					"maxDistance",
+					5
+				],
+				[
+					"attr",
+					"p",
+					"rolloffFactor",
+					0.25
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					2
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-7
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ref_zero": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"refDistance",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					2
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"cone_facing": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"coneInnerAngle",
+					60
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterAngle",
+					120
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterGain",
+					0.2
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-3
+				],
+				[
+					"param",
+					"p",
+					"orientationX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationZ",
+					1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"cone_side": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"coneInnerAngle",
+					60
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterAngle",
+					120
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterGain",
+					0.2
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-3
+				],
+				[
+					"param",
+					"p",
+					"orientationX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"orientationY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationZ",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"cone_between": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"coneInnerAngle",
+					60
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterAngle",
+					120
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterGain",
+					0.2
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-3
+				],
+				[
+					"param",
+					"p",
+					"orientationX",
+					0.6
+				],
+				[
+					"param",
+					"p",
+					"orientationY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationZ",
+					1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"cone_away": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"coneInnerAngle",
+					60
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterAngle",
+					120
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterGain",
+					0.2
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-3
+				],
+				[
+					"param",
+					"p",
+					"orientationX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationZ",
+					-1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"cone_no_orientation": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"coneInnerAngle",
+					60
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterAngle",
+					120
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterGain",
+					0.2
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-3
+				],
+				[
+					"param",
+					"p",
+					"orientationX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationZ",
+					0
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"stereo_left": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 2,
+					"length": 1024,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-2
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"stereo_right": {
+			"frames": 1024,
+			"buffers": {
+				"b": {
+					"channels": 2,
+					"length": 1024,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					3
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"listener_moved": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-2
+				],
+				[
+					"param",
+					"listener",
+					"positionX",
+					3
+				],
+				[
+					"param",
+					"listener",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"listener",
+					"positionZ",
+					1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"listener_turned": {
+			"frames": 1024,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-2
+				],
+				[
+					"param",
+					"listener",
+					"forwardX",
+					1
+				],
+				[
+					"param",
+					"listener",
+					"forwardY",
+					0
+				],
+				[
+					"param",
+					"listener",
+					"forwardZ",
+					0
+				],
+				[
+					"param",
+					"listener",
+					"upX",
+					0
+				],
+				[
+					"param",
+					"listener",
+					"upY",
+					0
+				],
+				[
+					"param",
+					"listener",
+					"upZ",
+					1
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"moving": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-5
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-1
+				],
+				[
+					"ramp",
+					"p",
+					"positionX",
+					5,
+					2048
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"moving_stereo": {
+			"frames": 2048,
+			"buffers": {
+				"b": {
+					"channels": 2,
+					"length": 1024,
+					"rate": 48000
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"b"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-5
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-1
+				],
+				[
+					"ramp",
+					"p",
+					"positionX",
+					5,
+					2048
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"listener_moving": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-3
+				],
+				[
+					"ramp",
+					"listener",
+					"positionX",
+					4,
+					1536
+				],
+				[
+					"ramp",
+					"listener",
+					"forwardX",
+					1,
+					1536
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"turning_away": {
+			"frames": 1536,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"attr",
+					"p",
+					"coneInnerAngle",
+					60
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterAngle",
+					120
+				],
+				[
+					"attr",
+					"p",
+					"coneOuterGain",
+					0.2
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"positionZ",
+					-3
+				],
+				[
+					"param",
+					"p",
+					"orientationX",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationY",
+					0
+				],
+				[
+					"param",
+					"p",
+					"orientationZ",
+					1
+				],
+				[
+					"ramp",
+					"p",
+					"orientationX",
+					1,
+					1024
+				],
+				[
+					"ramp",
+					"p",
+					"orientationZ",
+					0,
+					1024
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"ent_frames": {
+			"frames": 2048,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"at",
+					256
+				],
+				[
+					"ramp",
+					"p",
+					"positionX",
+					-3.0,
+					512
+				],
+				[
+					"ramp",
+					"p",
+					"positionZ",
+					-2.0,
+					512
+				],
+				[
+					"ramp",
+					"listener",
+					"positionX",
+					0.0,
+					512
+				],
+				[
+					"ramp",
+					"listener",
+					"forwardX",
+					0.0,
+					512
+				],
+				[
+					"at",
+					512
+				],
+				[
+					"ramp",
+					"p",
+					"positionX",
+					-1.5,
+					768
+				],
+				[
+					"ramp",
+					"p",
+					"positionZ",
+					-1.7,
+					768
+				],
+				[
+					"ramp",
+					"listener",
+					"positionX",
+					0.2,
+					768
+				],
+				[
+					"ramp",
+					"listener",
+					"forwardX",
+					0.1,
+					768
+				],
+				[
+					"at",
+					768
+				],
+				[
+					"ramp",
+					"p",
+					"positionX",
+					0.0,
+					1024
+				],
+				[
+					"ramp",
+					"p",
+					"positionZ",
+					-1.4,
+					1024
+				],
+				[
+					"ramp",
+					"listener",
+					"positionX",
+					0.4,
+					1024
+				],
+				[
+					"ramp",
+					"listener",
+					"forwardX",
+					0.2,
+					1024
+				],
+				[
+					"at",
+					1024
+				],
+				[
+					"ramp",
+					"p",
+					"positionX",
+					1.5,
+					1280
+				],
+				[
+					"ramp",
+					"p",
+					"positionZ",
+					-1.1,
+					1280
+				],
+				[
+					"ramp",
+					"listener",
+					"positionX",
+					0.6000000000000001,
+					1280
+				],
+				[
+					"ramp",
+					"listener",
+					"forwardX",
+					0.30000000000000004,
+					1280
+				],
+				[
+					"at",
+					1280
+				],
+				[
+					"ramp",
+					"p",
+					"positionX",
+					3.0,
+					1536
+				],
+				[
+					"ramp",
+					"p",
+					"positionZ",
+					-0.8,
+					1536
+				],
+				[
+					"ramp",
+					"listener",
+					"positionX",
+					0.8,
+					1536
+				],
+				[
+					"ramp",
+					"listener",
+					"forwardX",
+					0.4,
+					1536
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"two_panners": {
+			"frames": 1536,
+			"buffers": {
+				"one": {
+					"channels": 1,
+					"length": 128,
+					"rate": 48000,
+					"fill": 1
+				}
+			},
+			"ops": [
+				[
+					"source",
+					"s",
+					"one"
+				],
+				[
+					"set",
+					"s",
+					"loop",
+					true
+				],
+				[
+					"panner",
+					"p"
+				],
+				[
+					"panner",
+					"q"
+				],
+				[
+					"connect",
+					"s",
+					"p"
+				],
+				[
+					"connect",
+					"s",
+					"q"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"connect",
+					"q"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					-2
+				],
+				[
+					"param",
+					"q",
+					"positionX",
+					2
+				],
+				[
+					"param",
+					"q",
+					"positionZ",
+					1
+				],
+				[
+					"ramp",
+					"listener",
+					"positionZ",
+					3,
+					1536
+				],
+				[
+					"start",
+					"s"
+				]
+			]
+		},
+		"no_input": {
+			"frames": 512,
+			"buffers": {},
+			"ops": [
+				[
+					"panner",
+					"p"
+				],
+				[
+					"connect",
+					"p"
+				],
+				[
+					"param",
+					"p",
+					"positionX",
+					1
+				]
+			]
+		}
+	}
+}

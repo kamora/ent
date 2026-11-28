@@ -42,8 +42,23 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
     buffers[key] = buffer;
   }
 
-  AudioParam param(AudioNode? node, Object? name) {
+  AudioParam param(Object? node, Object? name) {
     return switch ((node, name)) {
+      (AudioPanner node, 'positionX') => node.positionX,
+      (AudioPanner node, 'positionY') => node.positionY,
+      (AudioPanner node, 'positionZ') => node.positionZ,
+      (AudioPanner node, 'orientationX') => node.orientationX,
+      (AudioPanner node, 'orientationY') => node.orientationY,
+      (AudioPanner node, 'orientationZ') => node.orientationZ,
+      (NativeAudioListener node, 'positionX') => node.positionX,
+      (NativeAudioListener node, 'positionY') => node.positionY,
+      (NativeAudioListener node, 'positionZ') => node.positionZ,
+      (NativeAudioListener node, 'forwardX') => node.forwardX,
+      (NativeAudioListener node, 'forwardY') => node.forwardY,
+      (NativeAudioListener node, 'forwardZ') => node.forwardZ,
+      (NativeAudioListener node, 'upX') => node.upX,
+      (NativeAudioListener node, 'upY') => node.upY,
+      (NativeAudioListener node, 'upZ') => node.upZ,
       (AudioGain node, 'gain') => node.gain,
       (AudioBufferSource node, 'playbackRate') => node.playbackRate,
       (AudioBufferSource node, 'detune') => node.detune,
@@ -72,7 +87,7 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
 
     final name = op[1] as String;
     final args = op.sublist(2);
-    final node = nodes[name];
+    final Object? node = name == 'listener' ? context.listener : nodes[name];
     final source = node is AudioBufferSource ? node : null;
 
     switch (op[0]) {
@@ -87,6 +102,28 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
         nodes[name] = source;
       case 'gain':
         nodes[name] = context.createGain();
+      case 'panner':
+        nodes[name] = context.createPanner();
+      case 'attr':
+        final panner = node! as AudioPanner;
+        final value = args[1];
+
+        switch (args[0]) {
+          case 'distanceModel':
+            panner.distanceModel = value as String;
+          case 'refDistance':
+            panner.refDistance = (value as num).toDouble();
+          case 'maxDistance':
+            panner.maxDistance = (value as num).toDouble();
+          case 'rolloffFactor':
+            panner.rolloffFactor = (value as num).toDouble();
+          case 'coneInnerAngle':
+            panner.coneInnerAngle = (value as num).toDouble();
+          case 'coneOuterAngle':
+            panner.coneOuterAngle = (value as num).toDouble();
+          case 'coneOuterGain':
+            panner.coneOuterGain = (value as num).toDouble();
+        }
       case 'set':
         switch (args[0]) {
           case 'loop':
@@ -105,7 +142,7 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
       case 'read':
         values.add(param(node, args[0]).value);
       case 'connect':
-        node!.connect(args.isEmpty ? context.destination : nodes[args[0]]!);
+        (node! as AudioNode).connect(args.isEmpty ? context.destination : nodes[args[0]]!);
       case 'start':
         final times = args.map(time).toList();
 
@@ -133,7 +170,7 @@ Future<(List<Float32List>, Set<String>, List<double>)> run(
 }
 
 void main() {
-  for (final file in ['sources', 'params']) {
+  for (final file in ['sources', 'params', 'panner']) {
     group(file, () {
       compare(file);
     });
