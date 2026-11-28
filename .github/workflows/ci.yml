@@ -37,6 +37,7 @@ jobs:
           (cd packages/ent_renderer && flutter pub get)
           (cd packages/ent_flutter && flutter pub get)
           (cd examples/worm && flutter pub get)
+          (cd examples/voxels && flutter pub get)
       - name: Format
         run: >-
           dart format --output=none --set-exit-if-changed packages/ent packages/ent_shaders packages/ent_impeller
